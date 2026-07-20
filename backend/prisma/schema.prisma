@@ -1,0 +1,30 @@
+// Prisma schema — WarMa Water Resources Management Advisor
+// Production: Azure Database for PostgreSQL (ตั้งค่า DATABASE_URL ใน .env)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Scenario {
+  id            String   @id @default(cuid())
+  name          String
+  crop          String
+  season        String
+  level         String // เพียงพอ | จำกัด | ขาดแคลน
+  waterPerRai   Float // ลบ.ม./ไร่ ที่จัดสรรใน scenario นี้
+  minRatio      Float // ช่วง ratio (น้ำที่มี ÷ น้ำที่พืชต้องการ) ที่ scenario ครอบคลุม
+  maxRatio      Float
+  expectedYield String
+  risk          String
+  advice        Json // string[] — คำแนะนำรายข้อ
+  schedule      Json // {phase, freq, amount}[] — ตารางให้น้ำรายระยะ
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([crop, season])
+}

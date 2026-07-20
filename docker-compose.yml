@@ -1,0 +1,16 @@
+# PostgreSQL สำหรับพัฒนาในเครื่อง (production ใช้ Azure Database for PostgreSQL)
+# รัน: docker compose up -d
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: warma
+      POSTGRES_PASSWORD: warma_dev
+      POSTGRES_DB: warma
+    ports:
+      - "5432:5432"
+    volumes:
+      - warma-pgdata:/var/lib/postgresql/data
+
+volumes:
+  warma-pgdata:
