@@ -1,0 +1,19 @@
+# ไฟล์ระบบ / Editor
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# VSCode (เก็บเฉพาะ settings ที่ตั้งใจแชร์)
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Dependencies (เผื่ออนาคตใช้ Node.js)
+node_modules/
+dist/
+build/
+
+# ไฟล์ชั่วคราว / log
+*.log
+*.tmp
+.env
