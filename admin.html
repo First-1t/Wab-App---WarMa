@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WarMa Admin — จัดการข้อมูล Scenario</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-row">
+    <div>
+      <h1>⚙️ WarMa Admin</h1>
+      <p>จัดการข้อมูล scenario สำหรับอาจารย์</p>
+    </div>
+    <a class="nav-link" href="index.html">💧 หน้าผู้ใช้</a>
+  </div>
+</header>
+
+<main>
+  <div id="msg" class="msg"></div>
+
+  <!-- เครื่องมือ -->
+  <section class="card">
+    <h2>🧰 เครื่องมือ</h2>
+    <div class="admin-toolbar">
+      <button class="btn" id="btn-new">➕ เพิ่ม scenario ใหม่</button>
+      <button class="btn btn-secondary" id="btn-export">⬇️ ส่งออกข้อมูล (JSON)</button>
+      <button class="btn btn-secondary" id="btn-import">⬆️ นำเข้าข้อมูล (JSON)</button>
+      <button class="btn btn-danger" id="btn-reset">♻️ คืนค่าเริ่มต้น</button>
+      <input type="file" id="import-file" accept=".json" style="display:none">
+    </div>
+    <p style="font-size:0.8rem;color:var(--text-muted)">
+      ข้อมูลที่แก้ไขจะถูกบันทึกในเครื่องนี้ (localStorage) — ใช้ "ส่งออก" เพื่อสำรองไฟล์หรือนำไปใช้เครื่องอื่น
+    </p>
+  </section>
+
+  <!-- รายการ scenario -->
+  <section class="card">
+    <h2>📚 รายการ scenario ทั้งหมด (<span id="count">0</span>)</h2>
+    <div id="scenario-list"></div>
+  </section>
+
+  <!-- ฟอร์มเพิ่ม/แก้ไข -->
+  <section class="card" id="editor-card" style="display:none">
+    <h2 id="editor-title">➕ เพิ่ม scenario</h2>
+    <form id="editor-form">
+      <input type="hidden" id="f-id">
+      <div class="form-group">
+        <label for="f-name">ชื่อ scenario</label>
+        <input type="text" id="f-name" placeholder="เช่น ข้าวนาปรัง น้ำเพียงพอ" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="f-crop">ชนิดพืช</label>
+          <input type="text" id="f-crop" list="crop-list" placeholder="เช่น ข้าว" required>
+          <datalist id="crop-list"></datalist>
+        </div>
+        <div class="form-group">
+          <label for="f-season">ฤดูกาล</label>
+          <input type="text" id="f-season" list="season-list" placeholder="เช่น ฤดูแล้ง" required>
+          <datalist id="season-list"></datalist>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="f-level">สถานะน้ำ</label>
+          <select id="f-level">
+            <option value="เพียงพอ">เพียงพอ</option>
+            <option value="จำกัด">จำกัด</option>
+            <option value="ขาดแคลน">ขาดแคลน</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="f-water-per-rai">น้ำจัดสรรต่อไร่ <span class="hint">(ลบ.ม./ไร่)</span></label>
+          <input type="number" id="f-water-per-rai" min="0" step="any" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="f-min-ratio">ratio ต่ำสุด <span class="hint">(น้ำที่มี ÷ น้ำที่พืชต้องการ)</span></label>
+          <input type="number" id="f-min-ratio" min="0" step="0.05" value="0" required>
+        </div>
+        <div class="form-group">
+          <label for="f-max-ratio">ratio สูงสุด <span class="hint">(ใส่ 99 = ไม่จำกัด)</span></label>
+          <input type="number" id="f-max-ratio" min="0" step="0.05" value="99" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="f-yield">ผลผลิตคาดการณ์</label>
+          <input type="text" id="f-yield" placeholder="เช่น 650–750 กก./ไร่">
+        </div>
+        <div class="form-group">
+          <label for="f-risk">ระดับความเสี่ยง</label>
+          <select id="f-risk">
+            <option value="ต่ำ">ต่ำ</option>
+            <option value="ปานกลาง">ปานกลาง</option>
+            <option value="สูง">สูง</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="f-advice">คำแนะนำ <span class="hint">(1 บรรทัด = 1 ข้อ)</span></label>
+        <textarea id="f-advice" rows="4" placeholder="พิมพ์คำแนะนำ บรรทัดละ 1 ข้อ"></textarea>
+      </div>
+      <div class="form-group">
+        <label>ตารางการให้น้ำ</label>
+        <div id="schedule-rows"></div>
+        <button type="button" class="btn btn-secondary btn-small" id="btn-add-phase">＋ เพิ่มระยะ</button>
+      </div>
+      <div class="admin-toolbar">
+        <button type="submit" class="btn">💾 บันทึก</button>
+        <button type="button" class="btn btn-secondary" id="btn-cancel">ยกเลิก</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<footer>WarMa Admin Panel — แก้ไขข้อมูล scenario ได้โดยไม่ต้องแก้โค้ด</footer>
+
+<script src="js/data.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
