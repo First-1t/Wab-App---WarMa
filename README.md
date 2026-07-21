@@ -23,7 +23,50 @@ Web Application แนะนำการจัดการทรัพยาก�
 | `backend/` | NestJS + Prisma + PostgreSQL | REST API: จับคู่ scenario, CRUD, AI อธิบายผล (Claude) |
 | `prototype/` | HTML/CSS/JS ล้วน | ต้นแบบเวอร์ชันแรก (เก็บไว้อ้างอิง) |
 
-## การรันในเครื่อง (Development)
+## 🚀 วิธีเปิดเว็บ
+
+เว็บนี้มี **3 ส่วนที่ต้องเปิดพร้อมกัน** เปิดตามลำดับนี้ ถ้าขาดตัวใดตัวหนึ่งหน้าเว็บจะขึ้น
+"เชื่อมต่อเซิร์ฟเวอร์ไม่ได้"
+
+```
+1) ฐานข้อมูล (PostgreSQL)  →  2) Backend (พอร์ต 3001)  →  3) Frontend (พอร์ต 3000)
+```
+
+เปิด **Terminal 3 หน้าต่าง** (หรือใช้ Split Terminal ใน VSCode) ค้างไว้ทั้งหมด แล้วเปิดเบราว์เซอร์ที่
+**http://localhost:3000**
+
+**หน้าต่างที่ 1 — ฐานข้อมูล**
+
+```bash
+cd backend
+npx prisma dev -n warma        # ปล่อยค้างไว้ ห้ามปิด
+```
+> ครั้งแรกสุดเท่านั้น ให้เปิดฐานข้อมูลค้างไว้แล้วเปิด Terminal ใหม่รัน `npx prisma db push`
+> ตามด้วย `npx prisma db seed` เพื่อสร้างตารางและใส่ข้อมูล 14 scenario (ทำครั้งเดียวพอ)
+
+**หน้าต่างที่ 2 — Backend**
+
+```bash
+cd backend
+npm run start:dev              # API ที่ http://localhost:3001 — ปล่อยค้างไว้
+```
+
+**หน้าต่างที่ 3 — Frontend**
+
+```bash
+cd frontend
+npm run dev                    # เว็บที่ http://localhost:3000 — ปล่อยค้างไว้
+```
+
+เมื่อครบ 3 ตัว เปิดเบราว์เซอร์ที่ **http://localhost:3000** ได้เลย
+กดปิดเว็บ = ปิดทั้ง 3 หน้าต่าง (Ctrl+C ในแต่ละหน้าต่าง)
+
+> **แก้ปัญหา "เชื่อมต่อเซิร์ฟเวอร์ไม่ได้":** เกือบทุกครั้งเกิดจาก backend (หน้าต่างที่ 2) ไม่ได้เปิด
+> หรือปิดไปแล้ว — กลับไปรัน `npm run start:dev` ใหม่ ถ้ายังไม่หายให้เช็คว่า `backend/.env`
+> บรรทัด `DATABASE_URL` ตรงกับ connection string ที่ `npx prisma dev` พิมพ์ออกมา
+> (ต่อท้ายด้วย `&pgbouncer=true` เสมอ)
+
+## การรันในเครื่อง (Development — รายละเอียดการติดตั้งครั้งแรก)
 
 ต้องมี Node.js 20+ และ PostgreSQL — เลือกได้ 2 ทาง:
 - มี Docker: `docker compose up -d`
