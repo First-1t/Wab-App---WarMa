@@ -1,4 +1,10 @@
-import type { MatchInput, MatchResult, Scenario, ScenarioInput } from "./types";
+import type {
+  MatchInput,
+  MatchResult,
+  RainfallResult,
+  Scenario,
+  ScenarioInput,
+} from "./types";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
@@ -58,6 +64,8 @@ export const api = {
       method: "DELETE",
       headers: adminHeaders(),
     }),
+
+  rainfall: () => request<RainfallResult>("/rainfall"),
 
   aiStatus: () => request<{ enabled: boolean }>("/ai/status"),
 

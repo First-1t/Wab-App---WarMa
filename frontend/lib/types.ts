@@ -35,3 +35,19 @@ export interface MatchResult {
   totalAllocation: number;
   candidates: Scenario[];
 }
+
+export interface RainStation {
+  id: number;
+  name: string;
+  lat: number;
+  long: number;
+  amphoe: string;
+  province: string;
+  rain24h: number;
+  datetime: string;
+}
+
+export interface RainfallResult {
+  updatedAt: string | null;
+  stations: RainStation[];
+}

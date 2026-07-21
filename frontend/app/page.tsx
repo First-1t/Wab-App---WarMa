@@ -5,6 +5,7 @@ import Link from "next/link";
 import { api } from "@/lib/api";
 import { colorsFor, fmt } from "@/lib/format";
 import type { MatchResult } from "@/lib/types";
+import RainfallPanel from "./components/RainfallPanel";
 
 export default function HomePage() {
   const [crops, setCrops] = useState<string[]>([]);
@@ -83,7 +84,7 @@ export default function HomePage() {
   return (
     <>
       <header className="sticky top-0 z-10 bg-gradient-to-r from-sky-900 to-sky-700 text-white shadow">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
           <div>
             <h1 className="text-lg font-bold sm:text-xl">💧 WarMa</h1>
             <p className="text-xs opacity-85">
@@ -99,7 +100,14 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-4">
+      <main className="mx-auto grid w-full max-w-7xl flex-1 gap-4 px-4 py-4 lg:grid-cols-2">
+        {/* ซ้าย: แผนที่ฝน ThaiWater (บนมือถือแสดงล่างระบบแนะนำ) */}
+        <div className="order-2 lg:order-1">
+          <RainfallPanel />
+        </div>
+
+        {/* ขวา: ระบบแนะนำการจัดการน้ำของเรา */}
+        <div className="order-1 space-y-4 lg:order-2">
         {/* ฟอร์มปัจจัยนำเข้า */}
         <section className="rounded-xl bg-white p-5 shadow-sm">
           <h2 className="mb-3 font-bold text-sky-900">
@@ -181,7 +189,7 @@ export default function HomePage() {
 
         {/* ผลลัพธ์ */}
         {result && (
-          <div ref={resultRef} className="mt-4 space-y-4">
+          <div ref={resultRef} className="space-y-4">
             <section
               className={`rounded-xl border-l-8 p-5 ${colorsFor(result.matched.level).bg} ${colorsFor(result.matched.level).border}`}
             >
@@ -352,6 +360,7 @@ export default function HomePage() {
             กรอกข้อมูลด้านบนแล้วกด &quot;วิเคราะห์&quot; เพื่อรับคำแนะนำ
           </p>
         )}
+        </div>
       </main>
 
       <footer className="px-4 pb-6 pt-2 text-center text-xs text-slate-400">
