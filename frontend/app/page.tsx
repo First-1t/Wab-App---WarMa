@@ -6,6 +6,17 @@ import { api } from "@/lib/api";
 import { colorsFor, fmt } from "@/lib/format";
 import type { MatchResult } from "@/lib/types";
 import RainfallPanel from "./components/RainfallPanel";
+import dynamic from "next/dynamic";
+
+// แผนที่วาดแปลง ใช้ Leaflet → โหลด client-only
+const FieldMap = dynamic(() => import("./components/FieldMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-[300px] items-center justify-center rounded-lg bg-slate-100 text-sm text-slate-400 sm:h-[360px]">
+      กำลังโหลดแผนที่ดาวเทียม...
+    </div>
+  ),
+});
 
 export default function HomePage() {
   const [crops, setCrops] = useState<string[]>([]);
@@ -15,6 +26,7 @@ export default function HomePage() {
   const [water, setWater] = useState("");
   const [area, setArea] = useState("");
   const [result, setResult] = useState<MatchResult | null>(null);
+  const [showFieldMap, setShowFieldMap] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [aiEnabled, setAiEnabled] = useState(false);
@@ -171,7 +183,25 @@ export default function HomePage() {
                 onChange={(e) => setArea(e.target.value)}
                 className="w-full rounded-lg border border-slate-300 px-3 py-2.5 focus:border-sky-600 focus:outline-none"
               />
+              <button
+                type="button"
+                onClick={() => setShowFieldMap((v) => !v)}
+                className="mt-1 text-sm font-semibold text-sky-700 hover:underline"
+              >
+                🗺️ {showFieldMap ? "ปิดแผนที่" : "หรือวาดพื้นที่แปลงในแผนที่"}
+              </button>
             </label>
+
+            {/* แผนที่วาดแปลง — วาดแล้วกรอกช่องไร่ให้อัตโนมัติ */}
+            {showFieldMap && (
+              <div className="rounded-lg border border-slate-200 p-3 sm:col-span-2">
+                <FieldMap
+                  onAreaChange={(rai) => {
+                    if (rai > 0) setArea(String(rai));
+                  }}
+                />
+              </div>
+            )}
             <button
               type="submit"
               disabled={loading}
