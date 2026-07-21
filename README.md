@@ -61,6 +61,15 @@ npm run dev                    # เว็บที่ http://localhost:3000 —
 เมื่อครบ 3 ตัว เปิดเบราว์เซอร์ที่ **http://localhost:3000** ได้เลย
 กดปิดเว็บ = ปิดทั้ง 3 หน้าต่าง (Ctrl+C ในแต่ละหน้าต่าง)
 
+## วิธีเปิด ปิด ฐานข้อมูล ##
+
+**อยากทำอะไร	คำสั่ง**
+
+npx prisma dev -n warma             # เปิด
+npx prisma dev stop -n warma        # ปิด
+npx prisma dev ls                   # ดูว่าเปิดอยู่ไหม
+npx prisma dev rm -n warma          # ลบทิ้ง (ลบข้อมูลด้วย)	
+
 > **แก้ปัญหา "เชื่อมต่อเซิร์ฟเวอร์ไม่ได้":** เกือบทุกครั้งเกิดจาก backend (หน้าต่างที่ 2) ไม่ได้เปิด
 > หรือปิดไปแล้ว — กลับไปรัน `npm run start:dev` ใหม่ ถ้ายังไม่หายให้เช็คว่า `backend/.env`
 > บรรทัด `DATABASE_URL` ตรงกับ connection string ที่ `npx prisma dev` พิมพ์ออกมา
