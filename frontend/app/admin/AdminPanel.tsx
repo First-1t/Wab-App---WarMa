@@ -7,10 +7,17 @@ import { colorsFor, fmt } from "@/lib/format";
 import type { Scenario, ScenarioInput } from "@/lib/types";
 import { useSession } from "../components/RequireAuth";
 import UserMenu from "../components/UserMenu";
+import { SeasonArt, VarietyArt } from "./CardArt";
 import FeedbackPanel from "./FeedbackPanel";
+import NotifySettings from "./NotifySettings";
 import ScenarioEditor, { emptyScenario, LEVELS, ratioText } from "./ScenarioEditor";
 
-const SEASON_ORDER = ["ฤดูหนาว", "ฤดูร้อน", "ฤดูฝน"];
+const SEASON_ORDER = ["ต้นฤดูฝน", "ปลายฤดูฝน", "ฤดูแล้ง"];
+const SEASON_INFO: Record<string, string> = {
+  ต้นฤดูฝน: "ปลูก เม.ย.–พ.ค. อาศัยน้ำฝนเป็นหลัก",
+  ปลายฤดูฝน: "ปลูก ต.ค.–พ.ย. ต้นต้องผ่านหน้าแล้ง",
+  ฤดูแล้ง: "ปลูก ม.ค.–ก.พ. ต้องมีน้ำชลประทาน",
+};
 const rank = (order: readonly string[], v: string) => {
   const i = order.indexOf(v);
   return i === -1 ? order.length : i;
@@ -23,11 +30,40 @@ const RISK_TEXT: Record<string, string> = {
 };
 
 type Editing = { mode: "create" | "edit" | "copy"; id?: string; data: ScenarioInput };
+type View = { crop: string | null; season: string | null };
 
 /** เอาเฉพาะ field ที่แก้ไขได้ (ตัด id / createdAt / updatedAt ออก) */
 function toInput(s: Scenario): ScenarioInput {
   const { name, crop, season, level, waterPerRai, minRatio, maxRatio, expectedYield, risk, advice, schedule } = s;
   return { name, crop, season, level, waterPerRai, minRatio, maxRatio, expectedYield, risk, advice, schedule };
+}
+
+/** ตรวจว่าข้อมูลในฤดูหนึ่งครอบคลุมทุกช่วง % หรือไม่ — คืนรายการช่วงที่ขาด */
+function gaps(items: Scenario[]): string[] {
+  const sorted = [...items].sort((a, b) => a.minRatio - b.minRatio);
+  const out: string[] = [];
+  let cur = 0;
+  for (const s of sorted) {
+    if (s.minRatio > cur + 1e-9) out.push(`${Math.round(cur * 100)}–${Math.round(s.minRatio * 100)}%`);
+    cur = Math.max(cur, s.maxRatio);
+  }
+  if (cur < 99) out.push(`${Math.round(cur * 100)}% ขึ้นไป`);
+  return out;
+}
+
+function readView(): View {
+  if (typeof window === "undefined") return { crop: null, season: null };
+  const sp = new URLSearchParams(window.location.search);
+  return { crop: sp.get("crop"), season: sp.get("season") };
+}
+
+function CoverageNote({ items }: { items: Scenario[] }) {
+  const g = gaps(items);
+  return g.length ? (
+    <span className="text-sm font-semibold text-amber-700">⚠️ ยังไม่มีข้อมูลช่วง {g.join(", ")}</span>
+  ) : (
+    <span className="text-sm font-semibold text-green-700">✓ ครอบคลุมทุกช่วงน้ำ</span>
+  );
 }
 
 /** กล่องยืนยันการลบ — ใช้ <dialog> ของเบราว์เซอร์ (คีย์บอร์ด/โปรแกรมอ่านหน้าจอใช้ได้) */
@@ -84,17 +120,100 @@ function ConfirmDelete({
   );
 }
 
+/** แถบแสดงช่วง % ของน้ำที่ข้อมูลแต่ละชุดครอบคลุม (0–150%) */
+function CoverageBar({ items }: { items: Scenario[] }) {
+  const SCALE = 1.5;
+  return (
+    <figure className="rounded-xl bg-white p-4 shadow-sm sm:p-5">
+      <figcaption className="text-sm font-semibold text-slate-700">
+        ช่วงน้ำที่ข้อมูลแต่ละชุดใช้{" "}
+        <span className="font-normal text-slate-500">(% ของน้ำที่พันธุ์นี้ต้องการ)</span>
+      </figcaption>
+      <div
+        className="relative mt-3 h-9 overflow-hidden rounded-lg bg-slate-100"
+        role="img"
+        aria-label={items.map((s) => `น้ำ${s.level}: ${ratioText(s.minRatio, s.maxRatio)}`).join(", ")}
+      >
+        {items.map((s) => {
+          const left = (Math.min(s.minRatio, SCALE) / SCALE) * 100;
+          const right = (Math.min(s.maxRatio, SCALE) / SCALE) * 100;
+          return (
+            <div
+              key={s.id}
+              className={`absolute inset-y-0 flex items-center justify-center border-r-2 border-white text-sm font-bold text-white ${colorsFor(s.level).bar}`}
+              style={{ left: `${left}%`, width: `${right - left}%` }}
+            >
+              <span className="truncate px-1">{s.level}</span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="mt-1 flex justify-between text-sm text-slate-500" aria-hidden="true">
+        <span>0%</span>
+        <span>50%</span>
+        <span>100%</span>
+        <span>150%+</span>
+      </div>
+    </figure>
+  );
+}
+
+function Breadcrumb({ view, go }: { view: View; go: (v: View) => void }) {
+  const link =
+    "rounded font-semibold text-sky-700 hover:underline focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none";
+  return (
+    <nav aria-label="ตำแหน่งปัจจุบัน" className="text-base">
+      <ol className="flex flex-wrap items-center gap-1.5">
+        <li>
+          {view.crop ? (
+            <button onClick={() => go({ crop: null, season: null })} className={link}>
+              ทุกพันธุ์
+            </button>
+          ) : (
+            <span aria-current="page" className="font-semibold text-slate-800">
+              ทุกพันธุ์
+            </span>
+          )}
+        </li>
+        {view.crop && (
+          <>
+            <li aria-hidden="true" className="text-slate-400">›</li>
+            <li>
+              {view.season ? (
+                <button onClick={() => go({ crop: view.crop, season: null })} className={link}>
+                  {view.crop}
+                </button>
+              ) : (
+                <span aria-current="page" className="font-semibold text-slate-800">
+                  {view.crop}
+                </span>
+              )}
+            </li>
+          </>
+        )}
+        {view.season && (
+          <>
+            <li aria-hidden="true" className="text-slate-400">›</li>
+            <li aria-current="page" className="font-semibold text-slate-800">
+              {view.season}
+            </li>
+          </>
+        )}
+      </ol>
+    </nav>
+  );
+}
+
 export default function AdminPanel() {
   const { user, logout } = useSession();
   const [list, setList] = useState<Scenario[] | null>(null);
   const [loadError, setLoadError] = useState("");
   const [tab, setTab] = useState<"data" | "feedback">("data");
-  const [crop, setCrop] = useState("ทั้งหมด");
-  const [season, setSeason] = useState("ทั้งหมด");
-  const [query, setQuery] = useState("");
+  const [view, setView] = useState<View>(readView);
   const [editing, setEditing] = useState<Editing | null>(null);
   const [deleting, setDeleting] = useState<Scenario | null>(null);
   const [toast, setToast] = useState<{ text: string; error?: boolean } | null>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
   // AdminPanel แสดงหลัง RequireAuth ตรวจ session แล้วเท่านั้น (ฝั่ง client) จึงอ่าน localStorage ได้ตรงนี้
   const [showHelp, setShowHelp] = useState(() => {
     try {
@@ -116,7 +235,24 @@ export default function AdminPanel() {
 
   useEffect(() => {
     load();
+    // ปุ่มย้อนกลับของเบราว์เซอร์ = ถอยกลับทีละชั้น
+    const onPop = () => setView(readView());
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
   }, [load]);
+
+  /** เปลี่ยนชั้นที่ดู + เก็บใน URL (แชร์ลิงก์/กดย้อนกลับได้) แล้วย้ายโฟกัสไปหัวข้อใหม่ */
+  const go = useCallback((v: View) => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("crop");
+    url.searchParams.delete("season");
+    if (v.crop) url.searchParams.set("crop", v.crop);
+    if (v.crop && v.season) url.searchParams.set("season", v.season);
+    window.history.pushState(null, "", url);
+    setView(v);
+    window.scrollTo({ top: 0 });
+    setTimeout(() => headingRef.current?.focus(), 0);
+  }, []);
 
   function flash(text: string, error = false) {
     setToast({ text, error });
@@ -130,51 +266,31 @@ export default function AdminPanel() {
     } catch {}
   }
 
+  const all = useMemo(() => list ?? [], [list]);
   const crops = useMemo(
-    () => [...new Set((list ?? []).map((s) => s.crop))].sort((a, b) => a.localeCompare(b, "th")),
-    [list],
+    () => [...new Set(all.map((s) => s.crop))].sort((a, b) => a.localeCompare(b, "th", { numeric: true })),
+    [all],
   );
-  const seasons = useMemo(
+  const allSeasons = useMemo(
     () =>
-      [...new Set((list ?? []).map((s) => s.season))].sort(
+      [...new Set(all.map((s) => s.season))].sort(
         (a, b) => rank(SEASON_ORDER, a) - rank(SEASON_ORDER, b),
       ),
-    [list],
+    [all],
   );
-
-  // กรอง แล้วจัดกลุ่ม พันธุ์ → ฤดู → สถานะน้ำ
-  const groups = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const filtered = (list ?? []).filter(
-      (s) =>
-        (crop === "ทั้งหมด" || s.crop === crop) &&
-        (season === "ทั้งหมด" || s.season === season) &&
-        (!q || `${s.name} ${s.crop} ${s.season} ${s.level}`.toLowerCase().includes(q)),
-    );
-    const byCrop = new Map<string, Map<string, Scenario[]>>();
-    for (const s of filtered) {
-      if (!byCrop.has(s.crop)) byCrop.set(s.crop, new Map());
-      const bySeason = byCrop.get(s.crop)!;
-      if (!bySeason.has(s.season)) bySeason.set(s.season, []);
-      bySeason.get(s.season)!.push(s);
-    }
-    return [...byCrop.entries()]
-      .sort(([a], [b]) => a.localeCompare(b, "th"))
-      .map(([c, m]) => ({
-        crop: c,
-        seasons: [...m.entries()]
-          .sort(([a], [b]) => rank(SEASON_ORDER, a) - rank(SEASON_ORDER, b))
-          .map(([s, items]) => ({
-            season: s,
-            items: items.sort((a, b) => rank(LEVELS, a.level) - rank(LEVELS, b.level)),
-          })),
-      }));
-  }, [list, crop, season, query]);
-
-  const shownCount = groups.reduce(
-    (n, g) => n + g.seasons.reduce((m, s) => m + s.items.length, 0),
-    0,
+  const cropSeasons = useMemo(
+    () =>
+      view.crop
+        ? [...new Set(all.filter((s) => s.crop === view.crop).map((s) => s.season))].sort(
+            (a, b) => rank(SEASON_ORDER, a) - rank(SEASON_ORDER, b),
+          )
+        : [],
+    [all, view.crop],
   );
+  const inSeason = (crop: string, season: string) =>
+    all
+      .filter((s) => s.crop === crop && s.season === season)
+      .sort((a, b) => rank(LEVELS, a.level) - rank(LEVELS, b.level));
 
   function handleAuthError(err: unknown) {
     if (err instanceof ApiError && err.status === 401) {
@@ -196,6 +312,10 @@ export default function AdminPanel() {
       }
       setEditing(null);
       load();
+      // พาไปดูชั้นที่ข้อมูลชุดนั้นอยู่
+      if (data.crop !== view.crop || data.season !== view.season) {
+        go({ crop: data.crop, season: data.season });
+      }
     } catch (err) {
       if (!handleAuthError(err)) throw err; // ให้หน้าต่างแก้ไขแสดง error
     }
@@ -212,7 +332,7 @@ export default function AdminPanel() {
   }
 
   function exportJson() {
-    const blob = new Blob([JSON.stringify((list ?? []).map(toInput), null, 2)], {
+    const blob = new Blob([JSON.stringify(all.map(toInput), null, 2)], {
       type: "application/json",
     });
     const a = document.createElement("a");
@@ -222,17 +342,21 @@ export default function AdminPanel() {
     URL.revokeObjectURL(a.href);
   }
 
-  const chip = (active: boolean) =>
-    `rounded-full border-2 px-4 py-2 text-sm font-semibold whitespace-nowrap focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none ${
-      active
-        ? "border-sky-700 bg-sky-700 text-white"
-        : "border-slate-300 bg-white text-slate-700 hover:border-sky-500"
-    }`;
+  function create(prefill: Partial<ScenarioInput>) {
+    setEditing({ mode: "create", data: { ...emptyScenario, ...prefill } });
+  }
+
+  const card =
+    "group flex flex-col overflow-hidden rounded-xl bg-white text-left shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-md hover:ring-sky-400 focus-visible:ring-4 focus-visible:ring-sky-400 focus-visible:outline-none";
+  const addCard =
+    "flex min-h-48 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 p-6 text-slate-600 hover:border-sky-500 hover:bg-sky-50 hover:text-sky-800 focus-visible:ring-4 focus-visible:ring-sky-400 focus-visible:outline-none";
+
+  const seasonItems = view.crop && view.season ? inSeason(view.crop, view.season) : [];
 
   return (
     <>
       <header className="sticky top-0 z-10 bg-gradient-to-r from-sky-900 to-sky-700 text-white shadow">
-        <div className="mx-auto flex max-w-4xl items-center justify-between gap-2 px-4 py-3">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-4 py-3">
           <div className="min-w-0">
             <h1 className="text-lg font-bold sm:text-xl">⚙️ ตั้งค่าข้อมูล</h1>
             <p className="truncate text-sm opacity-90">แก้ไขคำแนะนำการให้น้ำที่เกษตรกรเห็น</p>
@@ -248,8 +372,7 @@ export default function AdminPanel() {
           </div>
         </div>
 
-        {/* แท็บ */}
-        <div className="mx-auto flex max-w-4xl gap-1 px-4" role="tablist" aria-label="ส่วนของหน้าตั้งค่า">
+        <div className="mx-auto flex max-w-5xl gap-1 px-4" role="tablist" aria-label="ส่วนของหน้าตั้งค่า">
           {(
             [
               ["data", "📚 ข้อมูลคำแนะนำ"],
@@ -273,7 +396,7 @@ export default function AdminPanel() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 py-5">
+      <main className="mx-auto w-full max-w-5xl flex-1 space-y-5 px-4 py-5">
         {!user && (
           <p className="rounded-xl bg-amber-50 p-4 text-sm text-amber-800">
             ⚠️ โหมดพัฒนา — เซิร์ฟเวอร์ยังไม่ได้ตั้งค่า GOOGLE_CLIENT_ID จึงไม่ต้องล็อกอิน
@@ -282,112 +405,14 @@ export default function AdminPanel() {
         )}
 
         {tab === "feedback" && (
-          <div role="tabpanel" id="panel-feedback" aria-labelledby="tab-feedback">
+          <div role="tabpanel" id="panel-feedback" aria-labelledby="tab-feedback" className="space-y-4">
+            <NotifySettings />
             <FeedbackPanel />
           </div>
         )}
 
         {tab === "data" && (
-          <div role="tabpanel" id="panel-data" aria-labelledby="tab-data" className="space-y-4">
-            {/* วิธีใช้ */}
-            {showHelp ? (
-              <section className="rounded-xl border border-sky-200 bg-sky-50 p-5 text-slate-700">
-                <div className="flex items-start justify-between gap-3">
-                  <h2 className="font-bold text-sky-900">ระบบเลือกคำแนะนำอย่างไร?</h2>
-                  <button
-                    onClick={hideHelp}
-                    className="shrink-0 rounded-lg px-2 py-1 text-sm font-semibold text-sky-800 hover:bg-sky-100 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
-                  >
-                    ซ่อนคำอธิบาย
-                  </button>
-                </div>
-                <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-base">
-                  <li>เกษตรกรเลือก <b>พันธุ์</b> และ <b>ฤดู</b> แล้วกรอกน้ำที่มีกับขนาดแปลง</li>
-                  <li>
-                    ระบบคิดว่าน้ำที่มีคิดเป็นกี่ % ของน้ำที่พันธุ์นั้นต้องการ
-                    <span className="text-slate-500"> (น้ำที่ต้องการ = ค่าในชุด “น้ำเพียงพอ”)</span>
-                  </li>
-                  <li>
-                    แล้วเลือก <b>ข้อมูลชุดที่ช่วง % ตรงกัน</b> มาแสดง เช่น ชุด “จำกัด” ใช้เมื่อมีน้ำ 70–100%
-                  </li>
-                </ol>
-                <p className="mt-3 text-sm text-slate-600">
-                  แต่ละพันธุ์ในแต่ละฤดู ควรมีข้อมูลครอบคลุมทุกช่วง % ไม่ให้มีช่องว่าง
-                </p>
-              </section>
-            ) : (
-              <button
-                onClick={() => setShowHelp(true)}
-                className="text-sm font-semibold text-sky-700 hover:underline"
-              >
-                ❓ ระบบเลือกคำแนะนำอย่างไร?
-              </button>
-            )}
-
-            {/* แถบเครื่องมือ */}
-            <section className="space-y-3 rounded-xl bg-white p-4 shadow-sm sm:p-5">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <h2 className="text-lg font-bold text-sky-900">
-                  ข้อมูลคำแนะนำ{" "}
-                  <span className="text-base font-normal text-slate-500">
-                    ({list ? `แสดง ${shownCount} จาก ${list.length} ชุด` : "กำลังโหลด…"})
-                  </span>
-                </h2>
-                <div className="flex gap-2">
-                  <button
-                    onClick={exportJson}
-                    disabled={!list?.length}
-                    className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none disabled:opacity-50"
-                  >
-                    ⬇️ สำรองข้อมูล (JSON)
-                  </button>
-                  <button
-                    onClick={() =>
-                      setEditing({
-                        mode: "create",
-                        data: {
-                          ...emptyScenario,
-                          crop: crop !== "ทั้งหมด" ? crop : "",
-                          season: season !== "ทั้งหมด" ? season : "",
-                        },
-                      })
-                    }
-                    className="rounded-lg bg-sky-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-sky-800 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:outline-none"
-                  >
-                    ＋ เพิ่มข้อมูลใหม่
-                  </button>
-                </div>
-              </div>
-
-              <label className="block">
-                <span className="sr-only">ค้นหา</span>
-                <input
-                  type="search"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="🔍 ค้นหาชื่อ พันธุ์ ฤดู หรือสถานะน้ำ"
-                  className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-base focus:border-sky-600 focus:ring-2 focus:ring-sky-200 focus:outline-none"
-                />
-              </label>
-
-              <div role="group" aria-label="กรองตามพันธุ์" className="flex flex-wrap items-center gap-2">
-                <span className="w-12 text-sm font-semibold text-slate-500">พันธุ์</span>
-                {["ทั้งหมด", ...crops].map((c) => (
-                  <button key={c} aria-pressed={crop === c} onClick={() => setCrop(c)} className={chip(crop === c)}>
-                    {c}
-                  </button>
-                ))}
-              </div>
-              <div role="group" aria-label="กรองตามฤดู" className="flex flex-wrap items-center gap-2">
-                <span className="w-12 text-sm font-semibold text-slate-500">ฤดู</span>
-                {["ทั้งหมด", ...seasons].map((s) => (
-                  <button key={s} aria-pressed={season === s} onClick={() => setSeason(s)} className={chip(season === s)}>
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </section>
-
+          <div role="tabpanel" id="panel-data" aria-labelledby="tab-data" className="space-y-5">
             {loadError && (
               <div role="alert" className="rounded-xl bg-red-50 p-4 text-red-700">
                 <p className="font-bold">โหลดข้อมูลไม่สำเร็จ</p>
@@ -397,39 +422,205 @@ export default function AdminPanel() {
                 </button>
               </div>
             )}
+            {!list && !loadError && <p className="py-10 text-center text-slate-400">กำลังโหลดข้อมูล…</p>}
 
-            {list && shownCount === 0 && (
-              <p className="rounded-xl bg-white p-8 text-center text-slate-500 shadow-sm">
-                {list.length === 0 ? "ยังไม่มีข้อมูล กด “เพิ่มข้อมูลใหม่” เพื่อเริ่มต้น" : "ไม่พบข้อมูลที่ตรงกับตัวกรอง"}
-              </p>
-            )}
+            {list && (
+              <>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <Breadcrumb view={view} go={go} />
+                  {view.crop && (
+                    <button
+                      onClick={() => go({ crop: view.season ? view.crop : null, season: null })}
+                      className="self-start rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                    >
+                      ← ย้อนกลับ
+                    </button>
+                  )}
+                </div>
 
-            {/* รายการ: พันธุ์ → ฤดู → การ์ด */}
-            {groups.map((g) => (
-              <section key={g.crop} className="rounded-xl bg-white p-4 shadow-sm sm:p-5" aria-labelledby={`crop-${g.crop}`}>
-                <h2 id={`crop-${g.crop}`} className="text-lg font-bold text-slate-800">
-                  🥔 พันธุ์{g.crop}
-                </h2>
-                {g.seasons.map((s) => (
-                  <div key={s.season} className="mt-4">
-                    <h3 className="mb-2 text-sm font-bold tracking-wide text-slate-500">{s.season}</h3>
-                    <ul className="grid gap-3 md:grid-cols-2">
-                      {s.items.map((sc) => (
+                {/* ───── ชั้นที่ 1: เลือกพันธุ์ ───── */}
+                {!view.crop && (
+                  <>
+                    {showHelp ? (
+                      <section className="rounded-xl border border-sky-200 bg-sky-50 p-5 text-slate-700">
+                        <div className="flex items-start justify-between gap-3">
+                          <h2 className="font-bold text-sky-900">วิธีแก้ไขข้อมูล</h2>
+                          <button
+                            onClick={hideHelp}
+                            className="shrink-0 rounded-lg px-2 py-1 text-sm font-semibold text-sky-800 hover:bg-sky-100 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                          >
+                            ซ่อนคำอธิบาย
+                          </button>
+                        </div>
+                        <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-base">
+                          <li><b>เลือกพันธุ์</b> มันสำปะหลังที่ต้องการแก้</li>
+                          <li><b>เลือกฤดูปลูก</b> ของพันธุ์นั้น</li>
+                          <li>
+                            กด <b>แก้ไข</b> ข้อมูลตามสถานะน้ำ (เพียงพอ / จำกัด / ขาดแคลน) — ระบบจะเลือกชุดที่ตรงกับ
+                            น้ำที่เกษตรกรมีไปแสดงให้อัตโนมัติ
+                          </li>
+                        </ol>
+                      </section>
+                    ) : (
+                      <button onClick={() => setShowHelp(true)} className="text-sm font-semibold text-sky-700 hover:underline">
+                        ❓ วิธีแก้ไขข้อมูล
+                      </button>
+                    )}
+
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                      <div>
+                        <h2 ref={headingRef} tabIndex={-1} className="text-xl font-bold text-sky-900 focus:outline-none">
+                          เลือกพันธุ์มันสำปะหลัง
+                        </h2>
+                        <p className="text-base text-slate-500">
+                          {crops.length} พันธุ์ · ข้อมูลทั้งหมด {all.length} ชุด
+                        </p>
+                      </div>
+                      <button
+                        onClick={exportJson}
+                        disabled={!all.length}
+                        className="self-start rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none disabled:opacity-50"
+                      >
+                        ⬇️ สำรองข้อมูล (JSON)
+                      </button>
+                    </div>
+
+                    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {crops.map((c, i) => {
+                        const items = all.filter((s) => s.crop === c);
+                        const seasons = [...new Set(items.map((s) => s.season))];
+                        const hasGap = seasons.some((se) => gaps(inSeason(c, se)).length > 0);
+                        return (
+                          <li key={c}>
+                            <button onClick={() => go({ crop: c, season: null })} className={`${card} h-full w-full`}>
+                              <VarietyArt index={i} className="h-32 w-full" />
+                              <div className="flex flex-1 flex-col gap-1 p-4">
+                                <span className="text-lg font-bold text-slate-800">พันธุ์{c}</span>
+                                <span className="text-base text-slate-600">
+                                  {seasons.length} ฤดูปลูก · {items.length} ชุดข้อมูล
+                                </span>
+                                <span className={`text-sm font-semibold ${hasGap ? "text-amber-700" : "text-green-700"}`}>
+                                  {hasGap ? "⚠️ บางฤดูยังมีข้อมูลไม่ครบ" : "✓ ข้อมูลครบทุกฤดู"}
+                                </span>
+                                <span className="mt-auto pt-2 text-sm font-semibold text-sky-700 group-hover:underline">
+                                  ดูฤดูปลูก →
+                                </span>
+                              </div>
+                            </button>
+                          </li>
+                        );
+                      })}
+                      <li>
+                        <button onClick={() => create({})} className={`${addCard} h-full w-full`}>
+                          <span className="text-4xl" aria-hidden="true">＋</span>
+                          <span className="text-base font-bold">เพิ่มพันธุ์ใหม่</span>
+                        </button>
+                      </li>
+                    </ul>
+                  </>
+                )}
+
+                {/* ───── ชั้นที่ 2: เลือกฤดูของพันธุ์นั้น ───── */}
+                {view.crop && !view.season && (
+                  <>
+                    <div>
+                      <h2 ref={headingRef} tabIndex={-1} className="text-xl font-bold text-sky-900 focus:outline-none">
+                        พันธุ์{view.crop} — เลือกฤดูปลูก
+                      </h2>
+                      <p className="text-base text-slate-500">กดที่ฤดูเพื่อดูและแก้ไขข้อมูลของฤดูนั้น</p>
+                    </div>
+                    {cropSeasons.length === 0 && (
+                      <p className="rounded-xl bg-white p-6 text-center text-slate-500 shadow-sm">
+                        ยังไม่มีข้อมูลของพันธุ์นี้
+                      </p>
+                    )}
+                    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {cropSeasons.map((se) => {
+                        const items = inSeason(view.crop!, se);
+                        return (
+                          <li key={se}>
+                            <button onClick={() => go({ crop: view.crop, season: se })} className={`${card} h-full w-full`}>
+                              <SeasonArt season={se} className="h-32 w-full" />
+                              <div className="flex flex-1 flex-col gap-2 p-4">
+                                <span className="text-lg font-bold text-slate-800">{se}</span>
+                                {SEASON_INFO[se] && <span className="text-base text-slate-600">{SEASON_INFO[se]}</span>}
+                                <span className="flex flex-wrap gap-1.5">
+                                  {items.map((s) => (
+                                    <span key={s.id} className={`rounded-full px-2.5 py-0.5 text-sm font-semibold text-white ${colorsFor(s.level).badge}`}>
+                                      {s.level}
+                                    </span>
+                                  ))}
+                                </span>
+                                <CoverageNote items={items} />
+                                <span className="mt-auto pt-1 text-sm font-semibold text-sky-700 group-hover:underline">
+                                  แก้ไขฤดูนี้ →
+                                </span>
+                              </div>
+                            </button>
+                          </li>
+                        );
+                      })}
+                      <li>
+                        <button onClick={() => create({ crop: view.crop! })} className={`${addCard} h-full w-full`}>
+                          <span className="text-4xl" aria-hidden="true">＋</span>
+                          <span className="text-base font-bold">เพิ่มฤดูปลูก</span>
+                          <span className="text-sm">ให้พันธุ์{view.crop}</span>
+                        </button>
+                      </li>
+                    </ul>
+                  </>
+                )}
+
+                {/* ───── ชั้นที่ 3: ข้อมูลของพันธุ์ + ฤดู ───── */}
+                {view.crop && view.season && (
+                  <>
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                      <div>
+                        <h2 ref={headingRef} tabIndex={-1} className="text-xl font-bold text-sky-900 focus:outline-none">
+                          พันธุ์{view.crop} · {view.season}
+                        </h2>
+                        <p className="text-base text-slate-500">
+                          {SEASON_INFO[view.season] ?? "ข้อมูลแยกตามสถานะน้ำ"} — มี {seasonItems.length} ชุด
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => create({ crop: view.crop!, season: view.season! })}
+                        className="self-start rounded-lg bg-sky-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-sky-800 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:outline-none"
+                      >
+                        ＋ เพิ่มสถานะน้ำ
+                      </button>
+                    </div>
+
+                    {seasonItems.length > 0 ? (
+                      <>
+                        <CoverageBar items={seasonItems} />
+                        <p className="-mt-2">
+                          <CoverageNote items={seasonItems} />
+                        </p>
+                      </>
+                    ) : (
+                      <p className="rounded-xl bg-white p-6 text-center text-slate-500 shadow-sm">
+                        ยังไม่มีข้อมูลในฤดูนี้ กด “เพิ่มสถานะน้ำ” เพื่อเริ่มต้น
+                      </p>
+                    )}
+
+                    <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                      {seasonItems.map((sc) => (
                         <li
                           key={sc.id}
-                          className={`flex flex-col rounded-lg border-l-4 bg-slate-50 p-4 ${colorsFor(sc.level).border}`}
+                          className={`flex flex-col rounded-xl border-t-4 bg-white p-5 shadow-sm ${colorsFor(sc.level).border}`}
                         >
                           <div className="flex items-start justify-between gap-2">
-                            <span className={`rounded-full px-3 py-1 text-sm font-bold text-white ${colorsFor(sc.level).badge}`}>
+                            <span className={`rounded-full px-3 py-1 text-base font-bold text-white ${colorsFor(sc.level).badge}`}>
                               น้ำ{sc.level}
                             </span>
                             <span className={`text-sm font-semibold ${RISK_TEXT[sc.risk] ?? "text-slate-600"}`}>
                               ความเสี่ยง{sc.risk}
                             </span>
                           </div>
-                          <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
+                          <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-base">
                             <dt className="text-slate-500">ใช้เมื่อ</dt>
-                            <dd className="font-semibold">{ratioText(sc.minRatio, sc.maxRatio)} ของที่ต้องการ</dd>
+                            <dd className="font-semibold">{ratioText(sc.minRatio, sc.maxRatio)}</dd>
                             <dt className="text-slate-500">น้ำแนะนำ</dt>
                             <dd className="font-semibold">{fmt(sc.waterPerRai)} ลบ.ม./ไร่</dd>
                             <dt className="text-slate-500">ผลผลิต</dt>
@@ -439,30 +630,25 @@ export default function AdminPanel() {
                               คำแนะนำ {sc.advice.length} ข้อ · ตารางน้ำ {sc.schedule.length} ระยะ
                             </dd>
                           </dl>
-                          <div className="mt-4 flex flex-wrap gap-2">
+                          <div className="mt-auto flex flex-wrap gap-2 pt-5">
                             <button
                               onClick={() => setEditing({ mode: "edit", id: sc.id, data: toInput(sc) })}
                               aria-label={`แก้ไข ${sc.name}`}
-                              className="rounded-lg bg-sky-700 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-800 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                              className="flex-1 rounded-lg bg-sky-700 px-4 py-2.5 text-base font-semibold text-white hover:bg-sky-800 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
                             >
                               ✏️ แก้ไข
                             </button>
                             <button
-                              onClick={() =>
-                                setEditing({
-                                  mode: "copy",
-                                  data: { ...toInput(sc), name: "" },
-                                })
-                              }
+                              onClick={() => setEditing({ mode: "copy", data: { ...toInput(sc), name: "" } })}
                               aria-label={`คัดลอก ${sc.name} เป็นข้อมูลใหม่`}
-                              className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                              className="rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-base font-semibold text-slate-700 hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
                             >
                               📄 คัดลอก
                             </button>
                             <button
                               onClick={() => setDeleting(sc)}
                               aria-label={`ลบ ${sc.name}`}
-                              className="ml-auto rounded-lg px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:outline-none"
+                              className="rounded-lg px-3 py-2.5 text-base font-semibold text-red-600 hover:bg-red-50 focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:outline-none"
                             >
                               🗑️ ลบ
                             </button>
@@ -470,10 +656,10 @@ export default function AdminPanel() {
                         </li>
                       ))}
                     </ul>
-                  </div>
-                ))}
-              </section>
-            ))}
+                  </>
+                )}
+              </>
+            )}
           </div>
         )}
       </main>
@@ -484,7 +670,7 @@ export default function AdminPanel() {
           initial={editing.data}
           mode={editing.mode}
           cropOptions={crops}
-          seasonOptions={seasons}
+          seasonOptions={allSeasons}
           onSave={save}
           onClose={() => setEditing(null)}
         />

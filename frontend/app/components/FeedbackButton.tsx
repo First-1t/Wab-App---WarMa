@@ -64,7 +64,7 @@ export default function FeedbackButton() {
 
       {open && (
         <div
-          className="fixed inset-0 z-30 flex items-end justify-center bg-slate-900/40 p-4 sm:items-center"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/40 p-4 sm:items-center"
           onClick={() => setOpen(false)}
         >
           <div

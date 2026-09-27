@@ -40,3 +40,9 @@ model Feedback {
 
   @@index([createdAt])
 }
+
+// ผู้ที่ขอรับแจ้งเตือนทางอีเมลเมื่อมีความคิดเห็นใหม่ (อีเมลที่ใช้ล็อกอิน)
+model NotifySubscription {
+  email     String   @id
+  createdAt DateTime @default(now())
+}

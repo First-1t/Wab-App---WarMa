@@ -16,6 +16,7 @@ import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { FeedbackController } from './feedback/feedback.controller';
 import { FeedbackService } from './feedback/feedback.service';
+import { MailService } from './mail/mail.service';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { FeedbackService } from './feedback/feedback.service';
     RainfallService,
     AuthService,
     FeedbackService,
+    MailService,
     { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
 })

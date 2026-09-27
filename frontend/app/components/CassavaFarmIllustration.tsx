@@ -1,9 +1,9 @@
 /**
- * ภาพประกอบหน้าล็อกอิน: เกษตรกรใส่งอบถือตะกร้ามันฝรั่ง ยืนกลางแปลงยามเช้า
+ * ภาพประกอบหน้าล็อกอิน: เกษตรกรใส่งอบถือตะกร้าหัวมันสำปะหลัง ยืนกลางไร่ยามเช้า
  * วาดด้วย SVG ล้วน (ไม่ต้องโหลดรูปจากภายนอก) — ยืดเต็มกรอบ ยึดขอบล่างไว้ให้เห็นเกษตรกรเต็มตัว
  */
 
-// แถวร่องมันฝรั่งแบบมีระยะลึก: ใกล้ขอบฟ้า = เล็ก/ถี่, ใกล้ตัว = ใหญ่/ห่าง
+// แถวมันสำปะหลังแบบมีระยะลึก: ใกล้ขอบฟ้า = เล็ก/ถี่, ใกล้ตัว = ใหญ่/ห่าง
 const HORIZON = 372;
 const ROWS = Array.from({ length: 10 }, (_, i) => {
   const t = (i + 1) / 10;
@@ -16,16 +16,16 @@ const ROWS = Array.from({ length: 10 }, (_, i) => {
 function plantsInRow(row: { y: number; scale: number }, rowIndex: number) {
   const gap = 78 * row.scale;
   const offset = (rowIndex % 2) * (gap / 2);
-  const items: { x: number; s: number; flower: boolean }[] = [];
+  const items: { x: number; s: number; flip: boolean }[] = [];
   for (let x = -40 + offset, i = 0; x < 660; x += gap, i++) {
     // ขนาดต่างกันเล็กน้อยให้ดูเป็นธรรมชาติ (คำนวณแบบคงที่ ไม่ใช้ random)
     const jitter = 0.85 + (((i * 7 + rowIndex * 3) % 5) / 5) * 0.3;
-    items.push({ x, s: row.scale * jitter, flower: (i + rowIndex) % 3 === 0 });
+    items.push({ x, s: row.scale * jitter, flip: (i + rowIndex) % 2 === 0 });
   }
   return items;
 }
 
-export default function PotatoFarmIllustration({
+export default function CassavaFarmIllustration({
   className = "",
 }: {
   className?: string;
@@ -36,7 +36,7 @@ export default function PotatoFarmIllustration({
       preserveAspectRatio="xMidYMax slice"
       className={className}
       role="img"
-      aria-label="เกษตรกรถือตะกร้ามันฝรั่งยืนอยู่กลางแปลงปลูก"
+      aria-label="เกษตรกรถือตะกร้าหัวมันสำปะหลังยืนอยู่กลางไร่"
     >
       <defs>
         <linearGradient id="pf-sky" x1="0" y1="0" x2="0" y2="1">
@@ -68,27 +68,25 @@ export default function PotatoFarmIllustration({
           <rect width="10" height="5" fill="#fbbf24" opacity="0.45" />
         </pattern>
 
-        {/* ต้นมันฝรั่ง 1 ต้น (โคนอยู่ที่ 0,0) */}
-        <g id="pf-plant">
-          <ellipse cx="-14" cy="-14" rx="16" ry="9" transform="rotate(-28 -14 -14)" fill="#2f6e2c" />
-          <ellipse cx="14" cy="-14" rx="16" ry="9" transform="rotate(28 14 -14)" fill="#2f6e2c" />
-          <ellipse cx="-8" cy="-26" rx="14" ry="9" transform="rotate(-50 -8 -26)" fill="#3f8f3a" />
-          <ellipse cx="9" cy="-27" rx="14" ry="9" transform="rotate(48 9 -27)" fill="#3f8f3a" />
-          <ellipse cx="0" cy="-34" rx="10" ry="13" fill="#58a84a" />
-          <ellipse cx="-20" cy="-6" rx="11" ry="6" fill="#3f8f3a" />
-          <ellipse cx="20" cy="-6" rx="11" ry="6" fill="#3f8f3a" />
+        {/* ใบมันสำปะหลัง: ใบแฉกแบบฝ่ามือ 7 แฉก (โคนใบที่ 0,0) */}
+        <g id="cv-leaf">
+          {[-120, -80, -40, 0, 40, 80, 120].map((a) => (
+            <ellipse key={a} cx="0" cy="-9" rx="2.8" ry="9" transform={`rotate(${a})`} />
+          ))}
         </g>
-        <g id="pf-flower">
-          <circle cx="-6" cy="-44" r="3.4" fill="#f5f3ff" />
-          <circle cx="4" cy="-47" r="3.4" fill="#e9d5ff" />
-          <circle cx="-6" cy="-44" r="1.2" fill="#facc15" />
-          <circle cx="4" cy="-47" r="1.2" fill="#facc15" />
+        {/* ต้นมันสำปะหลัง 1 ต้น (โคนอยู่ที่ 0,0) — ลำต้นสูง ใบเป็นพุ่มด้านบน */}
+        <g id="cv-plant">
+          <path d="M0 0 L0 -46 M0 -30 L-10 -40 M0 -24 L11 -34" stroke="#8a5a3b" strokeWidth="3" strokeLinecap="round" fill="none" />
+          <use href="#cv-leaf" transform="translate(-11 -41) scale(0.8) rotate(-25)" fill="#2f6e2c" />
+          <use href="#cv-leaf" transform="translate(12 -35) scale(0.8) rotate(25)" fill="#2f6e2c" />
+          <use href="#cv-leaf" transform="translate(0 -48)" fill="#4a9a3f" />
+          <use href="#cv-leaf" transform="translate(-4 -54) scale(0.55) rotate(-10)" fill="#6bbf55" />
         </g>
-        <g id="pf-potato">
-          <ellipse rx="13" ry="9.5" fill="#d4a373" stroke="#9c6b3f" strokeWidth="1.5" />
-          <circle cx="-4" cy="-2" r="1.2" fill="#9c6b3f" />
-          <circle cx="4" cy="2" r="1.2" fill="#9c6b3f" />
-          <ellipse cx="-3" cy="-4" rx="5" ry="2" fill="#e9c496" opacity="0.7" />
+        {/* หัวมันสำปะหลัง: ยาวเรียว ปลายแหลม เปลือกน้ำตาล รอยตัดสีขาว */}
+        <g id="cv-root">
+          <path d="M-24 0 C-18 -8 12 -8 26 -1 C28 0 28 1 26 1 C12 8 -18 8 -24 0 Z" fill="#8b5a2b" stroke="#5e3a17" strokeWidth="1.2" />
+          <path d="M-14 -3 C-4 -5 8 -5 18 -2" stroke="#b07a45" strokeWidth="1.5" fill="none" opacity="0.8" />
+          <ellipse cx="-23" cy="0" rx="2.6" ry="5.5" fill="#f5efe0" stroke="#5e3a17" strokeWidth="1" />
         </g>
       </defs>
 
@@ -136,8 +134,7 @@ export default function PotatoFarmIllustration({
           />
           {plantsInRow(row, r).map((p, i) => (
             <g key={i} transform={`translate(${p.x} ${row.y}) scale(${p.s})`}>
-              <use href="#pf-plant" />
-              {p.flower && <use href="#pf-flower" />}
+              <use href="#cv-plant" transform={p.flip ? "scale(-1 1)" : undefined} />
             </g>
           ))}
         </g>
@@ -158,10 +155,10 @@ export default function PotatoFarmIllustration({
         opacity="0.8"
       />
 
-      {/* มันฝรั่งที่ขุดขึ้นมาวางบนดิน */}
-      <use href="#pf-potato" transform="translate(300 742) scale(1.3)" />
-      <use href="#pf-potato" transform="translate(328 752) scale(1.1) rotate(20)" />
-      <use href="#pf-potato" transform="translate(312 764) scale(1.2) rotate(-15)" />
+      {/* หัวมันสำปะหลังที่ขุดขึ้นมากองบนดิน */}
+      <use href="#cv-root" transform="translate(318 748) scale(1.4) rotate(-8)" />
+      <use href="#cv-root" transform="translate(340 762) scale(1.2) rotate(12)" />
+      <use href="#cv-root" transform="translate(305 770) scale(1.3) rotate(-20)" />
 
       {/* เกษตรกร */}
       <g transform="translate(0 10)">
@@ -181,11 +178,11 @@ export default function PotatoFarmIllustration({
         {/* แขน */}
         <path d="M156 548 Q140 590 168 612" fill="none" stroke="#1e3a8a" strokeWidth="22" strokeLinecap="round" />
         <path d="M226 548 Q242 590 214 612" fill="none" stroke="#1e3a8a" strokeWidth="22" strokeLinecap="round" />
-        {/* ตะกร้า + มันฝรั่ง */}
-        <use href="#pf-potato" transform="translate(172 604)" />
-        <use href="#pf-potato" transform="translate(196 598) rotate(-10)" />
-        <use href="#pf-potato" transform="translate(216 606) rotate(12)" />
-        <use href="#pf-potato" transform="translate(186 612) rotate(8)" />
+        {/* ตะกร้า + หัวมันสำปะหลัง */}
+        <use href="#cv-root" transform="translate(176 598) rotate(-35)" />
+        <use href="#cv-root" transform="translate(200 594) rotate(-70)" />
+        <use href="#cv-root" transform="translate(212 600) rotate(-120)" />
+        <use href="#cv-root" transform="translate(188 606) rotate(-15)" />
         <path d="M146 610 L236 610 L224 666 L158 666 Z" fill="#a16207" />
         <g stroke="#78350f" strokeWidth="2" opacity="0.8">
           <path d="M150 624 H232 M153 638 H229 M156 652 H226" />

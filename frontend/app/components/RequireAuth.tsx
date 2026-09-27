@@ -2,12 +2,14 @@
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { adminToken, api, type AdminUser, type AuthConfig } from "@/lib/api";
+import { adminToken, api, guestMode, type AdminUser, type AuthConfig } from "@/lib/api";
 import { signOutGoogle } from "./GoogleSignInButton";
 
 interface Session {
-  /** null = โหมดพัฒนา (เซิร์ฟเวอร์ยังไม่ตั้ง GOOGLE_CLIENT_ID) */
+  /** null = ยังไม่ได้ล็อกอิน (ผู้ใช้ทั่วไป หรือโหมดพัฒนา) */
   user: AdminUser | null;
+  /** user = ล็อกอินแล้ว, guest = ผู้ใช้ทั่วไป, dev = เซิร์ฟเวอร์ยังไม่ตั้ง GOOGLE_CLIENT_ID */
+  mode: "user" | "guest" | "dev";
   logout: () => void;
 }
 
@@ -34,29 +36,38 @@ export async function fetchSession(): Promise<{
   }
 }
 
-/** ครอบหน้าที่ต้องล็อกอินก่อน — ยังไม่ล็อกอินจะพาไปหน้า /login */
-export default function RequireAuth({ children }: { children: React.ReactNode }) {
+/**
+ * ครอบหน้าที่ต้องล็อกอินก่อน — ยังไม่ล็อกอินจะพาไปหน้า /login
+ * allowGuest = หน้านี้ให้ผู้ใช้ทั่วไป (ที่กด "เข้าใช้งานแบบทั่วไป" แล้ว) เข้าได้
+ */
+export default function RequireAuth({
+  children,
+  allowGuest = false,
+}: {
+  children: React.ReactNode;
+  allowGuest?: boolean;
+}) {
   const router = useRouter();
   const pathname = usePathname();
-  const [user, setUser] = useState<AdminUser | null | undefined>(undefined);
+  const [state, setState] = useState<Omit<Session, "logout"> | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
     fetchSession()
       .then(({ config, user }) => {
-        if (config.enabled && !user) {
-          router.replace(`/login?next=${encodeURIComponent(pathname)}`);
-        } else {
-          setUser(user);
-        }
+        if (!config.enabled) setState({ user: null, mode: "dev" });
+        else if (user) setState({ user, mode: "user" });
+        else if (allowGuest && guestMode.get()) setState({ user: null, mode: "guest" });
+        else router.replace(`/login?next=${encodeURIComponent(pathname)}`);
       })
       .catch(() =>
         setError("เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาตรวจสอบว่า backend ทำงานอยู่"),
       );
-  }, [router, pathname]);
+  }, [router, pathname, allowGuest]);
 
   const logout = useCallback(() => {
     adminToken.clear();
+    guestMode.clear();
     signOutGoogle();
     router.replace("/login");
   }, [router]);
@@ -71,7 +82,7 @@ export default function RequireAuth({ children }: { children: React.ReactNode })
     );
   }
 
-  if (user === undefined) {
+  if (!state) {
     return (
       <div className="flex flex-1 items-center justify-center p-6 text-sm text-slate-400">
         <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-sky-600 border-t-transparent" />
@@ -81,7 +92,7 @@ export default function RequireAuth({ children }: { children: React.ReactNode })
   }
 
   return (
-    <SessionContext.Provider value={{ user, logout }}>
+    <SessionContext.Provider value={{ ...state, logout }}>
       {children}
     </SessionContext.Provider>
   );

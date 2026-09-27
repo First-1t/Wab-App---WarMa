@@ -3,11 +3,22 @@
 import Link from "next/link";
 import { useSession } from "./RequireAuth";
 
-/** มุมขวาของ header: รูป/ชื่อผู้ใช้ + ปุ่มตั้งค่า + ออกจากระบบ */
+/** มุมขวาของ header: รูป/ชื่อผู้ใช้ + ปุ่มตั้งค่า + ออกจากระบบ (ผู้ใช้ทั่วไป = ปุ่มเข้าสู่ระบบผู้ดูแล) */
 export default function UserMenu({ showSettings = true }: { showSettings?: boolean }) {
-  const { user, logout } = useSession();
+  const { user, mode, logout } = useSession();
   const btn =
     "rounded-full border border-white/50 px-3 py-1 text-xs whitespace-nowrap hover:bg-white/10";
+
+  if (mode === "guest") {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="hidden text-xs opacity-90 sm:inline">👤 ผู้ใช้ทั่วไป</span>
+        <Link href="/login?next=%2Fadmin" className={btn}>
+          🔑 เข้าสู่ระบบผู้ดูแล
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center gap-2">

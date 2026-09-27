@@ -22,7 +22,7 @@ const FieldMap = dynamic(() => import("./components/FieldMap"), {
 
 export default function HomePage() {
   return (
-    <RequireAuth>
+    <RequireAuth allowGuest>
       <Home />
     </RequireAuth>
   );
@@ -132,7 +132,7 @@ function Home() {
           </h2>
           <form onSubmit={onSubmit} className="grid gap-3 sm:grid-cols-2">
             <label className="block">
-              <span className="mb-1 block text-sm font-semibold">พันธุ์มันฝรั่ง</span>
+              <span className="mb-1 block text-sm font-semibold">พันธุ์มันสำปะหลัง</span>
               <select
                 value={crop}
                 onChange={(e) => setCrop(e.target.value)}

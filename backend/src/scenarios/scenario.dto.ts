@@ -20,13 +20,13 @@ export const RISKS = ['ต่ำ', 'ปานกลาง', 'สูง'];
 // จึงวางตัวตรวจพื้นฐาน (กรอกหรือยัง / ชนิดข้อมูล) ไว้ล่างสุด ให้ผู้ใช้เห็นข้อความที่ตรงปัญหาก่อน
 
 export class SchedulePhaseDto {
-  @ApiProperty({ example: 'หัวขยาย (วันที่ 44–81)' })
+  @ApiProperty({ example: 'สะสมแป้ง หัวขยาย (เดือนที่ 6–10)' })
   @MaxLength(200, { message: 'ยาวเกิน 200 ตัวอักษร' })
   @IsString({ message: 'ชื่อระยะต้องเป็นข้อความ' })
   @IsNotEmpty({ message: 'กรุณากรอกชื่อระยะ' })
   phase: string;
 
-  @ApiProperty({ example: 'ทุก 3–5 วัน ห้ามขาดน้ำ' })
+  @ApiProperty({ example: 'ทุก 7–10 วัน' })
   @MaxLength(200, { message: 'ยาวเกิน 200 ตัวอักษร' })
   @IsString({ message: 'ความถี่ต้องเป็นข้อความ' })
   freq: string;
@@ -38,19 +38,19 @@ export class SchedulePhaseDto {
 }
 
 export class ScenarioDto {
-  @ApiProperty({ example: 'มันฝรั่งแอตแลนติก ฤดูหนาว น้ำเพียงพอ' })
+  @ApiProperty({ example: 'มันสำปะหลังเกษตรศาสตร์ 50 ต้นฤดูฝน น้ำเพียงพอ' })
   @MaxLength(200, { message: 'ยาวเกิน 200 ตัวอักษร' })
   @IsString({ message: 'ต้องเป็นข้อความ' })
   @IsNotEmpty({ message: 'กรุณากรอกชื่อ scenario' })
   name: string;
 
-  @ApiProperty({ example: 'แอตแลนติก', description: 'พันธุ์มันฝรั่ง' })
+  @ApiProperty({ example: 'เกษตรศาสตร์ 50', description: 'พันธุ์มันสำปะหลัง' })
   @MaxLength(100, { message: 'ยาวเกิน 100 ตัวอักษร' })
   @IsString({ message: 'ต้องเป็นข้อความ' })
-  @IsNotEmpty({ message: 'กรุณากรอกพันธุ์มันฝรั่ง' })
+  @IsNotEmpty({ message: 'กรุณากรอกพันธุ์มันสำปะหลัง' })
   crop: string;
 
-  @ApiProperty({ example: 'ฤดูหนาว' })
+  @ApiProperty({ example: 'ต้นฤดูฝน' })
   @MaxLength(100, { message: 'ยาวเกิน 100 ตัวอักษร' })
   @IsString({ message: 'ต้องเป็นข้อความ' })
   @IsNotEmpty({ message: 'กรุณากรอกฤดูกาล' })
@@ -78,7 +78,7 @@ export class ScenarioDto {
   @IsNumber({}, { message: 'ratio สูงสุดต้องเป็นตัวเลข' })
   maxRatio: number;
 
-  @ApiProperty({ example: '2,500–3,000 กก./ไร่' })
+  @ApiProperty({ example: '5,000–6,000 กก./ไร่ (หัวสด)' })
   @MaxLength(100, { message: 'ยาวเกิน 100 ตัวอักษร' })
   @IsString({ message: 'ต้องเป็นข้อความ' })
   expectedYield: string;
@@ -106,13 +106,13 @@ export class ScenarioDto {
 }
 
 export class MatchRequestDto {
-  @ApiProperty({ example: 'แอตแลนติก', description: 'พันธุ์มันฝรั่ง' })
+  @ApiProperty({ example: 'เกษตรศาสตร์ 50', description: 'พันธุ์มันสำปะหลัง' })
   @MaxLength(100, { message: 'ยาวเกิน 100 ตัวอักษร' })
   @IsString({ message: 'ต้องเป็นข้อความ' })
-  @IsNotEmpty({ message: 'กรุณาเลือกพันธุ์มันฝรั่ง' })
+  @IsNotEmpty({ message: 'กรุณาเลือกพันธุ์มันสำปะหลัง' })
   crop: string;
 
-  @ApiProperty({ example: 'ฤดูหนาว' })
+  @ApiProperty({ example: 'ต้นฤดูฝน' })
   @MaxLength(100, { message: 'ยาวเกิน 100 ตัวอักษร' })
   @IsString({ message: 'ต้องเป็นข้อความ' })
   @IsNotEmpty({ message: 'กรุณาเลือกฤดูกาล' })

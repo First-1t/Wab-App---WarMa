@@ -135,7 +135,7 @@ export default function FieldMap({
 
       <div
         ref={divRef}
-        className="h-[300px] w-full rounded-lg sm:h-[360px]"
+        className="isolate z-0 h-[300px] w-full rounded-lg sm:h-[360px]"
         style={{ background: "#1a1a1a" }}
       />
 

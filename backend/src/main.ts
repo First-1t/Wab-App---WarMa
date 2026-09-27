@@ -43,7 +43,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('WarMa API')
     .setDescription(
-      'API ระบบแนะนำการจัดการน้ำสำหรับการปลูกมันฝรั่ง — จับคู่ scenario การให้น้ำ, ' +
+      'API ระบบแนะนำการจัดการน้ำสำหรับการปลูกมันสำปะหลัง — จับคู่ scenario การให้น้ำ, ' +
         'ข้อมูลฝน 24 ชม. (ThaiWater), คำอธิบายจาก AI (Claude) และ feedback ผู้ใช้\n\n' +
         'endpoint ที่มีรูปกุญแจต้องล็อกอิน: เรียก POST /auth/google แล้วนำ token มากดปุ่ม Authorize',
     )

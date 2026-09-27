@@ -26,10 +26,23 @@ export default function RainMap({ stations }: { stations: RainStation[] }) {
         zoom: 5,
         scrollWheelZoom: true,
       });
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      // แผนที่พื้นหลัง: OpenStreetMap — ถ้าโหลดไม่ได้ (OSM บล็อก/เน็ตสะดุด) สลับไปใช้ Esri อัตโนมัติ
+      const osm = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "© OpenStreetMap",
         maxZoom: 18,
-      }).addTo(map);
+        // OSM กำหนดให้ส่ง Referer ของเว็บที่เรียก ไม่งั้นอาจถูกบล็อก
+        referrerPolicy: "strict-origin-when-cross-origin",
+      });
+      let tileErrors = 0;
+      osm.on("tileerror", () => {
+        if (++tileErrors !== 3) return;
+        map.removeLayer(osm);
+        L.tileLayer(
+          "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+          { attribution: "Tiles © Esri", maxZoom: 18 },
+        ).addTo(map);
+      });
+      osm.addTo(map);
       layerRef.current = L.layerGroup().addTo(map);
       mapRef.current = map;
       renderMarkers(L);
@@ -75,7 +88,7 @@ export default function RainMap({ stations }: { stations: RainStation[] }) {
   return (
     <div
       ref={divRef}
-      className="h-[320px] w-full rounded-lg sm:h-[420px]"
+      className="isolate z-0 h-[320px] w-full rounded-lg sm:h-[420px]"
       style={{ background: "#e5eef3" }}
     />
   );

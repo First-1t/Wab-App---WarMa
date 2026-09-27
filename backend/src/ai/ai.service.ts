@@ -55,7 +55,7 @@ export class AiService {
         {
           role: 'user',
           content:
-            `เกษตรกรปลูกมันฝรั่งพันธุ์${input.crop}ใน${input.season} พื้นที่ ${input.area} ไร่ ` +
+            `เกษตรกรปลูกมันสำปะหลังพันธุ์${input.crop}ใน${input.season} พื้นที่ ${input.area} ไร่ ` +
             `มีน้ำต้นทุน ${input.water} ลบ.ม.\n\n` +
             `ระบบแนะนำ scenario: ${JSON.stringify(scenario, null, 2)}\n\n` +
             'ช่วยอธิบายให้เกษตรกรฟังแบบง่าย ๆ ว่าสถานการณ์น้ำของเขาเป็นอย่างไร ' +

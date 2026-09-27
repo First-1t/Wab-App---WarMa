@@ -29,10 +29,10 @@ export const emptyScenario: ScenarioInput = {
   risk: "ต่ำ",
   advice: [""],
   schedule: [
-    { phase: "ปลูก–งอก", freq: "", amount: 0 },
-    { phase: "สร้างทรงพุ่ม–เริ่มลงหัว", freq: "", amount: 0 },
-    { phase: "หัวขยาย", freq: "", amount: 0 },
-    { phase: "สุกแก่–ขุด", freq: "", amount: 0 },
+    { phase: "ปลูก–ตั้งตัว (เดือนที่ 1–2)", freq: "", amount: 0 },
+    { phase: "สร้างลำต้นและใบ (เดือนที่ 3–5)", freq: "", amount: 0 },
+    { phase: "สะสมแป้ง หัวขยาย (เดือนที่ 6–10)", freq: "", amount: 0 },
+    { phase: "ก่อนเก็บเกี่ยว (เดือนที่ 11–12)", freq: "", amount: 0 },
   ],
 };
 
@@ -152,7 +152,7 @@ const NO_ERRORS: Errors = {};
 
 function validate(f: ScenarioInput, noLimit: boolean): Errors {
   const e: Errors = {};
-  if (!f.crop.trim()) e.crop = "กรุณากรอกพันธุ์มันฝรั่ง";
+  if (!f.crop.trim()) e.crop = "กรุณากรอกพันธุ์มันสำปะหลัง";
   if (!f.season.trim()) e.season = "กรุณากรอกฤดูกาล";
   if (!(f.waterPerRai > 0)) e.waterPerRai = "กรุณากรอกปริมาณน้ำมากกว่า 0";
   if (f.minRatio < 0) e.minRatio = "ต้องไม่ติดลบ";
@@ -215,7 +215,7 @@ export default function ScenarioEditor({
   const setPhase = (i: number, p: Partial<SchedulePhase>) =>
     patch({ schedule: form.schedule.map((s, j) => (j === i ? { ...s, ...p } : s)) });
 
-  const autoName = `มันฝรั่ง${form.crop.trim()} ${form.season.trim()} น้ำ${form.level}`.trim();
+  const autoName = `มันสำปะหลัง${form.crop.trim()} ${form.season.trim()} น้ำ${form.level}`.trim();
   const scheduleTotal = form.schedule.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
   const totalOff =
     form.waterPerRai > 0 &&
@@ -310,7 +310,7 @@ export default function ScenarioEditor({
 
           <Section step={1} title="ใช้กับกรณีไหน" desc="พันธุ์และฤดูที่ข้อมูลชุดนี้ใช้แนะนำ">
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field id={id("crop")} label="พันธุ์มันฝรั่ง" hint="เลือกจากรายการ หรือพิมพ์พันธุ์ใหม่" error={errors.crop}>
+              <Field id={id("crop")} label="พันธุ์มันสำปะหลัง" hint="เลือกจากรายการ หรือพิมพ์พันธุ์ใหม่" error={errors.crop}>
                 <input
                   id={id("crop")}
                   list={id("crops")}
@@ -318,7 +318,7 @@ export default function ScenarioEditor({
                   onChange={(e) => patch({ crop: e.target.value })}
                   aria-invalid={!!errors.crop}
                   aria-describedby={describedBy("crop")}
-                  placeholder="เช่น แอตแลนติก"
+                  placeholder="เช่น เกษตรศาสตร์ 50"
                   className={input}
                 />
                 <datalist id={id("crops")}>
@@ -335,7 +335,7 @@ export default function ScenarioEditor({
                   onChange={(e) => patch({ season: e.target.value })}
                   aria-invalid={!!errors.season}
                   aria-describedby={describedBy("season")}
-                  placeholder="เช่น ฤดูหนาว"
+                  placeholder="เช่น ต้นฤดูฝน"
                   className={input}
                 />
                 <datalist id={id("seasons")}>
@@ -449,7 +449,7 @@ export default function ScenarioEditor({
 
           <Section step={3} title="ผลลัพธ์และคำแนะนำ" desc="สิ่งที่เกษตรกรจะเห็นเมื่อระบบเลือกข้อมูลชุดนี้">
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field id={id("yield")} label="ผลผลิตที่คาดว่าจะได้" hint="เช่น 2,500–3,000 กก./ไร่">
+              <Field id={id("yield")} label="ผลผลิตที่คาดว่าจะได้" hint="เช่น 5,000–6,000 กก./ไร่ (หัวสด)">
                 <input
                   id={id("yield")}
                   value={form.expectedYield}
@@ -532,7 +532,7 @@ export default function ScenarioEditor({
                         id={id(`ph${i}`)}
                         value={p.phase}
                         onChange={(e) => setPhase(i, { phase: e.target.value })}
-                        placeholder="เช่น หัวขยาย (วันที่ 44–81)"
+                        placeholder="เช่น สะสมแป้ง (เดือนที่ 6–10)"
                         className={input}
                       />
                     </Field>
@@ -541,7 +541,7 @@ export default function ScenarioEditor({
                         id={id(`fq${i}`)}
                         value={p.freq}
                         onChange={(e) => setPhase(i, { freq: e.target.value })}
-                        placeholder="เช่น ทุก 3–5 วัน"
+                        placeholder="เช่น ทุก 7–10 วัน"
                         className={input}
                       />
                     </Field>

@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsBoolean,
   IsInt,
   IsOptional,
   IsString,
@@ -33,4 +34,13 @@ export class FeedbackDto {
   @IsString({ message: 'ต้องเป็นข้อความ' })
   @IsOptional()
   page?: string;
+}
+
+export class NotifyDto {
+  @ApiProperty({
+    example: true,
+    description: 'true = รับแจ้งเตือนทางอีเมลเมื่อมีความคิดเห็นใหม่',
+  })
+  @IsBoolean({ message: 'subscribed ต้องเป็น true หรือ false' })
+  subscribed: boolean;
 }

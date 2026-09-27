@@ -25,7 +25,7 @@ export class ScenariosController {
   }
 
   @Get('options')
-  @ApiOperation({ summary: 'รายชื่อพันธุ์มันฝรั่งและฤดูกาลที่มีข้อมูล' })
+  @ApiOperation({ summary: 'รายชื่อพันธุ์มันสำปะหลังและฤดูกาลที่มีข้อมูล' })
   options() {
     return this.scenarios.options();
   }

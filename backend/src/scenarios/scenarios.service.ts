@@ -8,7 +8,7 @@ import { PrismaService } from '../prisma.service';
 import { MatchRequestDto, ScenarioDto } from './scenario.dto';
 
 // ลำดับฤดูในตัวเลือก (ฤดูที่ไม่อยู่ในรายการจะต่อท้าย)
-const SEASON_ORDER = ['ฤดูหนาว', 'ฤดูร้อน', 'ฤดูฝน'];
+const SEASON_ORDER = ['ต้นฤดูฝน', 'ปลายฤดูฝน', 'ฤดูแล้ง'];
 const seasonRank = (s: string) => {
   const i = SEASON_ORDER.indexOf(s);
   return i === -1 ? SEASON_ORDER.length : i;
@@ -54,7 +54,7 @@ export class ScenariosService {
     return this.prisma.scenario.delete({ where: { id } });
   }
 
-  /** รายชื่อพันธุ์มันฝรั่งและฤดูกาลที่มีข้อมูล — ใช้เติมตัวเลือกในฟอร์มหน้าบ้าน */
+  /** รายชื่อพันธุ์มันสำปะหลังและฤดูกาลที่มีข้อมูล — ใช้เติมตัวเลือกในฟอร์มหน้าบ้าน */
   async options() {
     const rows = await this.prisma.scenario.findMany({
       select: { crop: true, season: true },

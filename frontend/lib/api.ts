@@ -63,6 +63,14 @@ export interface FeedbackSummary {
   items: Feedback[];
 }
 
+export interface NotifyStatus {
+  /** เซิร์ฟเวอร์ตั้งค่า SMTP แล้วหรือยัง */
+  mailEnabled: boolean;
+  email: string | null;
+  subscribed: boolean;
+  subscribers: number;
+}
+
 const TOKEN_KEY = "warma_admin_token";
 
 export const adminToken = {
@@ -81,6 +89,28 @@ export const adminToken = {
   clear: () => {
     try {
       localStorage.removeItem(TOKEN_KEY);
+    } catch {}
+  },
+};
+
+/** โหมดผู้ใช้ทั่วไป (ไม่ล็อกอิน) — จำไว้ในเครื่องนี้ ครั้งหน้าเข้าหน้าหลักได้เลย */
+const GUEST_KEY = "warma_guest";
+export const guestMode = {
+  get: () => {
+    try {
+      return localStorage.getItem(GUEST_KEY) === "1";
+    } catch {
+      return false;
+    }
+  },
+  set: () => {
+    try {
+      localStorage.setItem(GUEST_KEY, "1");
+    } catch {}
+  },
+  clear: () => {
+    try {
+      localStorage.removeItem(GUEST_KEY);
     } catch {}
   },
 };
@@ -141,6 +171,22 @@ export const api = {
 
   feedbackSummary: () =>
     request<FeedbackSummary>("/feedback", { headers: adminHeaders() }),
+
+  notifyStatus: () =>
+    request<NotifyStatus>("/feedback/notify", { headers: adminHeaders() }),
+
+  setNotify: (subscribed: boolean) =>
+    request<NotifyStatus>("/feedback/notify", {
+      method: "PUT",
+      headers: adminHeaders(),
+      body: JSON.stringify({ subscribed }),
+    }),
+
+  sendTestMail: () =>
+    request<{ sent: boolean; to: string }>("/feedback/notify/test", {
+      method: "POST",
+      headers: adminHeaders(),
+    }),
 
   rainfall: () => request<RainfallResult>("/rainfall"),
 
