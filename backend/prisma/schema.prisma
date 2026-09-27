@@ -28,3 +28,15 @@ model Scenario {
 
   @@index([crop, season])
 }
+
+// ความคิดเห็น/คะแนนจากผู้ใช้จริง — ใช้เป็นหลักฐาน real user feedback
+model Feedback {
+  id        String   @id @default(cuid())
+  rating    Int // 1–5 ดาว
+  comment   String?
+  email     String? // ผู้ใช้ที่ล็อกอิน (null = โหมดพัฒนา)
+  page      String? // หน้าที่ส่ง feedback
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

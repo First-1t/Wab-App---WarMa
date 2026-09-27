@@ -23,7 +23,10 @@ export class RainfallService {
   private cache: { at: number; data: RainStation[] } | null = null;
   private readonly ttlMs = 10 * 60 * 1000;
 
-  async get24h(): Promise<{ updatedAt: string | null; stations: RainStation[] }> {
+  async get24h(): Promise<{
+    updatedAt: string | null;
+    stations: RainStation[];
+  }> {
     if (this.cache && Date.now() - this.cache.at < this.ttlMs) {
       return this.toResult(this.cache.data);
     }

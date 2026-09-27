@@ -1,446 +1,510 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { colorsFor, fmt } from "@/lib/format";
-import type { Scenario, ScenarioInput, SchedulePhase } from "@/lib/types";
+import type { Scenario, ScenarioInput } from "@/lib/types";
+import { useSession } from "../components/RequireAuth";
+import UserMenu from "../components/UserMenu";
+import FeedbackPanel from "./FeedbackPanel";
+import ScenarioEditor, { emptyScenario, LEVELS, ratioText } from "./ScenarioEditor";
 
-const emptyForm: ScenarioInput = {
-  name: "",
-  crop: "",
-  season: "",
-  level: "เพียงพอ",
-  waterPerRai: 0,
-  minRatio: 0,
-  maxRatio: 99,
-  expectedYield: "",
-  risk: "ต่ำ",
-  advice: [],
-  schedule: [],
+const SEASON_ORDER = ["ฤดูหนาว", "ฤดูร้อน", "ฤดูฝน"];
+const rank = (order: readonly string[], v: string) => {
+  const i = order.indexOf(v);
+  return i === -1 ? order.length : i;
 };
 
-export default function AdminPage() {
-  const [list, setList] = useState<Scenario[]>([]);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState<ScenarioInput | null>(null);
-  const [adviceText, setAdviceText] = useState("");
-  const [msg, setMsg] = useState<{ text: string; error?: boolean } | null>(null);
-  const [adminKey, setAdminKey] = useState("");
+const RISK_TEXT: Record<string, string> = {
+  ต่ำ: "text-green-700",
+  ปานกลาง: "text-amber-700",
+  สูง: "text-red-700",
+};
+
+type Editing = { mode: "create" | "edit" | "copy"; id?: string; data: ScenarioInput };
+
+/** เอาเฉพาะ field ที่แก้ไขได้ (ตัด id / createdAt / updatedAt ออก) */
+function toInput(s: Scenario): ScenarioInput {
+  const { name, crop, season, level, waterPerRai, minRatio, maxRatio, expectedYield, risk, advice, schedule } = s;
+  return { name, crop, season, level, waterPerRai, minRatio, maxRatio, expectedYield, risk, advice, schedule };
+}
+
+/** กล่องยืนยันการลบ — ใช้ <dialog> ของเบราว์เซอร์ (คีย์บอร์ด/โปรแกรมอ่านหน้าจอใช้ได้) */
+function ConfirmDelete({
+  scenario,
+  onConfirm,
+  onClose,
+}: {
+  scenario: Scenario;
+  onConfirm: () => Promise<void>;
+  onClose: () => void;
+}) {
+  const ref = useRef<HTMLDialogElement>(null);
+  const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    if (ref.current && !ref.current.open) ref.current.showModal();
+  }, []);
+  return (
+    <dialog
+      ref={ref}
+      onClose={onClose}
+      aria-labelledby="del-title"
+      className="m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl p-0 backdrop:bg-slate-900/50"
+    >
+      <div className="p-6">
+        <h2 id="del-title" className="text-lg font-bold text-red-700">
+          ลบข้อมูลชุดนี้?
+        </h2>
+        <p className="mt-2 text-base text-slate-700">
+          “{scenario.name}” จะถูกลบถาวร เกษตรกรจะไม่ได้รับคำแนะนำจากข้อมูลชุดนี้อีก
+        </p>
+        <div className="mt-6 flex gap-2">
+          <button
+            autoFocus
+            onClick={() => ref.current?.close()}
+            className="flex-1 rounded-lg bg-slate-100 px-4 py-3 font-semibold text-slate-700 hover:bg-slate-200 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+          >
+            ไม่ลบ
+          </button>
+          <button
+            disabled={busy}
+            onClick={async () => {
+              setBusy(true);
+              await onConfirm();
+              ref.current?.close();
+            }}
+            className="flex-1 rounded-lg bg-red-600 px-4 py-3 font-bold text-white hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:outline-none disabled:opacity-60"
+          >
+            {busy ? "กำลังลบ…" : "ลบถาวร"}
+          </button>
+        </div>
+      </div>
+    </dialog>
+  );
+}
+
+export default function AdminPanel() {
+  const { user, logout } = useSession();
+  const [list, setList] = useState<Scenario[] | null>(null);
+  const [loadError, setLoadError] = useState("");
+  const [tab, setTab] = useState<"data" | "feedback">("data");
+  const [crop, setCrop] = useState("ทั้งหมด");
+  const [season, setSeason] = useState("ทั้งหมด");
+  const [query, setQuery] = useState("");
+  const [editing, setEditing] = useState<Editing | null>(null);
+  const [deleting, setDeleting] = useState<Scenario | null>(null);
+  const [toast, setToast] = useState<{ text: string; error?: boolean } | null>(null);
+  // AdminPanel แสดงหลัง RequireAuth ตรวจ session แล้วเท่านั้น (ฝั่ง client) จึงอ่าน localStorage ได้ตรงนี้
+  const [showHelp, setShowHelp] = useState(() => {
+    try {
+      return localStorage.getItem("warma_admin_help") !== "hidden";
+    } catch {
+      return true;
+    }
+  });
 
   const load = useCallback(() => {
     api
       .listScenarios()
-      .then(setList)
-      .catch((e: Error) =>
-        setMsg({ text: `โหลดข้อมูลไม่สำเร็จ: ${e.message}`, error: true }),
-      );
+      .then((l) => {
+        setList(l);
+        setLoadError("");
+      })
+      .catch((e: Error) => setLoadError(e.message));
   }, []);
 
   useEffect(() => {
-    setAdminKey(localStorage.getItem("warma_admin_key") ?? "");
     load();
   }, [load]);
 
   function flash(text: string, error = false) {
-    setMsg({ text, error });
-    setTimeout(() => setMsg(null), 3500);
+    setToast({ text, error });
+    setTimeout(() => setToast(null), 4000);
   }
 
-  function openEditor(s?: Scenario) {
-    if (s) {
-      const { id: _id, ...rest } = s;
-      setEditingId(s.id);
-      setForm(rest);
-      setAdviceText(s.advice.join("\n"));
-    } else {
-      setEditingId(null);
-      setForm({ ...emptyForm, schedule: [{ phase: "", freq: "", amount: 0 }] });
-      setAdviceText("");
-    }
-  }
-
-  function setPhase(i: number, patch: Partial<SchedulePhase>) {
-    if (!form) return;
-    const schedule = form.schedule.map((p, j) =>
-      j === i ? { ...p, ...patch } : p,
-    );
-    setForm({ ...form, schedule });
-  }
-
-  async function save(e: React.FormEvent) {
-    e.preventDefault();
-    if (!form) return;
-    const data: ScenarioInput = {
-      ...form,
-      waterPerRai: Number(form.waterPerRai),
-      minRatio: Number(form.minRatio),
-      maxRatio: Number(form.maxRatio),
-      advice: adviceText.split("\n").map((a) => a.trim()).filter(Boolean),
-      schedule: form.schedule
-        .filter((p) => p.phase.trim())
-        .map((p) => ({ ...p, amount: Number(p.amount) })),
-    };
+  function hideHelp() {
+    setShowHelp(false);
     try {
-      if (editingId) {
-        await api.updateScenario(editingId, data);
-        flash("แก้ไข scenario เรียบร้อย");
+      localStorage.setItem("warma_admin_help", "hidden");
+    } catch {}
+  }
+
+  const crops = useMemo(
+    () => [...new Set((list ?? []).map((s) => s.crop))].sort((a, b) => a.localeCompare(b, "th")),
+    [list],
+  );
+  const seasons = useMemo(
+    () =>
+      [...new Set((list ?? []).map((s) => s.season))].sort(
+        (a, b) => rank(SEASON_ORDER, a) - rank(SEASON_ORDER, b),
+      ),
+    [list],
+  );
+
+  // กรอง แล้วจัดกลุ่ม พันธุ์ → ฤดู → สถานะน้ำ
+  const groups = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const filtered = (list ?? []).filter(
+      (s) =>
+        (crop === "ทั้งหมด" || s.crop === crop) &&
+        (season === "ทั้งหมด" || s.season === season) &&
+        (!q || `${s.name} ${s.crop} ${s.season} ${s.level}`.toLowerCase().includes(q)),
+    );
+    const byCrop = new Map<string, Map<string, Scenario[]>>();
+    for (const s of filtered) {
+      if (!byCrop.has(s.crop)) byCrop.set(s.crop, new Map());
+      const bySeason = byCrop.get(s.crop)!;
+      if (!bySeason.has(s.season)) bySeason.set(s.season, []);
+      bySeason.get(s.season)!.push(s);
+    }
+    return [...byCrop.entries()]
+      .sort(([a], [b]) => a.localeCompare(b, "th"))
+      .map(([c, m]) => ({
+        crop: c,
+        seasons: [...m.entries()]
+          .sort(([a], [b]) => rank(SEASON_ORDER, a) - rank(SEASON_ORDER, b))
+          .map(([s, items]) => ({
+            season: s,
+            items: items.sort((a, b) => rank(LEVELS, a.level) - rank(LEVELS, b.level)),
+          })),
+      }));
+  }, [list, crop, season, query]);
+
+  const shownCount = groups.reduce(
+    (n, g) => n + g.seasons.reduce((m, s) => m + s.items.length, 0),
+    0,
+  );
+
+  function handleAuthError(err: unknown) {
+    if (err instanceof ApiError && err.status === 401) {
+      logout();
+      return true;
+    }
+    return false;
+  }
+
+  async function save(data: ScenarioInput) {
+    if (!editing) return;
+    try {
+      if (editing.mode === "edit" && editing.id) {
+        await api.updateScenario(editing.id, data);
+        flash(`บันทึก “${data.name}” เรียบร้อย`);
       } else {
         await api.createScenario(data);
-        flash("เพิ่ม scenario ใหม่เรียบร้อย");
+        flash(`เพิ่ม “${data.name}” เรียบร้อย`);
       }
-      setForm(null);
-      setEditingId(null);
+      setEditing(null);
       load();
     } catch (err) {
-      flash(err instanceof Error ? err.message : "บันทึกไม่สำเร็จ", true);
+      if (!handleAuthError(err)) throw err; // ให้หน้าต่างแก้ไขแสดง error
     }
   }
 
   async function remove(s: Scenario) {
-    if (!confirm(`ลบ scenario "${s.name}" ?`)) return;
     try {
       await api.deleteScenario(s.id);
-      flash("ลบ scenario เรียบร้อย");
+      flash(`ลบ “${s.name}” แล้ว`);
       load();
     } catch (err) {
-      flash(err instanceof Error ? err.message : "ลบไม่สำเร็จ", true);
+      if (!handleAuthError(err)) flash(err instanceof Error ? err.message : "ลบไม่สำเร็จ", true);
     }
   }
+
+  function exportJson() {
+    const blob = new Blob([JSON.stringify((list ?? []).map(toInput), null, 2)], {
+      type: "application/json",
+    });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `warma-scenarios-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  const chip = (active: boolean) =>
+    `rounded-full border-2 px-4 py-2 text-sm font-semibold whitespace-nowrap focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none ${
+      active
+        ? "border-sky-700 bg-sky-700 text-white"
+        : "border-slate-300 bg-white text-slate-700 hover:border-sky-500"
+    }`;
 
   return (
     <>
       <header className="sticky top-0 z-10 bg-gradient-to-r from-sky-900 to-sky-700 text-white shadow">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
-          <div>
-            <h1 className="text-lg font-bold sm:text-xl">⚙️ WarMa Admin</h1>
-            <p className="text-xs opacity-85">จัดการข้อมูล scenario สำหรับอาจารย์</p>
+        <div className="mx-auto flex max-w-4xl items-center justify-between gap-2 px-4 py-3">
+          <div className="min-w-0">
+            <h1 className="text-lg font-bold sm:text-xl">⚙️ ตั้งค่าข้อมูล</h1>
+            <p className="truncate text-sm opacity-90">แก้ไขคำแนะนำการให้น้ำที่เกษตรกรเห็น</p>
           </div>
-          <Link
-            href="/"
-            className="rounded-full border border-white/50 px-3 py-1 text-xs whitespace-nowrap hover:bg-white/10"
-          >
-            💧 หน้าผู้ใช้
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/"
+              className="rounded-full border border-white/50 px-3 py-1.5 text-sm whitespace-nowrap hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+            >
+              ← หน้าหลัก
+            </Link>
+            <UserMenu showSettings={false} />
+          </div>
+        </div>
+
+        {/* แท็บ */}
+        <div className="mx-auto flex max-w-4xl gap-1 px-4" role="tablist" aria-label="ส่วนของหน้าตั้งค่า">
+          {(
+            [
+              ["data", "📚 ข้อมูลคำแนะนำ"],
+              ["feedback", "⭐ ความคิดเห็นผู้ใช้"],
+            ] as const
+          ).map(([key, label]) => (
+            <button
+              key={key}
+              role="tab"
+              id={`tab-${key}`}
+              aria-selected={tab === key}
+              aria-controls={`panel-${key}`}
+              onClick={() => setTab(key)}
+              className={`rounded-t-lg px-4 py-2.5 text-sm font-semibold focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none ${
+                tab === key ? "bg-slate-50 text-sky-900" : "text-white/85 hover:bg-white/10"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 px-4 py-4">
-        {msg && (
-          <p
-            className={`rounded-lg px-4 py-2 text-sm ${msg.error ? "bg-red-50 text-red-700" : "bg-green-50 text-green-700"}`}
-          >
-            {msg.text}
+      <main className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 py-5">
+        {!user && (
+          <p className="rounded-xl bg-amber-50 p-4 text-sm text-amber-800">
+            ⚠️ โหมดพัฒนา — เซิร์ฟเวอร์ยังไม่ได้ตั้งค่า GOOGLE_CLIENT_ID จึงไม่ต้องล็อกอิน
+            (ห้ามใช้แบบนี้ตอน deploy จริง)
           </p>
         )}
 
-        <section className="rounded-xl bg-white p-5 shadow-sm">
-          <h2 className="mb-2 font-bold text-sky-900">🔑 รหัสผู้ดูแล</h2>
-          <input
-            type="password"
-            value={adminKey}
-            placeholder="ใส่รหัสที่อาจารย์ได้รับ (ถ้าเซิร์ฟเวอร์ตั้งไว้)"
-            onChange={(e) => {
-              setAdminKey(e.target.value);
-              localStorage.setItem("warma_admin_key", e.target.value);
-            }}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 focus:border-sky-600 focus:outline-none"
-          />
-          <p className="mt-1 text-xs text-slate-500">
-            ใช้ยืนยันตัวตนเมื่อเพิ่ม/แก้ไข/ลบข้อมูล — เก็บไว้ในเครื่องนี้เท่านั้น
-          </p>
-        </section>
-
-        <section className="rounded-xl bg-white p-5 shadow-sm">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-bold text-sky-900">
-              📚 รายการ scenario ({list.length})
-            </h2>
-            <button
-              onClick={() => openEditor()}
-              className="rounded-lg bg-sky-700 px-4 py-2 text-sm font-bold text-white hover:bg-sky-800"
-            >
-              ➕ เพิ่มใหม่
-            </button>
+        {tab === "feedback" && (
+          <div role="tabpanel" id="panel-feedback" aria-labelledby="tab-feedback">
+            <FeedbackPanel />
           </div>
-          <ul className="divide-y divide-slate-100">
-            {list.map((s) => (
-              <li
-                key={s.id}
-                className="flex items-center justify-between gap-2 py-2.5"
+        )}
+
+        {tab === "data" && (
+          <div role="tabpanel" id="panel-data" aria-labelledby="tab-data" className="space-y-4">
+            {/* วิธีใช้ */}
+            {showHelp ? (
+              <section className="rounded-xl border border-sky-200 bg-sky-50 p-5 text-slate-700">
+                <div className="flex items-start justify-between gap-3">
+                  <h2 className="font-bold text-sky-900">ระบบเลือกคำแนะนำอย่างไร?</h2>
+                  <button
+                    onClick={hideHelp}
+                    className="shrink-0 rounded-lg px-2 py-1 text-sm font-semibold text-sky-800 hover:bg-sky-100 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                  >
+                    ซ่อนคำอธิบาย
+                  </button>
+                </div>
+                <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-base">
+                  <li>เกษตรกรเลือก <b>พันธุ์</b> และ <b>ฤดู</b> แล้วกรอกน้ำที่มีกับขนาดแปลง</li>
+                  <li>
+                    ระบบคิดว่าน้ำที่มีคิดเป็นกี่ % ของน้ำที่พันธุ์นั้นต้องการ
+                    <span className="text-slate-500"> (น้ำที่ต้องการ = ค่าในชุด “น้ำเพียงพอ”)</span>
+                  </li>
+                  <li>
+                    แล้วเลือก <b>ข้อมูลชุดที่ช่วง % ตรงกัน</b> มาแสดง เช่น ชุด “จำกัด” ใช้เมื่อมีน้ำ 70–100%
+                  </li>
+                </ol>
+                <p className="mt-3 text-sm text-slate-600">
+                  แต่ละพันธุ์ในแต่ละฤดู ควรมีข้อมูลครอบคลุมทุกช่วง % ไม่ให้มีช่องว่าง
+                </p>
+              </section>
+            ) : (
+              <button
+                onClick={() => setShowHelp(true)}
+                className="text-sm font-semibold text-sky-700 hover:underline"
               >
-                <div>
-                  <div className="text-sm font-semibold">
-                    {s.name}{" "}
-                    <span
-                      className={`rounded-full px-2 py-0.5 text-xs text-white ${colorsFor(s.level).badge}`}
-                    >
-                      {s.level}
-                    </span>
-                  </div>
-                  <div className="text-xs text-slate-500">
-                    {s.crop} · {s.season} · {fmt(s.waterPerRai)} ลบ.ม./ไร่ ·
-                    ratio {s.minRatio}–{s.maxRatio >= 99 ? "∞" : s.maxRatio}
-                  </div>
-                </div>
-                <div className="flex shrink-0 gap-1.5">
-                  <button
-                    onClick={() => openEditor(s)}
-                    className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold hover:bg-slate-200"
-                  >
-                    ✏️ แก้ไข
-                  </button>
-                  <button
-                    onClick={() => remove(s)}
-                    className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
-                  >
-                    🗑️
-                  </button>
-                </div>
-              </li>
-            ))}
-            {list.length === 0 && (
-              <li className="py-6 text-center text-sm text-slate-400">
-                ยังไม่มีข้อมูล scenario
-              </li>
+                ❓ ระบบเลือกคำแนะนำอย่างไร?
+              </button>
             )}
-          </ul>
-        </section>
 
-        {form && (
-          <section className="rounded-xl bg-white p-5 shadow-sm">
-            <h2 className="mb-3 font-bold text-sky-900">
-              {editingId ? `✏️ แก้ไข: ${form.name}` : "➕ เพิ่ม scenario"}
-            </h2>
-            <form onSubmit={save} className="grid gap-3 sm:grid-cols-2">
-              <label className="block sm:col-span-2">
-                <span className="mb-1 block text-sm font-semibold">
-                  ชื่อ scenario
-                </span>
-                <input
-                  required
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-sky-600 focus:outline-none"
-                />
-              </label>
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold">ชนิดพืช</span>
-                <input
-                  required
-                  value={form.crop}
-                  onChange={(e) => setForm({ ...form, crop: e.target.value })}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-sky-600 focus:outline-none"
-                />
-              </label>
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold">ฤดูกาล</span>
-                <input
-                  required
-                  value={form.season}
-                  onChange={(e) => setForm({ ...form, season: e.target.value })}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-sky-600 focus:outline-none"
-                />
-              </label>
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold">สถานะน้ำ</span>
-                <select
-                  value={form.level}
-                  onChange={(e) => setForm({ ...form, level: e.target.value })}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 focus:border-sky-600 focus:outline-none"
-                >
-                  <option>เพียงพอ</option>
-                  <option>จำกัด</option>
-                  <option>ขาดแคลน</option>
-                </select>
-              </label>
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold">
-                  น้ำจัดสรรต่อไร่ (ลบ.ม./ไร่)
-                </span>
-                <input
-                  type="number"
-                  min="0"
-                  step="any"
-                  required
-                  value={form.waterPerRai}
-                  onChange={(e) =>
-                    setForm({ ...form, waterPerRai: Number(e.target.value) })
-                  }
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-sky-600 focus:outline-none"
-                />
-              </label>
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold">
-                  ratio ต่ำสุด{" "}
-                  <span className="font-normal text-slate-500">
-                    (น้ำที่มี ÷ น้ำที่พืชต้องการ)
+            {/* แถบเครื่องมือ */}
+            <section className="space-y-3 rounded-xl bg-white p-4 shadow-sm sm:p-5">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h2 className="text-lg font-bold text-sky-900">
+                  ข้อมูลคำแนะนำ{" "}
+                  <span className="text-base font-normal text-slate-500">
+                    ({list ? `แสดง ${shownCount} จาก ${list.length} ชุด` : "กำลังโหลด…"})
                   </span>
-                </span>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.05"
-                  required
-                  value={form.minRatio}
-                  onChange={(e) =>
-                    setForm({ ...form, minRatio: Number(e.target.value) })
-                  }
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-sky-600 focus:outline-none"
-                />
-              </label>
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold">
-                  ratio สูงสุด{" "}
-                  <span className="font-normal text-slate-500">
-                    (99 = ไม่จำกัด)
-                  </span>
-                </span>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.05"
-                  required
-                  value={form.maxRatio}
-                  onChange={(e) =>
-                    setForm({ ...form, maxRatio: Number(e.target.value) })
-                  }
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-sky-600 focus:outline-none"
-                />
-              </label>
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold">
-                  ผลผลิตคาดการณ์
-                </span>
-                <input
-                  value={form.expectedYield}
-                  placeholder="เช่น 650–750 กก./ไร่"
-                  onChange={(e) =>
-                    setForm({ ...form, expectedYield: e.target.value })
-                  }
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-sky-600 focus:outline-none"
-                />
-              </label>
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold">
-                  ระดับความเสี่ยง
-                </span>
-                <select
-                  value={form.risk}
-                  onChange={(e) => setForm({ ...form, risk: e.target.value })}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 focus:border-sky-600 focus:outline-none"
-                >
-                  <option>ต่ำ</option>
-                  <option>ปานกลาง</option>
-                  <option>สูง</option>
-                </select>
-              </label>
-              <label className="block sm:col-span-2">
-                <span className="mb-1 block text-sm font-semibold">
-                  คำแนะนำ{" "}
-                  <span className="font-normal text-slate-500">
-                    (1 บรรทัด = 1 ข้อ)
-                  </span>
-                </span>
-                <textarea
-                  rows={4}
-                  value={adviceText}
-                  onChange={(e) => setAdviceText(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-sky-600 focus:outline-none"
-                />
-              </label>
-
-              <div className="sm:col-span-2">
-                <span className="mb-1 block text-sm font-semibold">
-                  ตารางการให้น้ำ
-                </span>
-                <div className="space-y-2">
-                  {form.schedule.map((p, i) => (
-                    <div
-                      key={i}
-                      className="grid gap-2 rounded-lg border border-dashed border-slate-300 p-3 sm:grid-cols-[2fr_2fr_1fr_auto]"
-                    >
-                      <input
-                        placeholder="ระยะ เช่น แตกกอ (วันที่ 16–45)"
-                        value={p.phase}
-                        onChange={(e) => setPhase(i, { phase: e.target.value })}
-                        className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-600 focus:outline-none"
-                      />
-                      <input
-                        placeholder="ความถี่ เช่น ทุก 5–7 วัน"
-                        value={p.freq}
-                        onChange={(e) => setPhase(i, { freq: e.target.value })}
-                        className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-600 focus:outline-none"
-                      />
-                      <input
-                        type="number"
-                        min="0"
-                        step="any"
-                        placeholder="ลบ.ม./ไร่"
-                        value={p.amount}
-                        onChange={(e) =>
-                          setPhase(i, { amount: Number(e.target.value) })
-                        }
-                        className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-600 focus:outline-none"
-                      />
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setForm({
-                            ...form,
-                            schedule: form.schedule.filter((_, j) => j !== i),
-                          })
-                        }
-                        className="rounded-lg bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-100"
-                      >
-                        ลบ
-                      </button>
-                    </div>
-                  ))}
+                </h2>
+                <div className="flex gap-2">
+                  <button
+                    onClick={exportJson}
+                    disabled={!list?.length}
+                    className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none disabled:opacity-50"
+                  >
+                    ⬇️ สำรองข้อมูล (JSON)
+                  </button>
+                  <button
+                    onClick={() =>
+                      setEditing({
+                        mode: "create",
+                        data: {
+                          ...emptyScenario,
+                          crop: crop !== "ทั้งหมด" ? crop : "",
+                          season: season !== "ทั้งหมด" ? season : "",
+                        },
+                      })
+                    }
+                    className="rounded-lg bg-sky-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-sky-800 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:outline-none"
+                  >
+                    ＋ เพิ่มข้อมูลใหม่
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setForm({
-                      ...form,
-                      schedule: [
-                        ...form.schedule,
-                        { phase: "", freq: "", amount: 0 },
-                      ],
-                    })
-                  }
-                  className="mt-2 rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold hover:bg-slate-200"
-                >
-                  ＋ เพิ่มระยะ
-                </button>
               </div>
 
-              <div className="flex gap-2 sm:col-span-2">
-                <button
-                  type="submit"
-                  className="rounded-lg bg-sky-700 px-5 py-2.5 font-bold text-white hover:bg-sky-800"
-                >
-                  💾 บันทึก
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setForm(null);
-                    setEditingId(null);
-                  }}
-                  className="rounded-lg bg-slate-100 px-5 py-2.5 font-semibold hover:bg-slate-200"
-                >
-                  ยกเลิก
+              <label className="block">
+                <span className="sr-only">ค้นหา</span>
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="🔍 ค้นหาชื่อ พันธุ์ ฤดู หรือสถานะน้ำ"
+                  className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-base focus:border-sky-600 focus:ring-2 focus:ring-sky-200 focus:outline-none"
+                />
+              </label>
+
+              <div role="group" aria-label="กรองตามพันธุ์" className="flex flex-wrap items-center gap-2">
+                <span className="w-12 text-sm font-semibold text-slate-500">พันธุ์</span>
+                {["ทั้งหมด", ...crops].map((c) => (
+                  <button key={c} aria-pressed={crop === c} onClick={() => setCrop(c)} className={chip(crop === c)}>
+                    {c}
+                  </button>
+                ))}
+              </div>
+              <div role="group" aria-label="กรองตามฤดู" className="flex flex-wrap items-center gap-2">
+                <span className="w-12 text-sm font-semibold text-slate-500">ฤดู</span>
+                {["ทั้งหมด", ...seasons].map((s) => (
+                  <button key={s} aria-pressed={season === s} onClick={() => setSeason(s)} className={chip(season === s)}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            {loadError && (
+              <div role="alert" className="rounded-xl bg-red-50 p-4 text-red-700">
+                <p className="font-bold">โหลดข้อมูลไม่สำเร็จ</p>
+                <p className="text-sm">{loadError}</p>
+                <button onClick={load} className="mt-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">
+                  ลองใหม่
                 </button>
               </div>
-            </form>
-          </section>
+            )}
+
+            {list && shownCount === 0 && (
+              <p className="rounded-xl bg-white p-8 text-center text-slate-500 shadow-sm">
+                {list.length === 0 ? "ยังไม่มีข้อมูล กด “เพิ่มข้อมูลใหม่” เพื่อเริ่มต้น" : "ไม่พบข้อมูลที่ตรงกับตัวกรอง"}
+              </p>
+            )}
+
+            {/* รายการ: พันธุ์ → ฤดู → การ์ด */}
+            {groups.map((g) => (
+              <section key={g.crop} className="rounded-xl bg-white p-4 shadow-sm sm:p-5" aria-labelledby={`crop-${g.crop}`}>
+                <h2 id={`crop-${g.crop}`} className="text-lg font-bold text-slate-800">
+                  🥔 พันธุ์{g.crop}
+                </h2>
+                {g.seasons.map((s) => (
+                  <div key={s.season} className="mt-4">
+                    <h3 className="mb-2 text-sm font-bold tracking-wide text-slate-500">{s.season}</h3>
+                    <ul className="grid gap-3 md:grid-cols-2">
+                      {s.items.map((sc) => (
+                        <li
+                          key={sc.id}
+                          className={`flex flex-col rounded-lg border-l-4 bg-slate-50 p-4 ${colorsFor(sc.level).border}`}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <span className={`rounded-full px-3 py-1 text-sm font-bold text-white ${colorsFor(sc.level).badge}`}>
+                              น้ำ{sc.level}
+                            </span>
+                            <span className={`text-sm font-semibold ${RISK_TEXT[sc.risk] ?? "text-slate-600"}`}>
+                              ความเสี่ยง{sc.risk}
+                            </span>
+                          </div>
+                          <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
+                            <dt className="text-slate-500">ใช้เมื่อ</dt>
+                            <dd className="font-semibold">{ratioText(sc.minRatio, sc.maxRatio)} ของที่ต้องการ</dd>
+                            <dt className="text-slate-500">น้ำแนะนำ</dt>
+                            <dd className="font-semibold">{fmt(sc.waterPerRai)} ลบ.ม./ไร่</dd>
+                            <dt className="text-slate-500">ผลผลิต</dt>
+                            <dd className="font-semibold">{sc.expectedYield || "–"}</dd>
+                            <dt className="text-slate-500">เนื้อหา</dt>
+                            <dd>
+                              คำแนะนำ {sc.advice.length} ข้อ · ตารางน้ำ {sc.schedule.length} ระยะ
+                            </dd>
+                          </dl>
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            <button
+                              onClick={() => setEditing({ mode: "edit", id: sc.id, data: toInput(sc) })}
+                              aria-label={`แก้ไข ${sc.name}`}
+                              className="rounded-lg bg-sky-700 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-800 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                            >
+                              ✏️ แก้ไข
+                            </button>
+                            <button
+                              onClick={() =>
+                                setEditing({
+                                  mode: "copy",
+                                  data: { ...toInput(sc), name: "" },
+                                })
+                              }
+                              aria-label={`คัดลอก ${sc.name} เป็นข้อมูลใหม่`}
+                              className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
+                            >
+                              📄 คัดลอก
+                            </button>
+                            <button
+                              onClick={() => setDeleting(sc)}
+                              aria-label={`ลบ ${sc.name}`}
+                              className="ml-auto rounded-lg px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:outline-none"
+                            >
+                              🗑️ ลบ
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </section>
+            ))}
+          </div>
         )}
       </main>
 
-      <footer className="px-4 pb-6 pt-2 text-center text-xs text-slate-400">
-        WarMa Admin Panel — แก้ไขข้อมูล scenario ได้โดยไม่ต้องแก้โค้ด
-      </footer>
+      {editing && (
+        <ScenarioEditor
+          key={editing.id ?? editing.mode}
+          initial={editing.data}
+          mode={editing.mode}
+          cropOptions={crops}
+          seasonOptions={seasons}
+          onSave={save}
+          onClose={() => setEditing(null)}
+        />
+      )}
+
+      {deleting && (
+        <ConfirmDelete scenario={deleting} onConfirm={() => remove(deleting)} onClose={() => setDeleting(null)} />
+      )}
+
+      {/* แจ้งผลการทำงาน — โปรแกรมอ่านหน้าจอจะอ่านให้อัตโนมัติ */}
+      <div aria-live="polite" role="status" className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-4">
+        {toast && (
+          <p
+            className={`pointer-events-auto rounded-full px-5 py-3 text-base font-semibold text-white shadow-lg ${toast.error ? "bg-red-600" : "bg-slate-800"}`}
+          >
+            {toast.error ? "⚠️ " : "✓ "}
+            {toast.text}
+          </p>
+        )}
+      </div>
     </>
   );
 }

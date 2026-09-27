@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { api } from "@/lib/api";
 import { colorsFor, fmt } from "@/lib/format";
 import type { MatchResult } from "@/lib/types";
 import RainfallPanel from "./components/RainfallPanel";
+import FeedbackButton from "./components/FeedbackButton";
+import RequireAuth from "./components/RequireAuth";
+import UserMenu from "./components/UserMenu";
 import dynamic from "next/dynamic";
 
 // แผนที่วาดแปลง ใช้ Leaflet → โหลด client-only
@@ -19,6 +21,14 @@ const FieldMap = dynamic(() => import("./components/FieldMap"), {
 });
 
 export default function HomePage() {
+  return (
+    <RequireAuth>
+      <Home />
+    </RequireAuth>
+  );
+}
+
+function Home() {
   const [crops, setCrops] = useState<string[]>([]);
   const [seasons, setSeasons] = useState<string[]>([]);
   const [crop, setCrop] = useState("");
@@ -103,12 +113,7 @@ export default function HomePage() {
               ระบบแนะนำการจัดการทรัพยากรน้ำเพื่อการเกษตร
             </p>
           </div>
-          <Link
-            href="/admin"
-            className="rounded-full border border-white/50 px-3 py-1 text-xs whitespace-nowrap hover:bg-white/10"
-          >
-            ⚙️ สำหรับอาจารย์
-          </Link>
+          <UserMenu />
         </div>
       </header>
 
@@ -127,7 +132,7 @@ export default function HomePage() {
           </h2>
           <form onSubmit={onSubmit} className="grid gap-3 sm:grid-cols-2">
             <label className="block">
-              <span className="mb-1 block text-sm font-semibold">ชนิดพืช</span>
+              <span className="mb-1 block text-sm font-semibold">พันธุ์มันฝรั่ง</span>
               <select
                 value={crop}
                 onChange={(e) => setCrop(e.target.value)}
@@ -392,6 +397,8 @@ export default function HomePage() {
         )}
         </div>
       </main>
+
+      <FeedbackButton />
 
       <footer className="px-4 pb-6 pt-2 text-center text-xs text-slate-400">
         โปรเจกต์คณะเกษตรศาสตร์ — Water Resources Management Advisor

@@ -1,9 +1,21 @@
 import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import Anthropic from '@anthropic-ai/sdk';
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsObject, ValidateNested } from 'class-validator';
 import { MatchRequestDto, ScenarioDto } from '../scenarios/scenario.dto';
 
 export class ExplainRequest {
+  @ApiProperty({ type: MatchRequestDto })
+  @ValidateNested()
+  @IsObject({ message: 'ไม่พบข้อมูลที่กรอก (input)' })
+  @Type(() => MatchRequestDto)
   input: MatchRequestDto;
+
+  @ApiProperty({ type: ScenarioDto })
+  @ValidateNested()
+  @IsObject({ message: 'ไม่พบข้อมูล scenario' })
+  @Type(() => ScenarioDto)
   scenario: ScenarioDto;
 }
 
@@ -13,14 +25,18 @@ export class ExplainRequest {
  */
 @Injectable()
 export class AiService {
-  private client: Anthropic | null =
-    process.env.ANTHROPIC_API_KEY ? new Anthropic() : null;
+  private client: Anthropic | null = process.env.ANTHROPIC_API_KEY
+    ? new Anthropic()
+    : null;
 
   get enabled(): boolean {
     return this.client !== null;
   }
 
-  async explain({ input, scenario }: ExplainRequest): Promise<{ explanation: string }> {
+  async explain({
+    input,
+    scenario,
+  }: ExplainRequest): Promise<{ explanation: string }> {
     if (!this.client) {
       throw new ServiceUnavailableException(
         'ยังไม่ได้ตั้งค่า ANTHROPIC_API_KEY — ฟีเจอร์คำอธิบายจาก AI ปิดใช้งานอยู่',
@@ -39,7 +55,7 @@ export class AiService {
         {
           role: 'user',
           content:
-            `เกษตรกรปลูก${input.crop}ใน${input.season} พื้นที่ ${input.area} ไร่ ` +
+            `เกษตรกรปลูกมันฝรั่งพันธุ์${input.crop}ใน${input.season} พื้นที่ ${input.area} ไร่ ` +
             `มีน้ำต้นทุน ${input.water} ลบ.ม.\n\n` +
             `ระบบแนะนำ scenario: ${JSON.stringify(scenario, null, 2)}\n\n` +
             'ช่วยอธิบายให้เกษตรกรฟังแบบง่าย ๆ ว่าสถานการณ์น้ำของเขาเป็นอย่างไร ' +

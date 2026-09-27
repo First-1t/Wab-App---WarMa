@@ -1,7 +1,18 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 import { MatchRequestDto, ScenarioDto } from './scenario.dto';
+
+// ลำดับฤดูในตัวเลือก (ฤดูที่ไม่อยู่ในรายการจะต่อท้าย)
+const SEASON_ORDER = ['ฤดูหนาว', 'ฤดูร้อน', 'ฤดูฝน'];
+const seasonRank = (s: string) => {
+  const i = SEASON_ORDER.indexOf(s);
+  return i === -1 ? SEASON_ORDER.length : i;
+};
 
 @Injectable()
 export class ScenariosService {
@@ -33,14 +44,17 @@ export class ScenariosService {
   }
 
   update(id: string, dto: ScenarioDto) {
-    return this.prisma.scenario.update({ where: { id }, data: this.toData(dto) });
+    return this.prisma.scenario.update({
+      where: { id },
+      data: this.toData(dto),
+    });
   }
 
   remove(id: string) {
     return this.prisma.scenario.delete({ where: { id } });
   }
 
-  /** รายชื่อพืชและฤดูกาลที่มีข้อมูล — ใช้เติมตัวเลือกในฟอร์มหน้าบ้าน */
+  /** รายชื่อพันธุ์มันฝรั่งและฤดูกาลที่มีข้อมูล — ใช้เติมตัวเลือกในฟอร์มหน้าบ้าน */
   async options() {
     const rows = await this.prisma.scenario.findMany({
       select: { crop: true, season: true },
@@ -48,13 +62,15 @@ export class ScenariosService {
     });
     return {
       crops: [...new Set(rows.map((r) => r.crop))],
-      seasons: [...new Set(rows.map((r) => r.season))],
+      seasons: [...new Set(rows.map((r) => r.season))].sort(
+        (a, b) => seasonRank(a) - seasonRank(b),
+      ),
     };
   }
 
   /**
    * จับคู่ scenario จากปัจจัยนำเข้า
-   * ratio = น้ำต้นทุนต่อไร่ ÷ ความต้องการน้ำของพืชในฤดูนั้น
+   * ratio = น้ำต้นทุนต่อไร่ ÷ ความต้องการน้ำของพันธุ์นั้นในฤดูนั้น
    * (ความต้องการน้ำ = waterPerRai สูงสุดในกลุ่ม ซึ่งคือ scenario "น้ำเพียงพอ")
    */
   async match({ crop, season, water, area }: MatchRequestDto) {

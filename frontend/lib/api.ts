@@ -8,6 +8,15 @@ import type {
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+  ) {
+    super(message);
+  }
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API}${path}`, {
     ...init,
@@ -20,17 +29,65 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     const msg = Array.isArray(body?.message)
       ? body.message.join(", ")
       : (body?.message ?? `เกิดข้อผิดพลาด (${res.status})`);
-    throw new Error(msg);
+    throw new ApiError(msg, res.status);
   }
   return res.json() as Promise<T>;
 }
 
+export interface AdminUser {
+  email: string;
+  name: string;
+  picture?: string;
+}
+
+export interface AuthConfig {
+  enabled: boolean;
+  clientId: string;
+  domains: string[];
+}
+
+export interface Feedback {
+  id: string;
+  rating: number;
+  comment: string | null;
+  email: string | null;
+  page: string | null;
+  createdAt: string;
+}
+
+export interface FeedbackSummary {
+  count: number;
+  average: number | null;
+  /** จำนวนคนที่ให้ 1..5 ดาว */
+  distribution: number[];
+  items: Feedback[];
+}
+
+const TOKEN_KEY = "warma_admin_token";
+
+export const adminToken = {
+  get: () => {
+    try {
+      return localStorage.getItem(TOKEN_KEY) ?? "";
+    } catch {
+      return "";
+    }
+  },
+  set: (token: string) => {
+    try {
+      localStorage.setItem(TOKEN_KEY, token);
+    } catch {}
+  },
+  clear: () => {
+    try {
+      localStorage.removeItem(TOKEN_KEY);
+    } catch {}
+  },
+};
+
 function adminHeaders(): Record<string, string> {
-  const key =
-    typeof window !== "undefined"
-      ? (localStorage.getItem("warma_admin_key") ?? "")
-      : "";
-  return key ? { "x-admin-key": key } : {};
+  const token = typeof window !== "undefined" ? adminToken.get() : "";
+  return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
 export const api = {
@@ -64,6 +121,26 @@ export const api = {
       method: "DELETE",
       headers: adminHeaders(),
     }),
+
+  authConfig: () => request<AuthConfig>("/auth/config"),
+
+  loginWithGoogle: (credential: string) =>
+    request<{ token: string; user: AdminUser }>("/auth/google", {
+      method: "POST",
+      body: JSON.stringify({ credential }),
+    }),
+
+  me: () => request<AdminUser | null>("/auth/me", { headers: adminHeaders() }),
+
+  sendFeedback: (data: { rating: number; comment?: string; page?: string }) =>
+    request<Feedback>("/feedback", {
+      method: "POST",
+      headers: adminHeaders(),
+      body: JSON.stringify(data),
+    }),
+
+  feedbackSummary: () =>
+    request<FeedbackSummary>("/feedback", { headers: adminHeaders() }),
 
   rainfall: () => request<RainfallResult>("/rainfall"),
 
