@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WarMa — ระบบแนะนำการจัดการทรัพยากรน้ำเพื่อการเกษตร</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-row">
+    <div>
+      <h1>💧 WarMa</h1>
+      <p>ระบบแนะนำการจัดการทรัพยากรน้ำเพื่อการเกษตร</p>
+    </div>
+    <a class="nav-link" href="admin.html">⚙️ สำหรับอาจารย์</a>
+  </div>
+</header>
+
+<main>
+  <!-- ฟอร์มกรอกปัจจัยนำเข้า -->
+  <section class="card">
+    <h2>📋 กรอกข้อมูลปัจจัยนำเข้า</h2>
+    <form id="input-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="crop">ชนิดพืช</label>
+          <select id="crop" required></select>
+        </div>
+        <div class="form-group">
+          <label for="season">ช่วงฤดูกาล</label>
+          <select id="season" required></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="water">ปริมาณน้ำต้นทุน <span class="hint">(ลบ.ม.)</span></label>
+          <input type="number" id="water" min="1" step="any" placeholder="เช่น 8000" required>
+        </div>
+        <div class="form-group">
+          <label for="area">ขนาดพื้นที่เพาะปลูก <span class="hint">(ไร่)</span></label>
+          <input type="number" id="area" min="0.1" step="any" placeholder="เช่น 10" required>
+        </div>
+      </div>
+      <button type="submit" class="btn">🔍 วิเคราะห์และรับคำแนะนำ</button>
+    </form>
+  </section>
+
+  <!-- ผลลัพธ์ -->
+  <section id="result-section" style="display:none">
+    <div id="result-banner" class="result-banner">
+      <h3 id="result-name"></h3>
+      <p id="result-desc" style="font-size:0.9rem"></p>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-value" id="stat-alloc">–</div>
+        <div class="stat-label">น้ำที่ควรจัดสรร (ลบ.ม.)</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="stat-per-rai">–</div>
+        <div class="stat-label">น้ำต่อไร่ (ลบ.ม./ไร่)</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="stat-yield">–</div>
+        <div class="stat-label">ผลผลิตคาดการณ์</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="stat-risk">–</div>
+        <div class="stat-label">ระดับความเสี่ยง</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>✅ คำแนะนำการจัดการน้ำ</h2>
+      <ul class="advice-list" id="advice-list"></ul>
+    </div>
+
+    <div class="card">
+      <h2>🗓️ ตารางการให้น้ำ</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ระยะการเจริญเติบโต</th>
+              <th>ความถี่การให้น้ำ</th>
+              <th class="num">น้ำต่อไร่ (ลบ.ม.)</th>
+              <th class="num">รวมทั้งแปลง (ลบ.ม.)</th>
+            </tr>
+          </thead>
+          <tbody id="schedule-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📊 เปรียบเทียบ scenario (พืชและฤดูเดียวกัน)</h2>
+      <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
+        แถบสีแสดงปริมาณน้ำจัดสรรรวมของแต่ละ scenario สำหรับพื้นที่ของท่าน — กรอบน้ำเงินคือ scenario ที่ระบบเลือก
+      </p>
+      <div class="chart" id="compare-chart"></div>
+      <div class="table-wrap" style="margin-top:1rem">
+        <table>
+          <thead>
+            <tr>
+              <th>Scenario</th>
+              <th>สถานะน้ำ</th>
+              <th class="num">น้ำ/ไร่</th>
+              <th class="num">น้ำรวม</th>
+              <th>ผลผลิตคาด</th>
+              <th>ความเสี่ยง</th>
+            </tr>
+          </thead>
+          <tbody id="compare-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <p class="empty-note" id="no-result-note">กรอกข้อมูลด้านบนแล้วกด "วิเคราะห์" เพื่อรับคำแนะนำ</p>
+</main>
+
+<footer>
+  โปรเจกต์คณะเกษตรศาสตร์ — Water Resources Management Advisor<br>
+  ข้อมูล scenario เป็นข้อมูลจำลองเพื่อการพัฒนา ระบบจริงจะใช้ข้อมูลจากอาจารย์ผู้สอน
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

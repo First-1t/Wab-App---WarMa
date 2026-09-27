@@ -1,0 +1,249 @@
+/* ============ WarMa — Water Resources Management Advisor ============ */
+/* Mobile-first responsive design */
+
+:root {
+  --primary: #0277bd;
+  --primary-dark: #01579b;
+  --primary-light: #e1f5fe;
+  --green: #2e7d32;
+  --green-light: #e8f5e9;
+  --amber: #ef6c00;
+  --amber-light: #fff3e0;
+  --red: #c62828;
+  --red-light: #ffebee;
+  --text: #263238;
+  --text-muted: #607d8b;
+  --bg: #f5f7f9;
+  --card: #ffffff;
+  --border: #e0e6ea;
+  --radius: 12px;
+  --shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: "Sarabun", "Noto Sans Thai", -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+/* ---------- Header ---------- */
+.app-header {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  color: #fff;
+  padding: 1rem 1.25rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: var(--shadow);
+}
+.app-header h1 { font-size: 1.15rem; font-weight: 700; }
+.app-header p { font-size: 0.8rem; opacity: 0.85; }
+.app-header .header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+.app-header a.nav-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.app-header a.nav-link:active { background: rgba(255, 255, 255, 0.15); }
+
+main { max-width: 900px; margin: 0 auto; padding: 1rem; }
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.card h2 {
+  font-size: 1.05rem;
+  color: var(--primary-dark);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ---------- Form ---------- */
+.form-group { margin-bottom: 1rem; }
+.form-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.35rem;
+}
+.form-group .hint { font-weight: 400; color: var(--text-muted); font-size: 0.8rem; }
+input[type="number"], input[type="text"], select, textarea {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #fff;
+  color: var(--text);
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(2, 119, 189, 0.15);
+}
+.form-row { display: grid; grid-template-columns: 1fr; gap: 0 1rem; }
+
+.btn {
+  display: inline-block;
+  width: 100%;
+  padding: 0.8rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  background: var(--primary);
+  color: #fff;
+  transition: background 0.15s;
+}
+.btn:hover { background: var(--primary-dark); }
+.btn-secondary { background: #eceff1; color: var(--text); font-weight: 600; }
+.btn-secondary:hover { background: #cfd8dc; }
+.btn-danger { background: var(--red); }
+.btn-danger:hover { background: #8e0000; }
+.btn-small { width: auto; padding: 0.4rem 0.9rem; font-size: 0.85rem; }
+
+/* ---------- Result ---------- */
+.result-banner {
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  border-left: 6px solid;
+}
+.result-banner.level-เพียงพอ { background: var(--green-light); border-color: var(--green); }
+.result-banner.level-จำกัด { background: var(--amber-light); border-color: var(--amber); }
+.result-banner.level-ขาดแคลน { background: var(--red-light); border-color: var(--red); }
+.result-banner h3 { font-size: 1.15rem; margin-bottom: 0.25rem; }
+.result-banner .badge {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: 20px;
+  color: #fff;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+.badge.level-เพียงพอ { background: var(--green); }
+.badge.level-จำกัด { background: var(--amber); }
+.badge.level-ขาดแคลน { background: var(--red); }
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.stat {
+  background: var(--primary-light);
+  border-radius: 10px;
+  padding: 0.75rem;
+  text-align: center;
+}
+.stat .stat-value { font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); }
+.stat .stat-label { font-size: 0.75rem; color: var(--text-muted); }
+
+.advice-list { list-style: none; }
+.advice-list li {
+  padding: 0.5rem 0 0.5rem 1.75rem;
+  position: relative;
+  border-bottom: 1px dashed var(--border);
+  font-size: 0.95rem;
+}
+.advice-list li:last-child { border-bottom: none; }
+.advice-list li::before {
+  content: "💧";
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+}
+
+/* ---------- Tables ---------- */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+th, td { padding: 0.6rem 0.5rem; text-align: left; border-bottom: 1px solid var(--border); }
+th { background: var(--primary-light); color: var(--primary-dark); font-weight: 700; white-space: nowrap; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+tr.highlight { background: var(--green-light); font-weight: 600; }
+
+/* ---------- Bar chart (CSS) ---------- */
+.chart { margin-top: 0.5rem; }
+.chart-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; }
+.chart-label { flex: 0 0 32%; font-size: 0.8rem; text-align: right; color: var(--text-muted); }
+.chart-track { flex: 1; background: #eceff1; border-radius: 6px; height: 26px; position: relative; overflow: hidden; }
+.chart-bar {
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 6px;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  min-width: 2.2rem;
+  transition: width 0.6s ease;
+}
+.chart-bar.c-เพียงพอ { background: var(--green); }
+.chart-bar.c-จำกัด { background: var(--amber); }
+.chart-bar.c-ขาดแคลน { background: var(--red); }
+.chart-bar.c-selected { outline: 3px solid var(--primary-dark); outline-offset: -3px; }
+
+/* ---------- Admin ---------- */
+.admin-toolbar { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+.admin-toolbar .btn { width: auto; flex: 1 1 auto; }
+.scenario-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.scenario-item:last-child { border-bottom: none; }
+.scenario-item .si-name { font-weight: 600; font-size: 0.95rem; }
+.scenario-item .si-meta { font-size: 0.78rem; color: var(--text-muted); }
+.scenario-item .si-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+
+.schedule-editor { border: 1px dashed var(--border); border-radius: 8px; padding: 0.75rem; margin-bottom: 0.75rem; }
+.schedule-editor .form-group { margin-bottom: 0.5rem; }
+
+.msg { padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; display: none; }
+.msg.show { display: block; }
+.msg.success { background: var(--green-light); color: var(--green); }
+.msg.error { background: var(--red-light); color: var(--red); }
+
+.empty-note { color: var(--text-muted); text-align: center; padding: 1.5rem 0; font-size: 0.9rem; }
+
+footer { text-align: center; padding: 1.5rem 1rem 2rem; color: var(--text-muted); font-size: 0.78rem; }
+
+/* ---------- Tablet / Desktop ---------- */
+@media (min-width: 640px) {
+  .app-header h1 { font-size: 1.35rem; }
+  .form-row { grid-template-columns: 1fr 1fr; }
+  .stat-grid { grid-template-columns: repeat(4, 1fr); }
+  .btn { width: auto; }
+  .chart-label { flex-basis: 24%; }
+}

@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+/* ตรึงเว็บให้ใช้โทนสว่างเสมอ ไม่พลิกตามโหมดมืดของเบราว์เซอร์
+   (เว็บใช้งานภาคสนามกลางแดด โทนสว่างอ่านง่ายกว่า) */
+:root {
+  color-scheme: light;
+}
+
+html {
+  background: #f8fafc; /* slate-50 */
+}
+
+body {
+  font-family: var(--font-sarabun), "Sarabun", sans-serif;
+}
