@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+
+<html lang="th"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-surface-variant":"#3e4a3d","on-tertiary":"#ffffff","error-container":"#ffdad6","on-primary-fixed":"#002109","surface-container-highest":"#dae2fd","primary-fixed":"#7ffc97","on-secondary-fixed-variant":"#004b73","primary-fixed-dim":"#62df7d","on-primary-fixed-variant":"#005320","surface-bright":"#faf8ff","error":"#ba1a1a","on-secondary-container":"#00476e","surface-container-lowest":"#ffffff","on-secondary":"#ffffff","on-tertiary-fixed":"#2f1500","secondary":"#006398","surface-dim":"#d2d9f4","secondary-fixed":"#cce5ff","on-error":"#ffffff","inverse-on-surface":"#eef0ff","surface-container":"#eaedff","on-primary-container":"#f7fff2","secondary-container":"#5bb8fe","tertiary":"#8d4b00","on-tertiary-fixed-variant":"#6e3900","primary":"#006b2c","primary-container":"#00873a","tertiary-fixed-dim":"#ffb77d","surface-container-low":"#f2f3ff","on-surface":"#131b2e","secondary-fixed-dim":"#93ccff","outline":"#6e7b6c","on-background":"#131b2e","background":"#faf8ff","tertiary-container":"#b15f00","surface-tint":"#006e2d","surface-container-high":"#e2e7ff","tertiary-fixed":"#ffdcc3","on-secondary-fixed":"#001d31","on-error-container":"#93000a","inverse-surface":"#283044","surface":"#faf8ff","inverse-primary":"#62df7d","on-tertiary-container":"#fffbff","outline-variant":"#bdcaba","on-primary":"#ffffff","surface-variant":"#dae2fd"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-xs":"0.25rem","space-md":"0.75rem","space-sm":"0.5rem","gutter":"1rem","margin":"1rem","space-xl":"2rem","space-lg":"1.25rem"},"fontFamily":{"display-lg":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"display-lg-mobile":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"]},"fontSize":{"display-lg":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"700"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.04em","fontWeight":"700"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}],"headline-lg":["24px",{"lineHeight":"32px","fontWeight":"700"}],"display-lg-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"700"}],"body-md":["15px",{"lineHeight":"22px","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"body-sm":["13px",{"lineHeight":"18px","fontWeight":"400"}],"label-lg":["14px",{"lineHeight":"20px","fontWeight":"600"}],"headline-sm":["18px",{"lineHeight":"24px","fontWeight":"600"}],"headline-md":["20px",{"lineHeight":"28px","fontWeight":"600"}]}}}}</script></head><body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-fixed selection:text-on-primary-fixed"><header class="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 max-w-7xl mx-auto px-margin flex items-center justify-between gap-gutter"><div class="flex items-center gap-space-md"><img alt="WarMa Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UWUJby26nCYB5zEVJ0KRtswZjVFwQgsrBCQRf7UF6p34EYkieAnWs48gLhWpqp_oZ_TcrOznDWxA-D5u3eBMFRs3INJ8eV-ppQDaU1pU3e5OtI5-mdtRk-WXNuvuoYje9qS-FGwvp_N-ZCN2d-L8vUaJPqxqD4ujM4in2V4QOYMzCd4K-8QDcuwHT5xhP8YM3zH30hvd-ys3--UwWvFhyvF_SOLCLSNt5TTR6cDxSgwT8GBZb-wtj5XXs"/><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-primary tracking-tight">WarMa</span><span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm">TH</span></div><span class="font-label-sm text-label-sm text-on-surface-variant hidden sm:inline-block">ระบบแนะนำการจัดการน้ำมันสำปะหลังอัจฉริยะ</span></div></div><nav class="hidden md:flex items-center gap-space-xs p-space-xs bg-surface-container-lowest rounded-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]" data-active-classes="bg-primary text-on-primary font-label-lg rounded-xl shadow-sm"><a aria-current="page" class="px-space-md py-space-sm transition-colors bg-primary text-on-primary font-label-lg rounded-xl shadow-sm" data-path="water-calculator" href="#">คำนวณการใช้น้ำ</a><a class="px-space-md py-space-sm rounded-xl font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="advisory-and-results" href="#">ผลวิเคราะห์และคำแนะนำ</a><a class="px-space-md py-space-sm rounded-xl font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="cassava-variety-guide" href="#">คู่มือพันธุ์มันสำปะหลัง</a></nav><div class="flex items-center gap-space-md"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div><div class="md:hidden flex items-center justify-around py-space-xs bg-surface-container-lowest shadow-[0_1px_4px_rgba(0,0,0,0.02)]"><nav class="flex w-full px-space-sm justify-between gap-space-xs" data-active-classes="bg-primary text-on-primary font-label-sm rounded-lg"><a aria-current="page" class="flex-1 py-space-xs px-space-xs transition-colors bg-primary text-on-primary font-label-sm rounded-lg" data-path="water-calculator" href="#">คำนวณน้ำ</a><a class="flex-1 text-center py-space-xs px-space-xs rounded-lg font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="advisory-and-results" href="#">ผลวิเคราะห์</a><a class="flex-1 text-center py-space-xs px-space-xs rounded-lg font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="cassava-variety-guide" href="#">คู่มือพันธุ์</a></nav></div></header><main class="w-full pt-20 bg-surface min-h-[calc(100vh-80px)]"><div class="flex flex-col w-full">
+<div class="max-w-7xl mx-auto px-margin py-space-lg w-full">
+<!-- Top Branding & Biophysical Simulation Engine Status -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md mb-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-14 h-14 rounded-2xl bg-surface-container-lowest p-2 shadow-sm flex items-center justify-center shrink-0">
+<img alt="WarMa Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UWUJby26nCYB5zEVJ0KRtswZjVFwQgsrBCQRf7UF6p34EYkieAnWs48gLhWpqp_oZ_TcrOznDWxA-D5u3eBMFRs3INJ8eV-ppQDaU1pU3e5OtI5-mdtRk-WXNuvuoYje9qS-FGwvp_N-ZCN2d-L8vUaJPqxqD4ujM4in2V4QOYMzCd4K-8QDcuwHT5xhP8YM3zH30hvd-ys3--UwWvFhyvF_SOLCLSNt5TTR6cDxSgwT8GBZb-wtj5XXs"/>
+</div>
+<div>
+<div class="flex items-center gap-space-xs">
+<span class="font-display-lg text-display-lg text-primary tracking-tight">WarMa</span>
+<span class="bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm px-2 py-0.5 rounded-full uppercase tracking-wider font-bold">DSSAT v4.8</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant font-medium">ระบบแนะนำการจัดการน้ำมันสำปะหลังแม่นยำสูง</p>
+</div>
+</div>
+<!-- Engine Status Badge -->
+<div class="flex items-center gap-space-sm bg-surface-container-lowest px-space-md py-space-xs rounded-full shadow-sm self-start md:self-auto">
+<span class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-container opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">ระบบจำลอง DSSAT v4.8 พร้อมใช้งาน</span>
+</div>
+</div>
+<!-- Quick Preset Scenario Carousel / Selector -->
+<div class="mb-space-lg">
+<div class="flex items-center justify-between mb-space-xs">
+<label class="font-label-lg text-label-lg text-on-surface-variant flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[18px]">bolt</span>
+          สถานการณ์จำลองตัวอย่าง (กดสลับค่าด่วน):
+        </label>
+<span class="font-label-sm text-label-sm text-on-surface-variant">4 รูปแบบแปลง</span>
+</div>
+<div class="flex gap-space-sm overflow-x-auto pb-2 scrollbar-none snap-x" id="presetBar">
+<button class="preset-btn snap-start shrink-0 flex items-center gap-space-xs px-space-md py-space-sm rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-md transition-all scale-100" id="preset-ku50-deficit" onclick="applyPreset('ku50-deficit')" type="button">
+<span class="material-symbols-outlined text-[18px]">eco</span>
+<span>🌾 KU50 น้ำจำกัด (4.8 ตัน)</span>
+</button>
+<button class="preset-btn snap-start shrink-0 flex items-center gap-space-xs px-space-md py-space-sm rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm transition-all hover:bg-surface-container-high" id="preset-ku50-rain" onclick="applyPreset('ku50-rain')" type="button">
+<span class="material-symbols-outlined text-secondary text-[18px]">cloud</span>
+<span>🌧️ KU50 พึ่งฝน (3.2 ตัน)</span>
+</button>
+<button class="preset-btn snap-start shrink-0 flex items-center gap-space-xs px-space-md py-space-sm rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm transition-all hover:bg-surface-container-high" id="preset-rayong9-full" onclick="applyPreset('rayong9-full')" type="button">
+<span class="material-symbols-outlined text-secondary-container text-[18px]">water_drop</span>
+<span>💧 ระยอง 9 น้ำเต็มที่ (5.2 ตัน)</span>
+</button>
+<button class="preset-btn snap-start shrink-0 flex items-center gap-space-xs px-space-md py-space-sm rounded-full bg-surface-container-lowest text-error font-label-md text-label-md shadow-sm transition-all hover:bg-error-container/40" id="preset-out-of-bound" onclick="applyPreset('out-of-bound')" type="button">
+<span class="material-symbols-outlined text-error text-[18px]">error</span>
+<span>🚫 ทดสอบค่านอกแบบจำลอง</span>
+</button>
+</div>
+</div>
+<!-- Main Dynamic Layout: Form + Analytical Preview -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- Primary Input Form Card -->
+<div class="lg:col-span-7 bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm flex flex-col gap-space-lg">
+<!-- Field 1: Cassava Variety -->
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<label class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[22px]">psychiatry</span>
+              1. สายพันธุ์มันสำปะหลัง
+            </label>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-low px-2 py-0.5 rounded">Crop Genetic Profile</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm" id="cultivarGrid">
+<!-- KU50 Card -->
+<label class="cultivar-card cursor-pointer rounded-xl p-space-md bg-surface-container-lowest shadow-sm flex flex-col justify-between transition-all" onclick="selectCultivar('ku50')">
+<input checked="" class="hidden" name="cultivar" type="radio" value="ku50"/>
+<div class="flex items-start justify-between">
+<div>
+<div class="font-label-lg text-label-lg font-bold text-on-surface">เกษตรศาสตร์ 50 (KU50)</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold">แนะนำสำหรับน้ำจำกัด</span>
+</div>
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center check-badge shrink-0">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">ทนแล้งสูง ให้เปอร์เซ็นต์แป้งสม่ำเสมอ ประสิทธิภาพการใช้น้ำ (WUE) ยอดเยี่ยม</p>
+</label>
+<!-- Rayong 9 Card -->
+<label class="cultivar-card cursor-pointer rounded-xl p-space-md bg-surface-container-low opacity-90 shadow-none flex flex-col justify-between transition-all hover:bg-surface-container" onclick="selectCultivar('rayong9')">
+<input class="hidden" name="cultivar" type="radio" value="rayong9"/>
+<div class="flex items-start justify-between">
+<div>
+<div class="font-label-lg text-label-lg font-bold text-on-surface">ระยอง 9 (Rayong 9)</div>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">ศักยภาพแป้งอุตสาหกรรม</span>
+</div>
+<div class="w-6 h-6 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center check-badge shrink-0">
+<span class="material-symbols-outlined text-[16px]">circle</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">ตอบสนองต่อน้ำและปุ๋ยได้ดีมาก ผลผลิตหัวสดและแป้งสูงเมื่อได้น้ำช่วงสะสมอาหาร</p>
+</label>
+<!-- CMR38-125-77 Card -->
+<label class="cultivar-card cursor-pointer rounded-xl p-space-md bg-surface-container-low opacity-90 shadow-none flex flex-col justify-between transition-all hover:bg-surface-container" onclick="selectCultivar('cmr')">
+<input class="hidden" name="cultivar" type="radio" value="cmr"/>
+<div class="flex items-start justify-between">
+<div>
+<div class="font-label-lg text-label-lg font-bold text-on-surface">CMR38-125-77</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">สายพันธุ์ทนทานก้าวหน้า</span>
+</div>
+<div class="w-6 h-6 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center check-badge shrink-0">
+<span class="material-symbols-outlined text-[16px]">circle</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">ระบบรากหยั่งลึก เหมาะกับสภาพเนื้อดินร่วนทราย ระบายน้ำเร็ว</p>
+</label>
+<!-- Huay Bong 90 (Out of model alert) Card -->
+<label class="cultivar-card cursor-pointer rounded-xl p-space-md bg-surface-container-low opacity-90 shadow-none flex flex-col justify-between transition-all hover:bg-surface-container" onclick="selectCultivar('hb90')">
+<input class="hidden" name="cultivar" type="radio" value="hb90"/>
+<div class="flex items-start justify-between">
+<div>
+<div class="font-label-lg text-label-lg font-bold text-on-surface">ห้วยบง 90</div>
+<span class="font-label-sm text-label-sm text-error font-semibold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                    อยู่นอกชุดพารามิเตอร์ DSSAT
+                  </span>
+</div>
+<div class="w-6 h-6 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center check-badge shrink-0">
+<span class="material-symbols-outlined text-[16px]">circle</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-error mt-space-xs bg-error-container/40 p-1.5 rounded">⚠️ ไม่พบค่าพันธุกรรม (Genetic Coefficients) ในฐานข้อมูลปัจจุบัน</p>
+</label>
+</div>
+</div>
+<!-- Field 2: Planting Season -->
+<div>
+<label class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-space-xs mb-space-sm">
+<span class="material-symbols-outlined text-primary text-[22px]">calendar_month</span>
+            2. ช่วงเวลาปลูก (Crop Phenology Cycle)
+          </label>
+<div class="grid grid-cols-2 gap-space-sm">
+<button class="season-btn flex flex-col items-center justify-center p-space-md rounded-xl bg-surface-container-lowest shadow-sm text-center transition-all" id="season-early" onclick="setSeason('early')" type="button">
+<span class="font-headline-sm text-headline-sm mb-1">🌱</span>
+<span class="font-label-lg text-label-lg font-bold text-primary">ต้นฤดูฝน</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">พฤษภาคม - มิถุนายน</span>
+</button>
+<button class="season-btn flex flex-col items-center justify-center p-space-md rounded-xl bg-surface-container-low text-center opacity-85 transition-all hover:bg-surface-container" id="season-late" onclick="setSeason('late')" type="button">
+<span class="font-headline-sm text-headline-sm mb-1">🍂</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">ปลายฤดูฝน</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">ตุลาคม - พฤศจิกายน</span>
+</button>
+</div>
+</div>
+<!-- Field 3: Cultivated Area -->
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<label class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[22px]">grid_goldenratio</span>
+              3. ขนาดพื้นที่เพาะปลูก
+            </label>
+<span class="font-label-md text-label-md text-on-surface-variant font-bold">หน่วย: ไร่</span>
+</div>
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-sm">
+<div class="relative flex-1">
+<input class="w-full text-right font-display-lg text-display-lg font-bold py-space-sm px-space-lg rounded-xl bg-surface-container-low text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:shadow-md transition-all" id="inputArea" max="500" min="1" oninput="recalculate()" type="number" value="10"/>
+<span class="absolute left-4 top-1/2 -translate-y-1/2 font-label-lg text-label-lg font-bold text-on-surface-variant bg-surface-container-lowest px-2.5 py-1 rounded-md shadow-xs">ไร่ (Rai)</span>
+</div>
+<!-- Stepper Buttons -->
+<div class="flex items-center gap-space-xs">
+<button class="flex-1 sm:flex-none px-space-md py-space-sm rounded-xl bg-surface-container font-label-lg text-label-lg text-on-surface font-bold hover:bg-primary hover:text-on-primary transition-colors shadow-xs" onclick="adjustArea(1)" type="button">+1</button>
+<button class="flex-1 sm:flex-none px-space-md py-space-sm rounded-xl bg-surface-container font-label-lg text-label-lg text-on-surface font-bold hover:bg-primary hover:text-on-primary transition-colors shadow-xs" onclick="adjustArea(5)" type="button">+5</button>
+<button class="flex-1 sm:flex-none px-space-md py-space-sm rounded-xl bg-surface-container font-label-lg text-label-lg text-on-surface font-bold hover:bg-primary hover:text-on-primary transition-colors shadow-xs" onclick="adjustArea(10)" type="button">+10</button>
+</div>
+</div>
+</div>
+<!-- Field 4: Water Availability -->
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<label class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[22px]">water</span>
+              4. ปริมาณน้ำต้นทุนที่จัดหาได้ทั้งฤดู
+            </label>
+<span class="font-label-md text-label-md text-secondary font-bold">หน่วย: ลบ.ม. (m³)</span>
+</div>
+<div class="relative mb-space-sm">
+<input class="w-full text-right font-display-lg text-display-lg font-bold py-space-sm px-space-lg rounded-xl bg-surface-container-low text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:shadow-md transition-all" id="inputWater" min="0" oninput="recalculate()" step="500" type="number" value="5000"/>
+<span class="absolute left-4 top-1/2 -translate-y-1/2 font-label-lg text-label-lg font-bold text-secondary bg-surface-container-lowest px-2.5 py-1 rounded-md shadow-xs">ลบ.ม. (m³)</span>
+</div>
+<!-- Quick Water Tier Selector -->
+<div class="grid grid-cols-3 gap-space-xs">
+<button class="py-space-xs px-space-sm rounded-lg bg-surface-container text-on-surface font-label-md text-label-md hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors text-center" onclick="setWater(2000)" type="button">
+              2,000 m³ (จำกัด)
+            </button>
+<button class="py-space-xs px-space-sm rounded-lg bg-secondary text-on-secondary font-label-md text-label-md shadow-xs transition-colors text-center" onclick="setWater(5000)" type="button">
+              5,000 m³ (ปานกลาง)
+            </button>
+<button class="py-space-xs px-space-sm rounded-lg bg-surface-container text-on-surface font-label-md text-label-md hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors text-center" onclick="setWater(8000)" type="button">
+              8,000 m³ (สมบูรณ์)
+            </button>
+</div>
+</div>
+</div>
+<!-- Analytical Preview Column (Outdoor High-Contrast Glanceable Display) -->
+<div class="lg:col-span-5 flex flex-col gap-space-lg">
+<!-- Live Biophysical Indicator Card -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-md">
+<span class="font-label-lg text-label-lg text-on-surface font-bold uppercase tracking-wider flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[20px]">analytics</span>
+                ผลการคำนวณเบื้องต้น (Real-time)
+              </span>
+<span class="px-space-md py-space-xs rounded-full bg-primary-fixed text-on-primary-fixed font-label-md text-label-md font-bold" id="badgeSuitability">
+                เหมาะสมสูง
+              </span>
+</div>
+<!-- Metric Radial / Big Display -->
+<div class="bg-gradient-to-br from-surface-container-low via-surface-container-lowest to-surface-container p-space-lg rounded-2xl flex flex-col items-center justify-center text-center my-space-sm shadow-inner">
+<div class="font-label-md text-label-md text-on-surface-variant font-bold mb-1">สัดส่วนน้ำต้นทุนเฉลี่ยต่อพื้นที่</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-primary font-bold tracking-tight" id="displayRatio">500</span>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant font-semibold">ลบ.ม./ไร่</span>
+</div>
+<div class="w-full bg-surface-container-high h-2.5 rounded-full mt-space-md overflow-hidden relative">
+<div class="h-full bg-primary rounded-full transition-all duration-500" id="ratioBar" style="width: 62%;"></div>
+</div>
+<div class="w-full flex justify-between font-label-sm text-label-sm text-on-surface-variant mt-1.5 px-0.5">
+<span>0 (พึ่งฝน)</span>
+<span>350 (วิกฤต)</span>
+<span>800+ (เต็มรูป)</span>
+</div>
+</div>
+<!-- Model Strategy Recommendation Preview -->
+<div class="mt-space-md p-space-md rounded-xl bg-surface-container-low flex items-start gap-space-sm transition-all" id="regimeStatusBox">
+<span class="material-symbols-outlined text-primary text-[24px] shrink-0 mt-0.5" id="regimeIcon">verified</span>
+<div>
+<div class="font-label-lg text-label-lg font-bold text-on-surface" id="regimeTitle">การจัดการน้ำแบบจำกัดช่วงวิกฤต (Deficit Irrigation)</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5" id="regimeDesc">
+                  ปริมาณน้ำ 500 ลบ.ม./ไร่ เพียงพอต่อการให้น้ำแบบประหยัดน้ำหยด 4 ครั้ง ในช่วง 1-3 เดือนแรก เพื่อกระตุ้นการแตกรากและสร้างจำนวนหัวต่อกอ
+                </p>
+</div>
+</div>
+<!-- Projected Yield & Starch Estimate Mini Grid -->
+<div class="grid grid-cols-2 gap-space-sm mt-space-md">
+<div class="bg-surface-container-low p-space-sm rounded-xl text-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">คาดการณ์ผลผลิตเฉลี่ย</span>
+<div class="font-headline-md text-headline-md font-bold text-primary mt-0.5" id="predYield">4.8 ตัน/ไร่</div>
+</div>
+<div class="bg-surface-container-low p-space-sm rounded-xl text-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">เปอร์เซ็นต์แป้งหัวสด</span>
+<div class="font-headline-md text-headline-md font-bold text-secondary mt-0.5" id="predStarch">27.5 %</div>
+</div>
+</div>
+</div>
+<!-- Boundary Condition Banner (Conditional View Toggle) -->
+<div class="hidden mt-space-md p-space-md bg-error-container text-on-error-container rounded-xl flex items-start gap-space-sm" id="boundaryAlert">
+<span class="material-symbols-outlined text-error text-[24px] shrink-0">error_outline</span>
+<div>
+<div class="font-label-lg text-label-lg font-bold">แจ้งเตือน: อยู่นอกช่วงการจำลอง (Out of Boundary)</div>
+<p class="font-body-sm text-body-sm mt-1">
+                พารามิเตอร์ที่เลือกไม่สามารถคำนวณผ่าน DSSAT v4.8 ได้ เนื่องจากพันธุ์หรือปริมาณน้ำไม่สอดคล้องกับฐานข้อมูลวิจัย
+              </p>
+</div>
+</div>
+<!-- Primary Submit Button -->
+<div class="mt-space-lg">
+<a class="w-full group relative flex flex-col items-center justify-center p-space-md rounded-2xl bg-gradient-to-r from-primary to-primary-container text-on-primary font-headline-sm text-headline-sm shadow-lg hover:shadow-xl hover:brightness-105 active:scale-[0.99] transition-all text-center" data-path="advisory-and-results" href="#">
+<div class="flex items-center gap-space-xs font-bold">
+<span>คำนวณและแสดงคำแนะนำการจัดการน้ำ</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<p class="font-label-sm text-label-sm text-on-surface-variant text-center mt-space-xs flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary">verified_user</span>
+              อิงแบบจำลองชีวฟิสิกส์ DSSAT Cassava Crop Model สำหรับประเทศไทย
+            </p>
+</div>
+</div>
+<!-- Demonstration Boundary Switch Quick Toggle -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-xl bg-surface-container flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[20px]">science</span>
+</div>
+<div>
+<div class="font-label-md text-label-md font-bold text-on-surface">จำลองกรณีค่านอกกรอบวิจัย</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">ทดสอบ UI เมื่อแบบจำลองไม่รองรับ</div>
+</div>
+</div>
+<button class="px-space-md py-space-xs rounded-xl bg-surface-container font-label-md text-label-md text-on-surface font-semibold hover:bg-error-container hover:text-on-error-container transition-colors" id="btnBoundaryDemo" onclick="toggleBoundaryMock()" type="button">
+            ทดสอบสลับ
+          </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  let currentPreset = 'ku50-deficit';
+  let isBoundaryMode = false;
+
+  function recalculate() {
+    const areaInput = document.getElementById('inputArea');
+    const waterInput = document.getElementById('inputWater');
+    const ratioDisplay = document.getElementById('displayRatio');
+    const ratioBar = document.getElementById('ratioBar');
+    const regimeTitle = document.getElementById('regimeTitle');
+    const regimeDesc = document.getElementById('regimeDesc');
+    const predYield = document.getElementById('predYield');
+    const predStarch = document.getElementById('predStarch');
+    const badge = document.getElementById('badgeSuitability');
+
+    const area = Math.max(1, parseFloat(areaInput.value) || 1);
+    const water = Math.max(0, parseFloat(waterInput.value) || 0);
+    const ratio = Math.round(water / area);
+
+    ratioDisplay.innerText = ratio.toLocaleString();
+
+    // Scale ratio bar (0 to 1000 scale)
+    const pct = Math.min(100, Math.max(5, (ratio / 1000) * 100));
+    ratioBar.style.width = pct + '%';
+
+    if (ratio < 200) {
+      badge.innerText = 'พึ่งฝนธรรมชาติ';
+      badge.className = 'px-space-md py-space-xs rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md font-bold';
+      regimeTitle.innerText = 'เน้นการกักเก็บความชื้นในดิน';
+      regimeDesc.innerText = 'น้ำต้นทุนจำกัด แนะนำการยกร่องสูงร่วมกับใช้วัสดุคลุมดินเพื่อรักษาความชื้นจากฝนในช่วงต้น';
+      predYield.innerText = '3.2 ตัน/ไร่';
+      predStarch.innerText = '25.0 %';
+    } else if (ratio < 650) {
+      badge.innerText = 'เหมาะสมสูง (น้ำประหยัด)';
+      badge.className = 'px-space-md py-space-xs rounded-full bg-primary-fixed text-on-primary-fixed font-label-md text-label-md font-bold';
+      regimeTitle.innerText = 'การจัดการน้ำแบบจำกัดช่วงวิกฤต (Deficit Irrigation)';
+      regimeDesc.innerText = 'ปริมาณน้ำเพียงพอต่อการให้น้ำแบบประหยัดน้ำหยด 4 ครั้ง ในช่วง 1-3 เดือนแรก เพื่อสร้างผลผลิตสูงสุดต่อหน่วยน้ำ';
+      predYield.innerText = '4.8 ตัน/ไร่';
+      predStarch.innerText = '27.5 %';
+    } else {
+      badge.innerText = 'น้ำสมบูรณ์ (เต็มศักยภาพ)';
+      badge.className = 'px-space-md py-space-xs rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md font-bold';
+      regimeTitle.innerText = 'ให้น้ำเต็มศักยภาพตามรอบการใช้น้ำ (Full Irrigation)';
+      regimeDesc.innerText = 'สามารถให้น้ำตามอัตราการคายระเหย (ETc) ตลอดฤดูแล้ง ผลผลิตและขนาดหัวจะโตอย่างต่อเนื่อง';
+      predYield.innerText = '5.4 ตัน/ไร่';
+      predStarch.innerText = '29.0 %';
+    }
+  }
+
+  function adjustArea(amount) {
+    const input = document.getElementById('inputArea');
+    let val = parseInt(input.value) || 0;
+    input.value = Math.max(1, val + amount);
+    recalculate();
+  }
+
+  function setWater(amount) {
+    const input = document.getElementById('inputWater');
+    input.value = amount;
+    recalculate();
+  }
+
+  function setSeason(season) {
+    const btnEarly = document.getElementById('season-early');
+    const btnLate = document.getElementById('season-late');
+    if (season === 'early') {
+      btnEarly.className = 'season-btn flex flex-col items-center justify-center p-space-md rounded-xl bg-surface-container-lowest shadow-sm text-center transition-all';
+      btnEarly.querySelector('span:nth-child(2)').className = 'font-label-lg text-label-lg font-bold text-primary';
+      btnLate.className = 'season-btn flex flex-col items-center justify-center p-space-md rounded-xl bg-surface-container-low text-center opacity-85 transition-all hover:bg-surface-container';
+      btnLate.querySelector('span:nth-child(2)').className = 'font-label-lg text-label-lg font-bold text-on-surface';
+    } else {
+      btnLate.className = 'season-btn flex flex-col items-center justify-center p-space-md rounded-xl bg-surface-container-lowest shadow-sm text-center transition-all';
+      btnLate.querySelector('span:nth-child(2)').className = 'font-label-lg text-label-lg font-bold text-primary';
+      btnEarly.className = 'season-btn flex flex-col items-center justify-center p-space-md rounded-xl bg-surface-container-low text-center opacity-85 transition-all hover:bg-surface-container';
+      btnEarly.querySelector('span:nth-child(2)').className = 'font-label-lg text-label-lg font-bold text-on-surface';
+    }
+  }
+
+  function selectCultivar(cultivarKey) {
+    const cards = document.querySelectorAll('.cultivar-card');
+    cards.forEach(c => {
+      c.classList.remove('bg-surface-container-lowest', 'shadow-sm', 'opacity-100');
+      c.classList.add('bg-surface-container-low', 'shadow-none', 'opacity-90');
+      const badge = c.querySelector('.check-badge');
+      badge.className = 'w-6 h-6 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center check-badge shrink-0';
+      badge.innerHTML = '<span class="material-symbols-outlined text-[16px]">circle</span>';
+    });
+
+    const targetRadio = document.querySelector('input[name="cultivar"][value="' + cultivarKey + '"]');
+    if (targetRadio) {
+      targetRadio.checked = true;
+      const card = targetRadio.closest('.cultivar-card');
+      card.classList.add('bg-surface-container-lowest', 'shadow-sm', 'opacity-100');
+      card.classList.remove('bg-surface-container-low', 'opacity-90');
+      const badge = card.querySelector('.check-badge');
+      if (cultivarKey === 'hb90') {
+        badge.className = 'w-6 h-6 rounded-full bg-error text-on-error flex items-center justify-center check-badge shrink-0';
+        badge.innerHTML = '<span class="material-symbols-outlined text-[16px]">warning</span>';
+        showBoundaryAlert(true);
+      } else {
+        badge.className = 'w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center check-badge shrink-0';
+        badge.innerHTML = '<span class="material-symbols-outlined text-[16px]">check</span>';
+        showBoundaryAlert(false);
+      }
+    }
+  }
+
+  function showBoundaryAlert(visible) {
+    const alertBox = document.getElementById('boundaryAlert');
+    if (visible) {
+      alertBox.classList.remove('hidden');
+    } else {
+      alertBox.classList.add('hidden');
+    }
+  }
+
+  function toggleBoundaryMock() {
+    isBoundaryMode = !isBoundaryMode;
+    if (isBoundaryMode) {
+      selectCultivar('hb90');
+      document.getElementById('inputWater').value = '15000';
+      document.getElementById('inputArea').value = '3';
+      recalculate();
+      showBoundaryAlert(true);
+      document.getElementById('btnBoundaryDemo').innerText = 'กลับสู่ค่าปกติ';
+      document.getElementById('btnBoundaryDemo').classList.add('bg-error', 'text-on-error');
+    } else {
+      applyPreset('ku50-deficit');
+      document.getElementById('btnBoundaryDemo').innerText = 'ทดสอบสลับ';
+      document.getElementById('btnBoundaryDemo').classList.remove('bg-error', 'text-on-error');
+    }
+  }
+
+  function applyPreset(presetKey) {
+    const buttons = document.querySelectorAll('.preset-btn');
+    buttons.forEach(b => {
+      b.className = 'preset-btn snap-start shrink-0 flex items-center gap-space-xs px-space-md py-space-sm rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm transition-all hover:bg-surface-container-high';
+    });
+
+    const activeBtn = document.getElementById('preset-' + presetKey);
+    if (activeBtn) {
+      if (presetKey === 'out-of-bound') {
+        activeBtn.className = 'preset-btn snap-start shrink-0 flex items-center gap-space-xs px-space-md py-space-sm rounded-full bg-error text-on-error font-label-md text-label-md shadow-md transition-all';
+      } else {
+        activeBtn.className = 'preset-btn snap-start shrink-0 flex items-center gap-space-xs px-space-md py-space-sm rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-md transition-all';
+      }
+    }
+
+    if (presetKey === 'ku50-deficit') {
+      selectCultivar('ku50');
+      setSeason('early');
+      document.getElementById('inputArea').value = '10';
+      document.getElementById('inputWater').value = '5000';
+      showBoundaryAlert(false);
+    } else if (presetKey === 'ku50-rain') {
+      selectCultivar('ku50');
+      setSeason('early');
+      document.getElementById('inputArea').value = '15';
+      document.getElementById('inputWater').value = '1000';
+      showBoundaryAlert(false);
+    } else if (presetKey === 'rayong9-full') {
+      selectCultivar('rayong9');
+      setSeason('early');
+      document.getElementById('inputArea').value = '10';
+      document.getElementById('inputWater').value = '8000';
+      showBoundaryAlert(false);
+    } else if (presetKey === 'out-of-bound') {
+      selectCultivar('hb90');
+      setSeason('late');
+      document.getElementById('inputArea').value = '20';
+      document.getElementById('inputWater').value = '0';
+      showBoundaryAlert(true);
+    }
+    recalculate();
+  }
+
+  // Initialize
+  recalculate();
+</script></main><footer class="w-full bg-surface-container-low py-space-lg shadow-[0_-1px_6px_rgba(0,0,0,0.02)]"><div class="max-w-7xl mx-auto px-margin flex flex-col sm:flex-row items-center justify-between gap-space-md text-center sm:text-left"><div class="flex flex-col"><span class="font-label-lg text-label-lg text-on-surface">WarMa - Water Resources Management Advisor</span><span class="font-body-sm text-body-sm text-on-surface-variant">ระบบแนะนำการจัดการน้ำมันสำปะหลังอัจฉริยะเพื่อเกษตรกรไทย</span></div><div class="font-label-sm text-label-sm text-on-surface-variant">© 2024 WarMa. เพื่อการเกษตรแม่นยำและยั่งยืน.</div></div></footer></body></html>

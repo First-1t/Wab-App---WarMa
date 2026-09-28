@@ -1,0 +1,14 @@
+{
+  "name": "warma-output-dev",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "WarMa Water Resources Management Advisor - Output Module Development",
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "start:backend": "npm --prefix backend start",
+    "build:frontend": "npm --prefix frontend run build"
+  }
+}
