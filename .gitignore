@@ -22,3 +22,6 @@ build/
 *.pdf
 *todo*
 TODO*
+
+# ข้อมูลที่แก้ผ่านหน้า Admin (scenarios, feedback, ผู้รับแจ้งเตือน)
+backend/data/
