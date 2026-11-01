@@ -3,8 +3,8 @@ import { adminApi, type FeedbackSummary } from '../services/admin-api.service';
 
 const Stars = ({ n }: { n: number }) => (
   <span role="img" aria-label={`${n} จาก 5 ดาว`}>
-    <span className="text-tertiary-container">{'★'.repeat(n)}</span>
-    <span className="text-outline-variant">{'★'.repeat(5 - n)}</span>
+    <span className="text-warning">{'★'.repeat(n)}</span>
+    <span className="text-border">{'★'.repeat(5 - n)}</span>
   </span>
 );
 
@@ -23,10 +23,10 @@ export function FeedbackViewer() {
   const max = Math.max(1, ...(data?.distribution ?? []));
 
   return (
-    <section className="rounded-xl border border-surface-container bg-surface-container-lowest p-5 shadow-xs">
-      <h2 className="mb-3 font-bold text-primary">ความคิดเห็นผู้ใช้ {data && `(${data.count})`}</h2>
+    <section className="rounded-xl border border-border bg-surface p-5 shadow-xs">
+      <h2 className="mb-3 font-bold text-brand">ความคิดเห็นผู้ใช้ {data && `(${data.count})`}</h2>
       {error && (
-        <p role="alert" className="rounded-lg bg-error-container px-3 py-2 text-sm text-on-error-container">
+        <p role="alert" className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
           โหลดความคิดเห็นไม่สำเร็จ: {error}
         </p>
       )}
@@ -38,7 +38,7 @@ export function FeedbackViewer() {
         <>
           <div className="grid gap-4 sm:grid-cols-[auto_1fr] sm:items-center">
             <div className="text-center sm:px-4">
-              <div className="text-4xl font-bold text-tertiary">{data.average?.toFixed(1)}</div>
+              <div className="text-4xl font-bold text-warning">{data.average?.toFixed(1)}</div>
               <Stars n={Math.round(data.average ?? 0)} />
               <div className="text-sm text-on-surface-variant">จาก {data.count} ความคิดเห็น</div>
             </div>
@@ -48,9 +48,9 @@ export function FeedbackViewer() {
                 return (
                   <div key={star} className="flex items-center gap-2 text-sm">
                     <span className="w-7 text-right text-on-surface-variant">{star}★</span>
-                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-surface-container">
+                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-surface-container-high">
                       <div
-                        className="h-full rounded-full bg-tertiary-container"
+                        className="h-full rounded-full bg-warning"
                         style={{ width: `${(n / max) * 100}%` }}
                       />
                     </div>
@@ -60,7 +60,7 @@ export function FeedbackViewer() {
               })}
             </div>
           </div>
-          <ul className="mt-4 max-h-96 divide-y divide-surface-container overflow-y-auto">
+          <ul className="mt-4 max-h-96 divide-y divide-border overflow-y-auto">
             {data.items.map((f) => (
               <li key={f.id} className="py-2.5">
                 <div className="flex items-center justify-between gap-2 text-sm">

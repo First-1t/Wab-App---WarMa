@@ -45,7 +45,7 @@ export function RequireAdminAuth({
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center p-6">
-        <p role="alert" className="rounded-lg bg-error-container px-4 py-3 text-sm text-on-error-container">
+        <p role="alert" className="rounded-lg bg-danger/10 px-4 py-3 text-sm text-danger">
           {error}
         </p>
       </div>

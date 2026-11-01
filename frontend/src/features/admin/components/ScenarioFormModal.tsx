@@ -35,7 +35,7 @@ export function emptyScenario(partial: Partial<ScenarioInput>): ScenarioInput {
 }
 
 const input =
-  'w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 text-base focus:border-primary focus:ring-2 focus:ring-primary-fixed focus:outline-none disabled:bg-surface-container';
+  'w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-base focus:border-brand focus:ring-2 focus:ring-tint-sky focus:outline-none disabled:bg-surface-container';
 
 function Field({
   id,
@@ -91,9 +91,9 @@ function NumberField({
 
 function Section({ step, title, children }: { step: number; title: string; children: ReactNode }) {
   return (
-    <section className="rounded-xl border border-surface-container p-4 sm:p-5">
-      <h3 className="flex items-center gap-2 font-bold text-primary">
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary-fixed text-sm text-on-primary-fixed">
+    <section className="rounded-xl border border-border p-4 sm:p-5">
+      <h3 className="flex items-center gap-2 font-bold text-brand">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-tint-mint text-sm text-text">
           {step}
         </span>
         {title}
@@ -184,16 +184,16 @@ export function ScenarioFormModal({
         e.preventDefault();
         requestClose();
       }}
-      className="m-0 h-dvh max-h-none w-full max-w-none bg-transparent p-0 backdrop:bg-inverse-surface/50 sm:m-auto sm:h-auto sm:max-h-[92dvh] sm:max-w-2xl sm:rounded-2xl"
+      className="m-0 h-dvh max-h-none w-full max-w-none bg-transparent p-0 backdrop:bg-text/50 sm:m-auto sm:h-auto sm:max-h-[92dvh] sm:max-w-2xl sm:rounded-2xl"
     >
       <form
         onSubmit={submit}
         noValidate
-        className="flex h-full flex-col bg-surface-container-lowest text-on-surface sm:max-h-[92dvh] sm:rounded-2xl"
+        className="flex h-full flex-col bg-surface text-on-surface sm:max-h-[92dvh] sm:rounded-2xl"
       >
-        <div className="flex items-center justify-between gap-3 border-b border-surface-container px-5 py-4">
+        <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
           <div className="min-w-0">
-            <h2 id={id('title')} className="text-lg font-bold text-primary">
+            <h2 id={id('title')} className="text-lg font-bold text-brand">
               {isEdit ? 'แก้ไขข้อมูลคำแนะนำ' : 'เพิ่มข้อมูลคำแนะนำ'}
             </h2>
             <p className="truncate text-sm text-on-surface-variant">{form.name || autoName}</p>
@@ -202,7 +202,7 @@ export function ScenarioFormModal({
             type="button"
             onClick={requestClose}
             aria-label="ปิดหน้าต่าง"
-            className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full hover:bg-surface-container"
+            className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full hover:bg-surface-container-high"
           >
             <span className="material-symbols-outlined">close</span>
           </button>
@@ -214,7 +214,7 @@ export function ScenarioFormModal({
               ref={errorRef}
               tabIndex={-1}
               role="alert"
-              className="rounded-lg bg-error-container px-4 py-3 text-sm text-on-error-container focus:outline-none"
+              className="rounded-lg bg-danger/10 px-4 py-3 text-sm text-danger focus:outline-none"
             >
               <p className="font-bold">บันทึกไม่สำเร็จ</p>
               <p className="mt-1">{error}</p>
@@ -266,7 +266,7 @@ export function ScenarioFormModal({
                 </select>
               </Field>
             </div>
-            <p className="rounded-lg bg-secondary-fixed px-3 py-2 text-sm text-on-secondary-fixed">
+            <p className="rounded-lg bg-tint-sky px-3 py-2 text-sm text-text">
               ระบบจะใช้ข้อมูลชุดนี้เมื่อ <b>{CONDITION_RANGE[form.waterCondition]}</b>{' '}
               ของน้ำที่พันธุ์นี้ต้องการ
             </p>
@@ -357,7 +357,7 @@ export function ScenarioFormModal({
                     type="button"
                     onClick={() => patch({ advice: form.advice.filter((_, j) => j !== i) })}
                     aria-label={`ลบคำแนะนำข้อที่ ${i + 1}`}
-                    className="mt-1 flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg text-on-surface-variant hover:bg-error-container hover:text-on-error-container"
+                    className="mt-1 flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg text-on-surface-variant hover:bg-danger/10 hover:text-danger"
                   >
                     <span className="material-symbols-outlined text-[20px]">close</span>
                   </button>
@@ -367,7 +367,7 @@ export function ScenarioFormModal({
             <button
               type="button"
               onClick={() => patch({ advice: [...form.advice, ''] })}
-              className="cursor-pointer rounded-lg border-2 border-dashed border-outline-variant px-4 py-2 text-sm font-semibold hover:border-primary hover:text-primary"
+              className="cursor-pointer rounded-lg border-2 border-dashed border-border px-4 py-2 text-sm font-semibold hover:border-brand hover:text-brand"
             >
               เพิ่มคำแนะนำ
             </button>
@@ -376,13 +376,13 @@ export function ScenarioFormModal({
           <Section step={5} title="ตารางการให้น้ำ">
             <ol className="space-y-3">
               {form.schedule.map((p, i) => (
-                <li key={i} className="rounded-lg bg-surface-container-low p-3">
+                <li key={i} className="rounded-lg bg-surface-sunken p-3">
                   <div className="mb-2 flex items-center justify-between">
                     <span className="text-sm font-bold">ระยะที่ {i + 1}</span>
                     <button
                       type="button"
                       onClick={() => patch({ schedule: form.schedule.filter((_, j) => j !== i) })}
-                      className="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-semibold text-error hover:bg-error-container"
+                      className="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-semibold text-danger hover:bg-danger/10"
                     >
                       ลบระยะนี้
                     </button>
@@ -429,13 +429,13 @@ export function ScenarioFormModal({
                   schedule: [...form.schedule, { phase: '', management: '', freq: '', amountPerRaiM3: 0 }],
                 })
               }
-              className="cursor-pointer rounded-lg border-2 border-dashed border-outline-variant px-4 py-2 text-sm font-semibold hover:border-primary hover:text-primary"
+              className="cursor-pointer rounded-lg border-2 border-dashed border-border px-4 py-2 text-sm font-semibold hover:border-brand hover:text-brand"
             >
               เพิ่มระยะ
             </button>
             <p
               aria-live="polite"
-              className={`rounded-lg px-3 py-2 text-sm ${totalOff ? 'bg-tertiary-fixed text-on-tertiary-fixed' : 'bg-surface-container-low'}`}
+              className={`rounded-lg px-3 py-2 text-sm ${totalOff ? 'bg-warning/10 text-warning' : 'bg-surface-sunken'}`}
             >
               รวมทุกระยะ <b>{scheduleTotal.toLocaleString()}</b> ลบ.ม./ไร่ · น้ำที่แนะนำ{' '}
               <b>{(form.waterPerRaiM3 || 0).toLocaleString()}</b> ลบ.ม./ไร่
@@ -466,25 +466,25 @@ export function ScenarioFormModal({
                 type="checkbox"
                 checked={form.isMockData}
                 onChange={(e) => patch({ isMockData: e.target.checked })}
-                className="h-5 w-5 accent-primary"
+                className="h-5 w-5 accent-brand"
               />
               เป็นข้อมูลจำลอง (ยังไม่ใช่ผลจาก DSSAT จริง)
             </label>
           </Section>
         </div>
 
-        <div className="flex gap-2 border-t border-surface-container px-5 py-4">
+        <div className="flex gap-2 border-t border-border px-5 py-4">
           <button
             type="submit"
             disabled={saving}
-            className="flex-1 cursor-pointer rounded-lg bg-primary px-5 py-3 font-bold text-on-primary hover:bg-on-primary-fixed-variant disabled:opacity-60 sm:flex-none"
+            className="flex-1 cursor-pointer rounded-lg bg-primary px-5 py-3 font-bold text-on-primary hover:bg-primary-hover disabled:opacity-60 sm:flex-none"
           >
             {saving ? 'กำลังบันทึก…' : 'บันทึก'}
           </button>
           <button
             type="button"
             onClick={requestClose}
-            className="cursor-pointer rounded-lg bg-surface-container px-5 py-3 font-semibold"
+            className="cursor-pointer rounded-lg bg-surface-container-high px-5 py-3 font-semibold"
           >
             ยกเลิก
           </button>

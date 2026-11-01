@@ -7,7 +7,7 @@ export type View = { crop: string | null; season: string | null };
 
 const CONDITION_STYLE: Record<string, { badge: string; border: string }> = {
   น้ำเพียงพอ: { badge: 'bg-primary text-on-primary', border: 'border-primary' },
-  น้ำจำกัด: { badge: 'bg-tertiary-container text-on-tertiary-container', border: 'border-tertiary-container' },
+  น้ำจำกัด: { badge: 'bg-warning text-white', border: 'border-warning' },
   พึ่งพาน้ำฝน: { badge: 'bg-secondary text-on-secondary', border: 'border-secondary' },
 };
 const SEASON_INFO: Record<string, string> = {
@@ -16,7 +16,7 @@ const SEASON_INFO: Record<string, string> = {
 };
 
 const card =
-  'group flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-xl bg-surface-container-lowest text-left shadow-xs ring-1 ring-surface-container transition hover:-translate-y-0.5 hover:shadow-md hover:ring-primary focus-visible:ring-4 focus-visible:ring-primary-fixed-dim focus-visible:outline-none';
+  'group flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-xl bg-surface text-left shadow-xs ring-1 ring-border transition hover:-translate-y-0.5 hover:shadow-md hover:ring-brand focus-visible:ring-4 focus-visible:ring-secondary focus-visible:outline-none';
 
 function Coverage({ have, total }: { have: number; total: number }) {
   if (have === 0) {
@@ -27,9 +27,9 @@ function Coverage({ have, total }: { have: number; total: number }) {
     );
   }
   return have >= total ? (
-    <span className="text-sm font-semibold text-primary">ข้อมูลครบทุกสถานะน้ำ</span>
+    <span className="text-sm font-semibold text-brand">ข้อมูลครบทุกสถานะน้ำ</span>
   ) : (
-    <span className="text-sm font-semibold text-tertiary">
+    <span className="text-sm font-semibold text-warning">
       มีข้อมูล {have} จาก {total} สถานะน้ำ
     </span>
   );
@@ -142,7 +142,7 @@ export function ScenarioTable({
               <button
                 type="button"
                 onClick={() => onAdd(condition)}
-                className="flex h-full min-h-48 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-outline-variant p-6 text-on-surface-variant hover:border-primary hover:text-primary focus-visible:ring-4 focus-visible:ring-primary-fixed-dim focus-visible:outline-none"
+                className="flex h-full min-h-48 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border p-6 text-on-surface-variant hover:border-brand hover:text-brand focus-visible:ring-4 focus-visible:ring-secondary focus-visible:outline-none"
               >
                 <span className="material-symbols-outlined text-4xl">add</span>
                 <span className="text-base font-bold">เพิ่มข้อมูล{condition}</span>
@@ -155,7 +155,7 @@ export function ScenarioTable({
         return (
           <li
             key={sc.id}
-            className={`flex flex-col rounded-xl border-t-4 bg-surface-container-lowest p-5 shadow-xs ${style?.border ?? ''}`}
+            className={`flex flex-col rounded-xl border-t-4 bg-surface p-5 shadow-xs ${style?.border ?? ''}`}
           >
             <div className="flex items-start justify-between gap-2">
               <span className={`rounded-full px-3 py-1 text-base font-bold ${style?.badge ?? ''}`}>
@@ -178,7 +178,7 @@ export function ScenarioTable({
               </dd>
             </dl>
             {sc.isMockData && (
-              <p className="mt-3 rounded-lg bg-tertiary-fixed px-2.5 py-1 text-sm text-on-tertiary-fixed">
+              <p className="mt-3 rounded-lg bg-warning/10 px-2.5 py-1 text-sm text-warning">
                 ข้อมูลจำลอง รอผลจาก DSSAT จริง
               </p>
             )}
@@ -187,7 +187,7 @@ export function ScenarioTable({
                 type="button"
                 onClick={() => onEdit(sc)}
                 aria-label={`แก้ไข ${sc.name}`}
-                className="flex-1 cursor-pointer rounded-lg bg-primary px-4 py-2.5 text-base font-semibold text-on-primary hover:bg-on-primary-fixed-variant"
+                className="flex-1 cursor-pointer rounded-lg border-2 border-brand px-4 py-2 text-base font-semibold text-brand hover:bg-tint-sky hover:text-brand-hover"
               >
                 แก้ไข
               </button>
@@ -195,7 +195,7 @@ export function ScenarioTable({
                 type="button"
                 onClick={() => onDelete(sc)}
                 aria-label={`ลบ ${sc.name}`}
-                className="cursor-pointer rounded-lg px-4 py-2.5 text-base font-semibold text-error hover:bg-error-container"
+                className="cursor-pointer rounded-lg px-4 py-2.5 text-base font-semibold text-danger hover:bg-danger/10"
               >
                 ลบ
               </button>
