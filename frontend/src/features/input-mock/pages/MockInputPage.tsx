@@ -68,7 +68,7 @@ export const MockInputPage: React.FC<InputPageProps> = ({
     } else if (waterPerRai <= 600) {
       return {
         suitability: 'เหมาะสมสูง',
-        suitabilityColor: 'bg-primary-fixed text-on-primary-fixed',
+        suitabilityColor: 'bg-tint-mint text-success font-semibold',
         ratioPercent: Math.min(Math.round((waterPerRai / 800) * 100), 100),
         regimeTitle: 'การจัดการน้ำแบบจำกัดช่วงวิกฤต (Deficit Irrigation)',
         regimeDesc:
@@ -79,7 +79,7 @@ export const MockInputPage: React.FC<InputPageProps> = ({
     } else {
       return {
         suitability: 'จัดการน้ำเต็มที่',
-        suitabilityColor: 'bg-secondary-fixed text-on-secondary-fixed',
+        suitabilityColor: 'bg-tint-sky text-brand font-semibold',
         ratioPercent: 100,
         regimeTitle: 'การจัดการน้ำเต็มศักยภาพ (Full Irrigation)',
         regimeDesc:
@@ -165,7 +165,7 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                 <span className="font-sans text-xl sm:text-2xl font-bold text-primary tracking-tight">
                   WarMa
                 </span>
-                <span className="bg-primary-fixed text-on-primary-fixed text-xs px-2.5 py-0.5 rounded-full uppercase tracking-wider font-bold">
+                <span className="bg-tint-mint text-success text-xs px-2.5 py-0.5 rounded-full uppercase tracking-wider font-bold">
                   DSSAT v4.8
                 </span>
                 <span className="text-xs font-semibold text-on-surface-variant bg-surface-container px-2.5 py-0.5 rounded-md hidden sm:inline-block">
@@ -208,10 +208,10 @@ export const MockInputPage: React.FC<InputPageProps> = ({
             <button
               type="button"
               onClick={() => applyPreset('ku50-deficit')}
-              className={`snap-start shrink-0 inline-flex items-center gap-1.5 min-h-[42px] px-3.5 py-2 rounded-full text-xs font-semibold shadow-xs transition-all cursor-pointer ${
+              className={`snap-start shrink-0 inline-flex items-center gap-1.5 min-h-[42px] px-3.5 py-2 rounded-full text-xs font-bold shadow-xs transition-all cursor-pointer font-sans ${
                 activePreset === 'ku50-deficit'
-                  ? 'bg-primary text-on-primary shadow-sm ring-2 ring-primary/30'
-                  : 'bg-surface-container-lowest text-on-surface border border-surface-container hover:bg-surface-container-high'
+                  ? 'bg-primary text-text shadow-sm ring-2 ring-primary/40'
+                  : 'bg-surface text-text border border-border hover:bg-surface-container-high'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">eco</span>
@@ -221,13 +221,13 @@ export const MockInputPage: React.FC<InputPageProps> = ({
             <button
               type="button"
               onClick={() => applyPreset('ku50-rain')}
-              className={`snap-start shrink-0 inline-flex items-center gap-1.5 min-h-[42px] px-3.5 py-2 rounded-full text-xs font-semibold shadow-xs transition-all cursor-pointer ${
+              className={`snap-start shrink-0 inline-flex items-center gap-1.5 min-h-[42px] px-3.5 py-2 rounded-full text-xs font-bold shadow-xs transition-all cursor-pointer font-sans ${
                 activePreset === 'ku50-rain'
-                  ? 'bg-primary text-on-primary shadow-sm ring-2 ring-primary/30'
-                  : 'bg-surface-container-lowest text-on-surface border border-surface-container hover:bg-surface-container-high'
+                  ? 'bg-primary text-text shadow-sm ring-2 ring-primary/40'
+                  : 'bg-surface text-text border border-border hover:bg-surface-container-high'
               }`}
             >
-              <span className="material-symbols-outlined text-secondary text-[18px]">
+              <span className="material-symbols-outlined text-brand text-[18px]">
                 cloud
               </span>
               <span>🌧️ KU50 พึ่งฝน (3.2 ตัน)</span>
@@ -236,13 +236,13 @@ export const MockInputPage: React.FC<InputPageProps> = ({
             <button
               type="button"
               onClick={() => applyPreset('rayong9-full')}
-              className={`snap-start shrink-0 inline-flex items-center gap-1.5 min-h-[42px] px-3.5 py-2 rounded-full text-xs font-semibold shadow-xs transition-all cursor-pointer ${
+              className={`snap-start shrink-0 inline-flex items-center gap-1.5 min-h-[42px] px-3.5 py-2 rounded-full text-xs font-bold shadow-xs transition-all cursor-pointer font-sans ${
                 activePreset === 'rayong9-full'
-                  ? 'bg-primary text-on-primary shadow-sm ring-2 ring-primary/30'
-                  : 'bg-surface-container-lowest text-on-surface border border-surface-container hover:bg-surface-container-high'
+                  ? 'bg-primary text-text shadow-sm ring-2 ring-primary/40'
+                  : 'bg-surface text-text border border-border hover:bg-surface-container-high'
               }`}
             >
-              <span className="material-symbols-outlined text-secondary-container text-[18px]">
+              <span className="material-symbols-outlined text-brand text-[18px]">
                 water_drop
               </span>
               <span>💧 ระยอง 9 น้ำเต็มที่ (5.2 ตัน)</span>
@@ -251,10 +251,10 @@ export const MockInputPage: React.FC<InputPageProps> = ({
             <button
               type="button"
               onClick={() => applyPreset('out-of-bound')}
-              className={`snap-start shrink-0 inline-flex items-center gap-1.5 min-h-[42px] px-3.5 py-2 rounded-full text-xs font-semibold shadow-xs transition-all cursor-pointer ${
+              className={`snap-start shrink-0 inline-flex items-center gap-1.5 min-h-[42px] px-3.5 py-2 rounded-full text-xs font-bold shadow-xs transition-all cursor-pointer font-sans ${
                 activePreset === 'out-of-bound'
-                  ? 'bg-tertiary-fixed text-on-tertiary-fixed shadow-sm ring-2 ring-tertiary'
-                  : 'bg-surface-container-lowest text-tertiary border border-surface-container hover:bg-tertiary-fixed/30'
+                  ? 'bg-amber-100 text-warning shadow-sm ring-2 ring-warning/30'
+                  : 'bg-surface text-warning border border-border hover:bg-amber-50'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">error</span>
@@ -264,10 +264,10 @@ export const MockInputPage: React.FC<InputPageProps> = ({
             <button
               type="button"
               onClick={() => applyPreset('validation-error')}
-              className={`snap-start shrink-0 inline-flex items-center gap-1.5 min-h-[42px] px-3.5 py-2 rounded-full text-xs font-semibold shadow-xs transition-all cursor-pointer ${
+              className={`snap-start shrink-0 inline-flex items-center gap-1.5 min-h-[42px] px-3.5 py-2 rounded-full text-xs font-bold shadow-xs transition-all cursor-pointer font-sans ${
                 activePreset === 'validation-error'
-                  ? 'bg-error text-on-error shadow-sm ring-2 ring-error/40'
-                  : 'bg-surface-container-lowest text-error border border-surface-container hover:bg-error-container/40'
+                  ? 'bg-danger text-white shadow-sm ring-2 ring-danger/40'
+                  : 'bg-surface text-danger border border-border hover:bg-red-50'
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">rule</span>
@@ -321,8 +321,8 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                   }}
                   className={`cursor-pointer rounded-xl p-4 flex flex-col justify-between transition-all border ${
                     crop === 'เกษตรศาสตร์ 50'
-                      ? 'border-primary bg-primary-fixed/20 shadow-xs ring-1 ring-primary'
-                      : 'border-surface-container bg-surface-container-lowest hover:bg-surface-container-low'
+                      ? 'border-primary bg-tint-mint/50 shadow-xs ring-1 ring-primary'
+                      : 'border-border bg-surface hover:bg-surface-container-high'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -330,14 +330,14 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                       <div className="text-sm font-bold text-on-surface">
                         เกษตรศาสตร์ 50 (KU50)
                       </div>
-                      <span className="text-xs text-primary font-semibold block mt-0.5">
+                      <span className="text-xs text-success font-bold block mt-0.5">
                         แนะนำสำหรับน้ำจำกัด
                       </span>
                     </div>
                     <div
                       className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
                         crop === 'เกษตรศาสตร์ 50'
-                          ? 'bg-primary text-on-primary'
+                          ? 'bg-primary text-text font-bold'
                           : 'bg-surface-container text-on-surface-variant'
                       }`}
                     >
@@ -359,8 +359,8 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                   }}
                   className={`cursor-pointer rounded-xl p-4 flex flex-col justify-between transition-all border ${
                     crop === 'ระยอง 9'
-                      ? 'border-secondary bg-secondary-fixed/20 shadow-xs ring-1 ring-secondary'
-                      : 'border-surface-container bg-surface-container-lowest hover:bg-surface-container-low'
+                      ? 'border-brand bg-tint-sky/50 shadow-xs ring-1 ring-brand'
+                      : 'border-border bg-surface hover:bg-surface-container-high'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -368,14 +368,14 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                       <div className="text-sm font-bold text-on-surface">
                         ระยอง 9 (Rayong 9)
                       </div>
-                      <span className="text-xs text-secondary font-semibold block mt-0.5">
+                      <span className="text-xs text-brand font-bold block mt-0.5">
                         ศักยภาพแป้งอุตสาหกรรม
                       </span>
                     </div>
                     <div
                       className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
                         crop === 'ระยอง 9'
-                          ? 'bg-secondary text-on-secondary'
+                          ? 'bg-brand text-white font-bold'
                           : 'bg-surface-container text-on-surface-variant'
                       }`}
                     >
@@ -397,8 +397,8 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                   }}
                   className={`cursor-pointer rounded-xl p-4 flex flex-col justify-between transition-all border ${
                     crop === 'CMR38-125-77'
-                      ? 'border-tertiary bg-tertiary-fixed/20 shadow-xs ring-1 ring-tertiary'
-                      : 'border-surface-container bg-surface-container-lowest hover:bg-surface-container-low'
+                      ? 'border-brand bg-tint-sky/30 shadow-xs ring-1 ring-brand'
+                      : 'border-border bg-surface hover:bg-surface-container-high'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -406,14 +406,14 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                       <div className="text-sm font-bold text-on-surface">
                         CMR38-125-77
                       </div>
-                      <span className="text-xs text-on-surface-variant font-semibold block mt-0.5">
+                      <span className="text-xs text-brand font-bold block mt-0.5">
                         สายพันธุ์ทนทานก้าวหน้า
                       </span>
                     </div>
                     <div
                       className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
                         crop === 'CMR38-125-77'
-                          ? 'bg-tertiary text-on-tertiary'
+                          ? 'bg-brand text-white font-bold'
                           : 'bg-surface-container text-on-surface-variant'
                       }`}
                     >
@@ -435,8 +435,8 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                   }}
                   className={`cursor-pointer rounded-xl p-4 flex flex-col justify-between transition-all border ${
                     crop === 'ห้วยบง 90'
-                      ? 'border-error bg-error-container/30 shadow-xs ring-1 ring-error'
-                      : 'border-surface-container bg-surface-container-low hover:bg-surface-container'
+                      ? 'border-danger bg-red-50/70 shadow-xs ring-1 ring-danger'
+                      : 'border-border bg-surface hover:bg-surface-container-high'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -444,7 +444,7 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                       <div className="text-sm font-bold text-on-surface">
                         ห้วยบง 90
                       </div>
-                      <span className="text-xs text-error font-semibold inline-flex items-center gap-1 mt-0.5">
+                      <span className="text-xs text-danger font-bold inline-flex items-center gap-1 mt-0.5">
                         <span className="material-symbols-outlined text-[14px]">warning</span>
                         <span>อยู่นอกชุดพารามิเตอร์ DSSAT</span>
                       </span>
@@ -452,7 +452,7 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                     <div
                       className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
                         crop === 'ห้วยบง 90'
-                          ? 'bg-error text-on-error'
+                          ? 'bg-danger text-white'
                           : 'bg-surface-container text-on-surface-variant'
                       }`}
                     >
@@ -461,7 +461,8 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                       </span>
                     </div>
                   </div>
-                  <p className="text-xs text-error mt-2 bg-error-container/40 p-2 rounded-lg leading-relaxed">
+                  <p className="text-xs text-danger mt-2 bg-red-50 p-2 rounded-lg leading-relaxed border border-red-200">
+                    ⚠️ ไม่พบค่าพันธุกรรม (Genetic Coefficients) ในฐานข้อมูลปัจจุบัน
                     ⚠️ ไม่พบค่าพันธุกรรม (Genetic Coefficients) ในฐานข้อมูลปัจจุบัน
                   </p>
                 </div>
@@ -485,14 +486,14 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                   }}
                   className={`min-h-[72px] flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl text-center transition-all cursor-pointer border ${
                     season === 'ต้นฤดูฝน'
-                      ? 'bg-primary-fixed/20 border-primary shadow-xs ring-1 ring-primary'
-                      : 'bg-surface-container-low border-surface-container hover:bg-surface-container'
+                      ? 'bg-tint-mint/50 border-primary shadow-xs ring-1 ring-primary'
+                      : 'bg-surface border-border hover:bg-surface-container-high'
                   }`}
                 >
                   <span className="text-xl sm:text-2xl mb-1">🌱</span>
                   <span
                     className={`text-xs sm:text-sm font-bold ${
-                      season === 'ต้นฤดูฝน' ? 'text-primary' : 'text-on-surface'
+                      season === 'ต้นฤดูฝน' ? 'text-success' : 'text-on-surface'
                     }`}
                   >
                     ต้นฤดูฝน
@@ -508,14 +509,14 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                   }}
                   className={`min-h-[72px] flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl text-center transition-all cursor-pointer border ${
                     season === 'ปลายฤดูฝน'
-                      ? 'bg-primary-fixed/20 border-primary shadow-xs ring-1 ring-primary'
-                      : 'bg-surface-container-low border-surface-container hover:bg-surface-container'
+                      ? 'bg-tint-mint/50 border-primary shadow-xs ring-1 ring-primary'
+                      : 'bg-surface border-border hover:bg-surface-container-high'
                   }`}
                 >
                   <span className="text-xl sm:text-2xl mb-1">🍂</span>
                   <span
                     className={`text-xs sm:text-sm font-bold ${
-                      season === 'ปลายฤดูฝน' ? 'text-primary' : 'text-on-surface'
+                      season === 'ปลายฤดูฝน' ? 'text-success' : 'text-on-surface'
                     }`}
                   >
                     ปลายฤดูฝน
@@ -558,21 +559,21 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                   <button
                     type="button"
                     onClick={() => handleAreaAdjust(1)}
-                    className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 rounded-xl bg-surface-container text-xs font-bold text-on-surface hover:bg-primary hover:text-on-primary transition-colors cursor-pointer border border-surface-container-high"
+                    className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 rounded-xl bg-surface-container text-xs font-bold text-on-surface hover:bg-primary hover:text-text transition-colors cursor-pointer border border-surface-container-high font-sans"
                   >
                     +1
                   </button>
                   <button
                     type="button"
                     onClick={() => handleAreaAdjust(5)}
-                    className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 rounded-xl bg-surface-container text-xs font-bold text-on-surface hover:bg-primary hover:text-on-primary transition-colors cursor-pointer border border-surface-container-high"
+                    className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 rounded-xl bg-surface-container text-xs font-bold text-on-surface hover:bg-primary hover:text-text transition-colors cursor-pointer border border-surface-container-high font-sans"
                   >
                     +5
                   </button>
                   <button
                     type="button"
                     onClick={() => handleAreaAdjust(10)}
-                    className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 rounded-xl bg-surface-container text-xs font-bold text-on-surface hover:bg-primary hover:text-on-primary transition-colors cursor-pointer border border-surface-container-high"
+                    className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 rounded-xl bg-surface-container text-xs font-bold text-on-surface hover:bg-primary hover:text-text transition-colors cursor-pointer border border-surface-container-high font-sans"
                   >
                     +10
                   </button>
@@ -746,15 +747,15 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full group relative flex items-center justify-center p-4 min-h-[52px] sm:min-h-[56px] rounded-2xl bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.99] transition-all text-center cursor-pointer disabled:opacity-60"
+                  className="w-full group relative flex items-center justify-center p-4 min-h-[52px] sm:min-h-[56px] rounded-xl bg-primary hover:bg-primary-hover text-text font-bold shadow-xs active:scale-[0.99] transition-all text-center cursor-pointer disabled:opacity-60 font-heading text-base"
                 >
                   {isLoading ? (
-                    <div className="inline-flex items-center gap-2 text-sm sm:text-base">
-                      <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="inline-flex items-center gap-2 text-sm sm:text-base text-text">
+                      <span className="w-5 h-5 border-2 border-text/30 border-t-text rounded-full animate-spin" />
                       <span>กำลังประมวลผลกับ DSSAT Engine...</span>
                     </div>
                   ) : (
-                    <div className="inline-flex items-center gap-2 text-sm sm:text-base">
+                    <div className="inline-flex items-center gap-2 text-sm sm:text-base text-text">
                       <span>คำนวณและแสดงคำแนะนำการจัดการน้ำ</span>
                       <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform text-[20px]">
                         arrow_forward
@@ -762,8 +763,8 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                     </div>
                   )}
                 </button>
-                <p className="text-xs text-on-surface-variant text-center mt-2.5 inline-flex items-center justify-center gap-1.5 w-full">
-                  <span className="material-symbols-outlined text-[15px] text-primary">
+                <p className="text-xs text-text-muted text-center mt-2.5 inline-flex items-center justify-center gap-1.5 w-full font-body">
+                  <span className="material-symbols-outlined text-[15px] text-brand">
                     verified_user
                   </span>
                   <span>อิงแบบจำลองชีวฟิสิกส์ DSSAT Cassava Crop Model สำหรับประเทศไทย</span>
@@ -797,10 +798,10 @@ export const MockInputPage: React.FC<InputPageProps> = ({
                     setActivePreset('out-of-bound');
                   }
                 }}
-                className={`min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer shrink-0 border ${
+                className={`min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0 border font-sans ${
                   isBoundaryCrop
-                    ? 'bg-primary text-on-primary border-primary hover:bg-primary-container'
-                    : 'bg-surface-container text-on-surface border-surface-container hover:bg-tertiary-fixed hover:text-on-tertiary-fixed'
+                    ? 'bg-primary text-text border-primary hover:bg-primary-hover'
+                    : 'bg-surface text-text border-border hover:bg-tint-sky hover:text-brand'
                 }`}
               >
                 {isBoundaryCrop ? 'กลับสู่พันธุ์ปกติ' : 'ทดสอบสลับ'}

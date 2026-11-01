@@ -61,21 +61,21 @@ export const VarietyGuideModal: React.FC<VarietyGuideModalProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-on-surface/60 backdrop-blur-xs animate-fadeIn">
-      <div className="bg-surface-container-lowest rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-xl border border-surface-container flex flex-col gap-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-text/60 backdrop-blur-xs font-body animate-fadeIn">
+      <div className="bg-surface rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-xl border border-border flex flex-col gap-4">
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-surface-container pb-3">
+        <div className="flex items-center justify-between border-b border-border pb-3">
           <div className="inline-flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-[24px]">
+            <span className="material-symbols-outlined text-brand text-[24px]">
               menu_book
             </span>
-            <h2 className="text-base sm:text-lg font-bold text-on-surface">
-              คู่มือพันธุ์มันสำปะหลังและการตอบสนองต่อน้ำ
+            <h2 className="text-base sm:text-lg font-bold text-text font-heading">
+              คู่มือพันธุ์มันสำปะหลังและการตอบสนองต่อน้ำ (Variety Guide)
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-on-surface-variant transition cursor-pointer shrink-0"
+            className="w-9 h-9 rounded-lg bg-surface-sunken hover:bg-border flex items-center justify-center text-text-muted transition cursor-pointer shrink-0"
             type="button"
             aria-label="Close modal"
           >
@@ -83,7 +83,7 @@ export const VarietyGuideModal: React.FC<VarietyGuideModalProps> = ({
           </button>
         </div>
 
-        <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+        <p className="text-xs sm:text-sm text-text-muted leading-relaxed">
           แบบจำลองชีวฟิสิกส์ <strong>DSSAT Cassava Crop Model</strong> ใช้ค่าสัมประสิทธิ์ทางพันธุกรรมที่ผ่านการสอบเทียบจริงในแปลงทดลองของประเทศไทย เพื่อความแม่นยำสูงสุดในการจัดสรรน้ำ
         </p>
 
@@ -94,39 +94,39 @@ export const VarietyGuideModal: React.FC<VarietyGuideModalProps> = ({
               key={v.id}
               className={`p-4 rounded-xl border transition-all ${
                 v.isCalibrated
-                  ? 'border-surface-container bg-surface hover:border-primary/50'
-                  : 'border-error/30 bg-error-container/20'
+                  ? 'border-border bg-surface hover:border-brand/40'
+                  : 'border-danger/30 bg-rose-50/50'
               }`}
             >
               <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
-                <span className="text-sm sm:text-base font-bold text-on-surface">
+                <span className="text-sm sm:text-base font-bold text-text font-heading">
                   {v.name}
                 </span>
                 <span
-                  className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
+                  className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
                     v.color === 'primary'
-                      ? 'bg-primary-fixed text-on-primary-fixed border border-primary-fixed-dim'
+                      ? 'bg-tint-mint text-text border border-[#cde8b3]'
                       : v.color === 'secondary'
-                      ? 'bg-secondary-fixed text-on-secondary-fixed border border-secondary-fixed-dim'
+                      ? 'bg-tint-sky text-brand border border-[#b9dff8]'
                       : v.color === 'tertiary'
-                      ? 'bg-tertiary-fixed text-on-tertiary-fixed border border-tertiary-fixed-dim'
-                      : 'bg-error-container text-on-error-container border border-error/30'
+                      ? 'bg-surface-sunken text-text border border-border'
+                      : 'bg-rose-50 text-danger border border-danger/30'
                   }`}
                 >
                   {v.badge}
                 </span>
               </div>
-              <p className="text-xs text-on-surface-variant mb-3 leading-relaxed">
+              <p className="text-xs text-text-muted mb-3 leading-relaxed">
                 {v.description}
               </p>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2.5 border-t border-surface-container-high/60 text-xs">
-                <div className="text-on-surface-variant">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2.5 border-t border-border text-xs">
+                <div className="text-text-muted">
                   <span>น้ำที่ต้องการ: </span>
-                  <strong className="text-on-surface">{v.idealWater}</strong>
+                  <strong className="text-text font-bold">{v.idealWater}</strong>
                   <span className="mx-2 hidden sm:inline">•</span>
                   <span className="block sm:inline mt-0.5 sm:mt-0">
                     ผลผลิตคาดหวัง:{' '}
-                    <strong className="text-on-surface">{v.expectedYield}</strong>
+                    <strong className="text-text font-bold">{v.expectedYield}</strong>
                   </span>
                 </div>
                 {onSelectVariety && (
@@ -137,8 +137,8 @@ export const VarietyGuideModal: React.FC<VarietyGuideModalProps> = ({
                     }}
                     className={`min-h-[38px] px-3.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition inline-flex items-center justify-center gap-1 shrink-0 self-start sm:self-auto ${
                       v.isCalibrated
-                        ? 'bg-primary text-on-primary hover:bg-primary-container shadow-xs'
-                        : 'bg-surface-container text-error hover:bg-error-container border border-error/30'
+                        ? 'bg-primary text-text hover:bg-primary-hover shadow-xs'
+                        : 'bg-surface border border-danger/40 text-danger hover:bg-rose-50'
                     }`}
                     type="button"
                   >
@@ -155,7 +155,7 @@ export const VarietyGuideModal: React.FC<VarietyGuideModalProps> = ({
         <div className="pt-2 flex justify-end">
           <button
             onClick={onClose}
-            className="min-h-[44px] px-5 py-2 rounded-xl bg-surface-container text-on-surface text-xs font-bold hover:bg-surface-container-high transition cursor-pointer border border-surface-container-high"
+            className="min-h-[40px] px-5 py-2 rounded-lg bg-surface-sunken text-text text-xs font-bold hover:bg-border transition cursor-pointer border border-border"
             type="button"
           >
             ปิดหน้าต่าง
