@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface HeaderProps {
-  currentPath: '/input' | '/output' | '/output-v1';
-  onNavigate: (path: '/input' | '/output' | '/output-v1') => void;
+  currentPath: '/input' | '/output';
+  onNavigate: (path: '/input' | '/output') => void;
   onOpenGuide: () => void;
   isBackendOnline?: boolean;
 }
@@ -80,20 +80,7 @@ export const Header: React.FC<HeaderProps> = ({
             type="button"
           >
             <span className="material-symbols-outlined text-[18px]">analytics</span>
-            <span>ผลวิเคราะห์ (Final)</span>
-          </button>
-          <button
-            onClick={() => onNavigate('/output-v1')}
-            className={`min-h-[44px] px-3 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              currentPath === '/output-v1'
-                ? 'bg-amber-600 text-white shadow-xs'
-                : 'text-amber-800 bg-amber-50 hover:bg-amber-100/80 border border-amber-200'
-            }`}
-            type="button"
-            title="Initial AI-generated Output Prototype (v1) สำหรับนำเสนอ"
-          >
-            <span className="material-symbols-outlined text-[17px]">history</span>
-            <span>Output v1 (AI Gen)</span>
+            <span>ผลวิเคราะห์</span>
           </button>
           <button
             onClick={onOpenGuide}
@@ -148,18 +135,6 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <span className="material-symbols-outlined text-[15px]">analytics</span>
             <span>ผลวิเคราะห์</span>
-          </button>
-          <button
-            onClick={() => onNavigate('/output-v1')}
-            className={`flex-1 min-h-[40px] flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
-              currentPath === '/output-v1'
-                ? 'bg-amber-600 text-white shadow-xs'
-                : 'text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200'
-            }`}
-            type="button"
-          >
-            <span className="material-symbols-outlined text-[14px]">history</span>
-            <span>v1 (AI)</span>
           </button>
           <button
             onClick={onOpenGuide}

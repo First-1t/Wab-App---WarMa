@@ -6,7 +6,6 @@ import { Footer } from './shared/components/Footer';
 import { VarietyGuideModal } from './features/output/components/VarietyGuideModal';
 import { MockInputPage as InputPage } from './features/input-mock/pages/MockInputPage';
 import { OutputPage } from './features/output/pages/OutputPage';
-import { OutputV1Page } from './features/output/pages/OutputV1Page';
 
 interface UiErrorState {
   title: string;
@@ -17,10 +16,9 @@ interface UiErrorState {
 }
 
 export function App() {
-  // Navigation State (/input vs /output vs /output-v1)
-  const [currentPath, setCurrentPath] = useState<'/input' | '/output' | '/output-v1'>(() => {
+  // Navigation State (/input vs /output)
+  const [currentPath, setCurrentPath] = useState<'/input' | '/output'>(() => {
     const path = window.location.pathname;
-    if (path === '/output-v1') return '/output-v1';
     if (path === '/output') return '/output';
     return '/input';
   });
@@ -51,7 +49,7 @@ export function App() {
   /**
    * Safe Navigation Handler syncing browser history
    */
-  const navigateTo = useCallback((path: '/input' | '/output' | '/output-v1') => {
+  const navigateTo = useCallback((path: '/input' | '/output') => {
     setCurrentPath(path);
     if (window.location.pathname !== path) {
       window.history.pushState(null, '', path);
@@ -65,9 +63,7 @@ export function App() {
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname;
-      if (path === '/output-v1') {
-        setCurrentPath('/output-v1');
-      } else if (path === '/output') {
+      if (path === '/output') {
         setCurrentPath('/output');
       } else {
         setCurrentPath('/input');
@@ -219,13 +215,6 @@ export function App() {
             isLoading={isLoading}
             validationError={validationError}
             onOpenGuide={() => setIsGuideOpen(true)}
-          />
-        ) : currentPath === '/output-v1' ? (
-          <OutputV1Page
-            inputData={inputValues}
-            outputData={outputData}
-            onNavigateToInput={() => navigateTo('/input')}
-            onNavigateToFinal={() => navigateTo('/output')}
           />
         ) : (
           <OutputPage
