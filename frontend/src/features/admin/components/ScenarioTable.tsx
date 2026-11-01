@@ -1,6 +1,6 @@
 import type { Scenario } from '../../../shared/types/scenario.contracts';
 import type { ScenarioOptions } from '../services/admin-api.service';
-import { SeasonArt, VarietyArt } from './CardArt';
+import { PhotoCredits, SeasonArt, VarietyArt } from './CardArt';
 import { CONDITION_RANGE } from './ScenarioFormModal';
 
 export type View = { crop: string | null; season: string | null };
@@ -47,23 +47,26 @@ export function CropGrid({
 }) {
   const perCrop = options.seasons.length * options.waterConditions.length;
   return (
-    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {options.crops.map((c, i) => {
-        const items = scenarios.filter((s) => s.crop === c);
-        return (
-          <li key={c}>
-            <button type="button" onClick={() => go({ crop: c, season: null })} className={card}>
-              <VarietyArt index={i} className="h-32 w-full" />
-              <span className="flex flex-1 flex-col gap-1 p-4">
-                <span className="text-lg font-bold">พันธุ์{c}</span>
-                <span className="text-base text-on-surface-variant">{items.length} ชุดข้อมูล</span>
-                <Coverage have={items.length} total={perCrop} />
-              </span>
-            </button>
-          </li>
-        );
-      })}
-    </ul>
+    <>
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {options.crops.map((c, i) => {
+          const items = scenarios.filter((s) => s.crop === c);
+          return (
+            <li key={c}>
+              <button type="button" onClick={() => go({ crop: c, season: null })} className={card}>
+                <VarietyArt index={i} className="h-32 w-full" />
+                <span className="flex flex-1 flex-col gap-1 p-4">
+                  <span className="text-lg font-bold">พันธุ์{c}</span>
+                  <span className="text-base text-on-surface-variant">{items.length} ชุดข้อมูล</span>
+                  <Coverage have={items.length} total={perCrop} />
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      <PhotoCredits />
+    </>
   );
 }
 
@@ -80,35 +83,38 @@ export function SeasonGrid({
   go: (v: View) => void;
 }) {
   return (
-    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {options.seasons.map((season) => {
-        const items = scenarios.filter((s) => s.crop === crop && s.plantingSeason === season);
-        return (
-          <li key={season}>
-            <button type="button" onClick={() => go({ crop, season })} className={card}>
-              <SeasonArt season={season} className="h-32 w-full" />
-              <span className="flex flex-1 flex-col gap-2 p-4">
-                <span className="text-lg font-bold">{season}</span>
-                {SEASON_INFO[season] && (
-                  <span className="text-base text-on-surface-variant">{SEASON_INFO[season]}</span>
-                )}
-                <span className="flex flex-wrap gap-1.5">
-                  {items.map((s) => (
-                    <span
-                      key={s.id}
-                      className={`rounded-full px-2.5 py-0.5 text-sm font-semibold ${CONDITION_STYLE[s.waterCondition]?.badge ?? ''}`}
-                    >
-                      {s.waterCondition}
-                    </span>
-                  ))}
+    <>
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {options.seasons.map((season) => {
+          const items = scenarios.filter((s) => s.crop === crop && s.plantingSeason === season);
+          return (
+            <li key={season}>
+              <button type="button" onClick={() => go({ crop, season })} className={card}>
+                <SeasonArt season={season} className="h-32 w-full" />
+                <span className="flex flex-1 flex-col gap-2 p-4">
+                  <span className="text-lg font-bold">{season}</span>
+                  {SEASON_INFO[season] && (
+                    <span className="text-base text-on-surface-variant">{SEASON_INFO[season]}</span>
+                  )}
+                  <span className="flex flex-wrap gap-1.5">
+                    {items.map((s) => (
+                      <span
+                        key={s.id}
+                        className={`rounded-full px-2.5 py-0.5 text-sm font-semibold ${CONDITION_STYLE[s.waterCondition]?.badge ?? ''}`}
+                      >
+                        {s.waterCondition}
+                      </span>
+                    ))}
+                  </span>
+                  <Coverage have={items.length} total={options.waterConditions.length} />
                 </span>
-                <Coverage have={items.length} total={options.waterConditions.length} />
-              </span>
-            </button>
-          </li>
-        );
-      })}
-    </ul>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      <PhotoCredits />
+    </>
   );
 }
 

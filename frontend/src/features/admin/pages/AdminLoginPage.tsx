@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { CassavaFarmIllustration } from '../components/CassavaFarmIllustration';
 import { GoogleSignInButton } from '../components/GoogleSignInButton';
 import { adminApi, adminToken, guestMode, type AuthConfig } from '../services/admin-api.service';
 
@@ -58,13 +57,25 @@ export function AdminLoginPage() {
   return (
     <div className="grid min-h-dvh lg:grid-cols-[1.1fr_1fr]">
       <section className="relative h-80 overflow-hidden sm:h-96 lg:h-auto">
-        <CassavaFarmIllustration className="absolute inset-0 h-full w-full" />
+        <img
+          src="/images/admin/login-field.jpg"
+          alt="แปลงมันสำปะหลังในภาคตะวันออกของประเทศไทย"
+          className="absolute inset-0 h-full w-full object-cover object-[68%_center]"
+        />
         <div className="absolute inset-x-0 top-0 bg-gradient-to-b from-black/60 via-black/25 to-transparent p-6 pb-14 text-white drop-shadow sm:p-8 sm:pb-16 lg:p-12">
           <h2 className="text-2xl leading-snug font-bold sm:text-3xl lg:text-4xl">
             ปลูกมันสำปะหลังให้ได้ผลดี
             <br className="hidden sm:block" /> ด้วยการจัดการน้ำที่พอดี
           </h2>
         </div>
+        <a
+          href="https://commons.wikimedia.org/wiki/File:Thailand_11_lo_(4039867686).jpg"
+          target="_blank"
+          rel="noreferrer"
+          className="absolute right-2 bottom-2 rounded bg-black/55 px-2 py-0.5 text-xs text-white underline"
+        >
+          ภาพ: CIAT, CC BY-SA 2.0, ตัดขอบและย่อขนาด
+        </a>
       </section>
 
       <section className="flex items-center justify-center bg-surface-sunken px-5 py-10 sm:px-10">
