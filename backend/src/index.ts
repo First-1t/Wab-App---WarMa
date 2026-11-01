@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { ScenarioStore } from './shared/store/scenario.store.js';
 import { outputRouter } from './modules/output/routes/output.routes.js';
+import { adminRouter } from './modules/admin/routes/admin.routes.js';
 
 dotenv.config();
 
@@ -25,6 +26,9 @@ app.get('/api', (req: Request, res: Response) => {
 
 // Output Module Routes
 app.use('/api/output', outputRouter);
+
+// Admin Module Routes
+app.use('/api/admin', adminRouter);
 
 // Health Check Endpoint (Includes Scenario Store load verification)
 app.get('/api/health', (req: Request, res: Response) => {
