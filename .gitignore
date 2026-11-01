@@ -17,3 +17,8 @@ build/
 *.log
 *.tmp
 .env
+
+# เอกสารประกอบและ Todo
+*.pdf
+*todo*
+TODO*
