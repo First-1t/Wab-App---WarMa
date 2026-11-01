@@ -67,24 +67,24 @@ export function AdminLoginPage() {
         </div>
       </section>
 
-      <section className="flex items-center justify-center bg-surface px-5 py-10 sm:px-10">
+      <section className="flex items-center justify-center bg-surface-sunken px-5 py-10 sm:px-10">
         <div className="w-full max-w-sm">
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-on-primary">
               <span className="material-symbols-outlined text-[28px]">water_drop</span>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-primary">WarMa</h1>
+              <h1 className="text-2xl font-bold text-brand">WarMa</h1>
               <p className="text-sm text-on-surface-variant">ระบบแนะนำการจัดการน้ำมันสำปะหลัง</p>
             </div>
           </div>
 
           <h2 className="mt-8 text-xl font-bold">เข้าใช้งาน</h2>
-          <div className="mt-3 rounded-2xl border border-surface-container bg-surface-container-lowest p-6 shadow-xs">
+          <div className="mt-3 rounded-2xl border border-border bg-surface p-6 shadow-xs">
             <button
               type="button"
               onClick={enterAsGuest}
-              className="min-h-12 w-full cursor-pointer rounded-full bg-primary px-5 py-3 text-base font-bold text-on-primary hover:bg-on-primary-fixed-variant focus-visible:ring-4 focus-visible:ring-primary-fixed-dim focus-visible:outline-none"
+              className="min-h-12 w-full cursor-pointer rounded-full bg-primary px-5 py-3 text-base font-bold text-on-primary hover:bg-primary-hover focus-visible:ring-4 focus-visible:ring-secondary focus-visible:outline-none"
             >
               เข้าใช้งานแบบทั่วไป
             </button>
@@ -94,12 +94,12 @@ export function AdminLoginPage() {
           </div>
 
           <div className="my-5 flex items-center gap-3 text-sm text-on-surface-variant">
-            <span className="h-px flex-1 bg-outline-variant" />
+            <span className="h-px flex-1 bg-text-muted" />
             สำหรับผู้ดูแลข้อมูล
-            <span className="h-px flex-1 bg-outline-variant" />
+            <span className="h-px flex-1 bg-text-muted" />
           </div>
 
-          <div className="rounded-2xl border border-surface-container bg-surface-container-lowest p-6 shadow-xs">
+          <div className="rounded-2xl border border-border bg-surface p-6 shadow-xs">
             {!config && !error && (
               <p className="text-center text-sm text-on-surface-variant">กำลังโหลด…</p>
             )}
@@ -121,7 +121,7 @@ export function AdminLoginPage() {
                 >
                   เข้าหน้าตั้งค่า (โหมดพัฒนา)
                 </a>
-                <p className="mt-2 text-center text-sm text-tertiary">
+                <p className="mt-2 text-center text-sm text-warning">
                   เซิร์ฟเวอร์ยังไม่ได้ตั้งค่า GOOGLE_CLIENT_ID
                 </p>
               </>
@@ -130,16 +130,16 @@ export function AdminLoginPage() {
               <p className="mt-3 text-center text-sm text-on-surface-variant">กำลังเข้าสู่ระบบ…</p>
             )}
             {error && (
-              <p role="alert" className="mt-3 rounded-lg bg-error-container px-3 py-2 text-sm text-on-error-container">
+              <p role="alert" className="mt-3 rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
                 {error}
               </p>
             )}
             {config?.enabled && (
-              <ul className="mt-4 space-y-1.5 border-t border-surface-container pt-4">
+              <ul className="mt-4 space-y-1.5 border-t border-border pt-4">
                 {config.domains.map((d) => (
                   <li
                     key={d}
-                    className="flex items-center justify-between gap-2 rounded-lg bg-surface-container-low px-3 py-1.5 text-sm"
+                    className="flex items-center justify-between gap-2 rounded-lg bg-surface-sunken px-3 py-1.5 text-sm"
                   >
                     <span className="font-mono">@{d}</span>
                     {DOMAIN_LABELS[d] && (

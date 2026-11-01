@@ -42,12 +42,12 @@ export function NotifySettingsCard() {
 
   return (
     <section
-      className="rounded-xl border border-surface-container bg-surface-container-lowest p-5 shadow-xs"
+      className="rounded-xl border border-border bg-surface p-5 shadow-xs"
       aria-labelledby="notify-title"
     >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h2 id="notify-title" className="font-bold text-primary">
+          <h2 id="notify-title" className="font-bold text-brand">
             แจ้งเตือนทางอีเมล
           </h2>
           <p id="notify-desc" className="mt-1 text-base text-on-surface-variant">
@@ -68,7 +68,7 @@ export function NotifySettingsCard() {
           aria-describedby="notify-desc"
           disabled={!status?.email || busy}
           onClick={toggle}
-          className={`relative h-8 w-14 shrink-0 cursor-pointer rounded-full transition-colors focus-visible:ring-4 focus-visible:ring-primary-fixed-dim focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${on ? 'bg-primary' : 'bg-outline-variant'}`}
+          className={`relative h-8 w-14 shrink-0 cursor-pointer rounded-full transition-colors focus-visible:ring-4 focus-visible:ring-secondary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${on ? 'bg-primary' : 'bg-text-muted'}`}
         >
           <span
             className={`absolute top-1 left-1 h-6 w-6 rounded-full bg-white shadow transition-transform ${on ? 'translate-x-6' : ''}`}
@@ -84,7 +84,7 @@ export function NotifySettingsCard() {
               type="button"
               onClick={test}
               disabled={busy}
-              className="cursor-pointer rounded-lg border border-outline-variant px-3 py-1.5 font-semibold text-on-surface hover:bg-surface-container-low disabled:opacity-50"
+              className="cursor-pointer rounded-lg border border-border px-3 py-1.5 font-semibold text-on-surface hover:bg-surface-sunken disabled:opacity-50"
             >
               ส่งอีเมลทดสอบ
             </button>
@@ -92,19 +92,19 @@ export function NotifySettingsCard() {
         </div>
       )}
       {status && !status.mailEnabled && (
-        <p className="mt-3 rounded-lg bg-tertiary-fixed px-3 py-2 text-sm text-on-tertiary-fixed">
+        <p className="mt-3 rounded-lg bg-warning/10 px-3 py-2 text-sm text-warning">
           เซิร์ฟเวอร์ยังไม่ได้ตั้งค่าบัญชีส่งอีเมล (SMTP) เปิดสวิตช์ไว้ได้ แต่จะยังไม่มีอีเมลส่งออก
         </p>
       )}
       {status && !status.email && (
-        <p className="mt-3 rounded-lg bg-tertiary-fixed px-3 py-2 text-sm text-on-tertiary-fixed">
+        <p className="mt-3 rounded-lg bg-warning/10 px-3 py-2 text-sm text-warning">
           โหมดพัฒนา: ต้องล็อกอินด้วยอีเมลมหาวิทยาลัยก่อนจึงจะเปิดการแจ้งเตือนได้
         </p>
       )}
       <p
         role="status"
         aria-live="polite"
-        className={`mt-2 text-sm font-semibold ${msg?.error ? 'text-error' : 'text-primary'}`}
+        className={`mt-2 text-sm font-semibold ${msg?.error ? 'text-danger' : 'text-brand'}`}
       >
         {msg?.text}
       </p>

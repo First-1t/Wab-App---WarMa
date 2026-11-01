@@ -45,10 +45,10 @@ function ConfirmDelete({
       ref={ref}
       onClose={onClose}
       aria-labelledby="del-title"
-      className="m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl p-0 backdrop:bg-inverse-surface/50"
+      className="m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl p-0 backdrop:bg-text/50"
     >
       <div className="p-6">
-        <h2 id="del-title" className="text-lg font-bold text-error">
+        <h2 id="del-title" className="text-lg font-bold text-danger">
           ลบข้อมูลชุดนี้?
         </h2>
         <p className="mt-2 text-base">
@@ -59,7 +59,7 @@ function ConfirmDelete({
             type="button"
             autoFocus
             onClick={() => ref.current?.close()}
-            className="flex-1 cursor-pointer rounded-lg bg-surface-container px-4 py-3 font-semibold"
+            className="flex-1 cursor-pointer rounded-lg bg-surface-container-high px-4 py-3 font-semibold"
           >
             ไม่ลบ
           </button>
@@ -71,7 +71,7 @@ function ConfirmDelete({
               await onConfirm();
               ref.current?.close();
             }}
-            className="flex-1 cursor-pointer rounded-lg bg-error px-4 py-3 font-bold text-on-error disabled:opacity-60"
+            className="flex-1 cursor-pointer rounded-lg bg-danger px-4 py-3 font-bold text-white disabled:opacity-60"
           >
             {busy ? 'กำลังลบ…' : 'ลบถาวร'}
           </button>
@@ -165,7 +165,7 @@ export function AdminDashboardPage({ user }: { user: AdminUser | null }) {
   }
 
   const crumb =
-    'cursor-pointer rounded font-semibold text-primary hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none';
+    'cursor-pointer rounded font-semibold text-brand hover:underline focus-visible:ring-2 focus-visible:ring-secondary focus-visible:outline-none';
   const heading = !view.crop
     ? 'เลือกพันธุ์มันสำปะหลัง'
     : !view.season
@@ -173,8 +173,8 @@ export function AdminDashboardPage({ user }: { user: AdminUser | null }) {
       : `พันธุ์${view.crop} · ${view.season}`;
 
   return (
-    <div className="flex min-h-screen flex-col bg-surface text-on-surface">
-      <header className="sticky top-0 z-10 bg-primary text-on-primary shadow">
+    <div className="flex min-h-screen flex-col bg-surface-sunken text-on-surface">
+      <header className="sticky top-0 z-10 bg-brand text-white shadow">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-4 py-3">
           <div className="min-w-0">
             <h1 className="text-lg font-bold sm:text-xl">ตั้งค่าข้อมูล</h1>
@@ -216,7 +216,7 @@ export function AdminDashboardPage({ user }: { user: AdminUser | null }) {
               aria-controls={`panel-${key}`}
               onClick={() => setTab(key)}
               className={`cursor-pointer rounded-t-lg px-4 py-2.5 text-sm font-semibold focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none ${
-                tab === key ? 'bg-surface text-primary' : 'text-white/85 hover:bg-white/10'
+                tab === key ? 'bg-surface-sunken text-brand-hover' : 'text-white/85 hover:bg-white/10'
               }`}
             >
               {label}
@@ -227,7 +227,7 @@ export function AdminDashboardPage({ user }: { user: AdminUser | null }) {
 
       <main className="mx-auto w-full max-w-5xl flex-1 space-y-5 px-4 py-5">
         {!user && (
-          <p className="rounded-xl bg-tertiary-fixed p-4 text-sm text-on-tertiary-fixed">
+          <p className="rounded-xl bg-warning/10 p-4 text-sm text-warning">
             โหมดพัฒนา: เซิร์ฟเวอร์ยังไม่ได้ตั้งค่า GOOGLE_CLIENT_ID จึงไม่ต้องล็อกอิน
           </p>
         )}
@@ -242,13 +242,13 @@ export function AdminDashboardPage({ user }: { user: AdminUser | null }) {
         {tab === 'data' && (
           <div role="tabpanel" id="panel-data" aria-labelledby="tab-data" className="space-y-5">
             {error && (
-              <div role="alert" className="rounded-xl bg-error-container p-4 text-on-error-container">
+              <div role="alert" className="rounded-xl bg-danger/10 p-4 text-danger">
                 <p className="font-bold">โหลดข้อมูลไม่สำเร็จ</p>
                 <p className="text-sm">{error}</p>
                 <button
                   type="button"
                   onClick={() => void reload()}
-                  className="mt-2 cursor-pointer rounded-lg bg-error px-4 py-2 text-sm font-semibold text-on-error"
+                  className="mt-2 cursor-pointer rounded-lg bg-danger px-4 py-2 text-sm font-semibold text-white"
                 >
                   ลองใหม่
                 </button>
@@ -299,7 +299,7 @@ export function AdminDashboardPage({ user }: { user: AdminUser | null }) {
                       <button
                         type="button"
                         onClick={() => go({ crop: view.season ? view.crop : null, season: null })}
-                        className="cursor-pointer rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-2 text-sm font-semibold hover:bg-surface-container-low"
+                        className="cursor-pointer rounded-lg border border-border bg-surface px-4 py-2 text-sm font-semibold hover:bg-surface-sunken"
                       >
                         ย้อนกลับ
                       </button>
@@ -308,7 +308,7 @@ export function AdminDashboardPage({ user }: { user: AdminUser | null }) {
                       <button
                         type="button"
                         onClick={exportJson}
-                        className="cursor-pointer rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-2 text-sm font-semibold hover:bg-surface-container-low"
+                        className="cursor-pointer rounded-lg border border-border bg-surface px-4 py-2 text-sm font-semibold hover:bg-surface-sunken"
                       >
                         สำรองข้อมูล (JSON)
                       </button>
@@ -316,7 +316,7 @@ export function AdminDashboardPage({ user }: { user: AdminUser | null }) {
                   </div>
                 </div>
 
-                <h2 ref={headingRef} tabIndex={-1} className="text-xl font-bold text-primary focus:outline-none">
+                <h2 ref={headingRef} tabIndex={-1} className="text-xl font-bold text-brand focus:outline-none">
                   {heading}
                 </h2>
 
@@ -379,7 +379,7 @@ export function AdminDashboardPage({ user }: { user: AdminUser | null }) {
       >
         {toast && (
           <p
-            className={`pointer-events-auto rounded-full px-5 py-3 text-base font-semibold shadow-lg ${toast.error ? 'bg-error text-on-error' : 'bg-inverse-surface text-inverse-on-surface'}`}
+            className={`pointer-events-auto rounded-full px-5 py-3 text-base font-semibold shadow-lg ${toast.error ? 'bg-danger text-white' : 'bg-text text-white'}`}
           >
             {toast.text}
           </p>
