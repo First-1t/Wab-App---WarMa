@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { outputApiClient, ApiError } from './services/api';
-import { MatchInputDto, MatchOutputDto } from './types/scenario.types';
-import { Header } from './components/Header';
-import { Footer } from './components/Footer';
-import { VarietyGuideModal } from './components/VarietyGuideModal';
-import { InputPage } from './pages/InputPage';
-import { OutputPage } from './pages/OutputPage';
+import { outputApiClient, ApiError } from './features/output/services/output-api.service';
+import { MatchInputDto, MatchOutputDto } from './shared/types/scenario.contracts';
+import { Header } from './shared/components/Header';
+import { Footer } from './shared/components/Footer';
+import { VarietyGuideModal } from './features/output/components/VarietyGuideModal';
+import { MockInputPage as InputPage } from './features/input-mock/pages/MockInputPage';
+import { OutputPage } from './features/output/pages/OutputPage';
+import { OutputV1Page } from './features/output/pages/OutputV1Page';
 
 interface UiErrorState {
   title: string;
@@ -16,9 +17,12 @@ interface UiErrorState {
 }
 
 export function App() {
-  // Navigation State (/input vs /output)
-  const [currentPath, setCurrentPath] = useState<'/input' | '/output'>(() => {
-    return window.location.pathname === '/output' ? '/output' : '/input';
+  // Navigation State (/input vs /output vs /output-v1)
+  const [currentPath, setCurrentPath] = useState<'/input' | '/output' | '/output-v1'>(() => {
+    const path = window.location.pathname;
+    if (path === '/output-v1') return '/output-v1';
+    if (path === '/output') return '/output';
+    return '/input';
   });
 
   // Form Input State
@@ -47,7 +51,7 @@ export function App() {
   /**
    * Safe Navigation Handler syncing browser history
    */
-  const navigateTo = useCallback((path: '/input' | '/output') => {
+  const navigateTo = useCallback((path: '/input' | '/output' | '/output-v1') => {
     setCurrentPath(path);
     if (window.location.pathname !== path) {
       window.history.pushState(null, '', path);
@@ -60,8 +64,14 @@ export function App() {
    */
   useEffect(() => {
     const handlePopState = () => {
-      const path = window.location.pathname === '/output' ? '/output' : '/input';
-      setCurrentPath(path);
+      const path = window.location.pathname;
+      if (path === '/output-v1') {
+        setCurrentPath('/output-v1');
+      } else if (path === '/output') {
+        setCurrentPath('/output');
+      } else {
+        setCurrentPath('/input');
+      }
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -209,6 +219,13 @@ export function App() {
             isLoading={isLoading}
             validationError={validationError}
             onOpenGuide={() => setIsGuideOpen(true)}
+          />
+        ) : currentPath === '/output-v1' ? (
+          <OutputV1Page
+            inputData={inputValues}
+            outputData={outputData}
+            onNavigateToInput={() => navigateTo('/input')}
+            onNavigateToFinal={() => navigateTo('/output')}
           />
         ) : (
           <OutputPage

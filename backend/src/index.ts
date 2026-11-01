@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { ScenarioStore } from './store/scenario.store.js';
-import { outputRouter } from './routes/output.routes.js';
+import { ScenarioStore } from './shared/store/scenario.store.js';
+import { outputRouter } from './modules/output/routes/output.routes.js';
 
 dotenv.config();
 

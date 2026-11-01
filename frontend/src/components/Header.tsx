@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface HeaderProps {
-  currentPath: '/input' | '/output';
-  onNavigate: (path: '/input' | '/output') => void;
+  currentPath: '/input' | '/output' | '/output-v1';
+  onNavigate: (path: '/input' | '/output' | '/output-v1') => void;
   onOpenGuide: () => void;
   isBackendOnline?: boolean;
 }
@@ -60,7 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
         <nav className="hidden md:flex items-center gap-1 p-1 bg-surface-container-lowest rounded-xl border border-surface-container shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
           <button
             onClick={() => onNavigate('/input')}
-            className={`min-h-[44px] px-4 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`min-h-[44px] px-3.5 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
               currentPath === '/input'
                 ? 'bg-primary text-on-primary shadow-xs'
                 : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
@@ -72,7 +72,7 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
           <button
             onClick={() => onNavigate('/output')}
-            className={`min-h-[44px] px-4 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`min-h-[44px] px-3.5 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
               currentPath === '/output'
                 ? 'bg-primary text-on-primary shadow-xs'
                 : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
@@ -80,11 +80,24 @@ export const Header: React.FC<HeaderProps> = ({
             type="button"
           >
             <span className="material-symbols-outlined text-[18px]">analytics</span>
-            <span>ผลวิเคราะห์และคำแนะนำ</span>
+            <span>ผลวิเคราะห์ (Final)</span>
+          </button>
+          <button
+            onClick={() => onNavigate('/output-v1')}
+            className={`min-h-[44px] px-3 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              currentPath === '/output-v1'
+                ? 'bg-amber-600 text-white shadow-xs'
+                : 'text-amber-800 bg-amber-50 hover:bg-amber-100/80 border border-amber-200'
+            }`}
+            type="button"
+            title="Initial AI-generated Output Prototype (v1) สำหรับนำเสนอ"
+          >
+            <span className="material-symbols-outlined text-[17px]">history</span>
+            <span>Output v1 (AI Gen)</span>
           </button>
           <button
             onClick={onOpenGuide}
-            className="min-h-[44px] px-4 py-2 rounded-lg text-sm font-semibold text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors cursor-pointer flex items-center gap-1.5"
+            className="min-h-[44px] px-3.5 py-2 rounded-lg text-sm font-semibold text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors cursor-pointer flex items-center gap-1.5"
             type="button"
           >
             <span className="material-symbols-outlined text-[18px]">menu_book</span>
@@ -111,38 +124,50 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Navigation Sub-bar */}
       <div className="md:hidden bg-surface-container-lowest border-t border-surface-container px-2 py-1.5 shadow-xs">
-        <nav className="flex w-full items-center justify-between gap-1.5">
+        <nav className="flex w-full items-center justify-between gap-1">
           <button
             onClick={() => onNavigate('/input')}
-            className={`flex-1 min-h-[40px] flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            className={`flex-1 min-h-[40px] flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               currentPath === '/input'
                 ? 'bg-primary text-on-primary shadow-xs'
                 : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
             }`}
             type="button"
           >
-            <span className="material-symbols-outlined text-[16px]">tune</span>
-            <span>คำนวณน้ำ</span>
+            <span className="material-symbols-outlined text-[15px]">tune</span>
+            <span>คำนวณ</span>
           </button>
           <button
             onClick={() => onNavigate('/output')}
-            className={`flex-1 min-h-[40px] flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            className={`flex-1 min-h-[40px] flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               currentPath === '/output'
                 ? 'bg-primary text-on-primary shadow-xs'
                 : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
             }`}
             type="button"
           >
-            <span className="material-symbols-outlined text-[16px]">analytics</span>
+            <span className="material-symbols-outlined text-[15px]">analytics</span>
             <span>ผลวิเคราะห์</span>
           </button>
           <button
-            onClick={onOpenGuide}
-            className="flex-1 min-h-[40px] flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg text-xs font-bold text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors cursor-pointer"
+            onClick={() => onNavigate('/output-v1')}
+            className={`flex-1 min-h-[40px] flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+              currentPath === '/output-v1'
+                ? 'bg-amber-600 text-white shadow-xs'
+                : 'text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200'
+            }`}
             type="button"
           >
-            <span className="material-symbols-outlined text-[16px]">menu_book</span>
-            <span>คู่มือพันธุ์</span>
+            <span className="material-symbols-outlined text-[14px]">history</span>
+            <span>v1 (AI)</span>
+          </button>
+          <button
+            onClick={onOpenGuide}
+            className="flex-1 min-h-[40px] flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-lg text-xs font-bold text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors cursor-pointer"
+            type="button"
+          >
+            <span className="material-symbols-outlined text-[15px]">menu_book</span>
+            <span>คู่มือ</span>
           </button>
         </nav>
       </div>
