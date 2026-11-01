@@ -1,64 +1,124 @@
 @import "tailwindcss";
 
+/* --------------------------------------------------------------------------
+   Smart Water Design System (EN813701 WAD26-02)
+   Cassava Irrigation Advisor — Design Tokens & Component Styles
+   -------------------------------------------------------------------------- */
+
+/* Embedded Thai Typefaces (SIL Open Font License 1.1) */
+@font-face {
+  font-family: 'LINE Seed Sans TH';
+  src: url('/fonts/LINESeedSansTH-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'LINE Seed Sans TH';
+  src: url('/fonts/LINESeedSansTH-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans Thai Looped';
+  src: url('/fonts/IBMPlexSansThaiLooped-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans Thai Looped';
+  src: url('/fonts/IBMPlexSansThaiLooped-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --color-surface: #faf8ff;
-  --color-surface-dim: #d2d9f4;
-  --color-surface-bright: #faf8ff;
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f2f3ff;
-  --color-surface-container: #eaedff;
-  --color-surface-container-high: #e2e7ff;
-  --color-surface-container-highest: #dae2fd;
-  --color-surface-variant: #dae2fd;
-  --color-on-surface: #131b2e;
-  --color-on-surface-variant: #3e4a3d;
-  --color-inverse-surface: #283044;
-  --color-inverse-on-surface: #eef0ff;
-  --color-outline: #6e7b6c;
-  --color-outline-variant: #bdcaba;
+  /* Brand Action Colors */
+  --color-primary: #65B741;
+  --color-primary-hover: #5FA33E;
+  --color-on-primary: #1F2A30;
 
-  --color-primary: #006b2c;
-  --color-on-primary: #ffffff;
-  --color-primary-container: #00873a;
-  --color-on-primary-container: #f7fff2;
-  --color-primary-fixed: #7ffc97;
-  --color-primary-fixed-dim: #62df7d;
-  --color-on-primary-fixed: #002109;
-  --color-on-primary-fixed-variant: #005320;
+  --color-secondary: #1D74B8;
+  --color-secondary-hover: #155A8F;
+  --color-on-secondary: #FFFFFF;
 
-  --color-secondary: #006398;
-  --color-on-secondary: #ffffff;
-  --color-secondary-container: #5bb8fe;
-  --color-on-secondary-container: #00476e;
-  --color-secondary-fixed: #cce5ff;
-  --color-secondary-fixed-dim: #93ccff;
-  --color-on-secondary-fixed: #001d31;
-  --color-on-secondary-fixed-variant: #004b73;
+  --color-brand: #1D74B8;
+  --color-brand-hover: #155A8F;
 
-  --color-tertiary: #8d4b00;
-  --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #b15f00;
-  --color-on-tertiary-container: #fffbff;
-  --color-tertiary-fixed: #ffdcc3;
-  --color-tertiary-fixed-dim: #ffb77d;
-  --color-on-tertiary-fixed: #2f1500;
-  --color-on-tertiary-fixed-variant: #6e3900;
+  /* Status Colors (WCAG AA Compliant) */
+  --color-success: #15803D;
+  --color-warning: #B45309;
+  --color-danger: #B91C1C;
+  --color-error: #B91C1C;
 
-  --color-error: #ba1a1a;
-  --color-on-error: #ffffff;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #93000a;
+  /* Neutral & Backgrounds */
+  --color-surface: #FFFFFF;
+  --color-surface-sunken: #F5F9F7;
+  --color-surface-container: #FFFFFF;
+  --color-surface-container-high: #F0F6F3;
+  --color-surface-container-highest: #EAF6DB;
 
-  --font-sans: 'Plus Jakarta Sans', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
-  --font-display-lg: 'Plus Jakarta Sans', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+  --color-text: #1F2A30;
+  --color-text-muted: #54636B;
+  --color-on-surface: #1F2A30;
+  --color-on-surface-variant: #54636B;
 
-  --spacing-space-xs: 0.25rem;
-  --spacing-space-sm: 0.5rem;
-  --spacing-space-md: 0.75rem;
-  --spacing-space-lg: 1.25rem;
-  --spacing-space-xl: 2rem;
-  --spacing-margin: 1rem;
-  --spacing-gutter: 1rem;
+  --color-border: #E1E8E3;
+  --color-outline: #E1E8E3;
+
+  /* Decorative Tints */
+  --color-tint-mint: #EAF6DB;
+  --color-tint-sky: #DCEEFB;
+
+  /* Typography Scales */
+  --font-sans: 'LINE Seed Sans TH', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+  --font-body: 'IBM Plex Sans Thai Looped', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+  --font-heading: 'LINE Seed Sans TH', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+
+  /* Spacing Tokens */
+  --spacing-space-2: 8px;
+  --spacing-space-4: 16px;
+  --spacing-space-6: 24px;
+  --spacing-space-8: 32px;
+
+  /* Corner Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+:root {
+  --primary: #65B741;
+  --primary-hover: #5FA33E;
+  --secondary: #1D74B8;
+  --secondary-hover: #155A8F;
+  --brand: #1D74B8;
+  --brand-hover: #155A8F;
+  --success: #15803D;
+  --warning: #B45309;
+  --danger: #B91C1C;
+  --surface: #FFFFFF;
+  --surface-sunken: #F5F9F7;
+  --text: #1F2A30;
+  --text-muted: #54636B;
+  --border: #E1E8E3;
+  --tint-mint: #EAF6DB;
+  --tint-sky: #DCEEFB;
+  --font-sans: 'LINE Seed Sans TH', 'Noto Sans Thai', system-ui, sans-serif;
+  --font-body: 'IBM Plex Sans Thai Looped', 'Noto Sans Thai', system-ui, sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --space-2: 8px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
 }
 
 @layer base {
@@ -68,21 +128,140 @@
   }
 
   body {
-    font-family: var(--font-sans);
-    background-color: var(--color-surface);
-    color: var(--color-on-surface);
+    font-family: var(--font-body);
+    background-color: var(--color-surface-sunken);
+    color: var(--color-text);
     overflow-x: hidden;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Prevent iOS input zoom while preserving readability */
-  input, select, textarea {
-    font-size: 16px;
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: var(--font-sans);
+  }
+
+  button, nav, .btn, .navbar, .badge {
+    font-family: var(--font-sans);
+  }
+
+  input, select, textarea, label, p, span, .font-body {
+    font-family: var(--font-body);
   }
 }
 
+/* --------------------------------------------------------------------------
+   Smart Water Component Bundle (Direct Class Tokens)
+   -------------------------------------------------------------------------- */
+
+/* Button */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: background-color 150ms ease, transform 100ms ease;
+  white-space: nowrap;
+}
+.btn-lg { padding: 12px var(--space-6); font-size: 16px; }
+.btn-sm { padding: 8px var(--space-4); font-size: 13px; }
+.btn-primary { background: var(--primary); color: var(--text); }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-secondary { background: var(--secondary); color: #fff; }
+.btn-secondary:hover { background: var(--secondary-hover); }
+.btn-outline {
+  background: transparent;
+  color: var(--brand);
+  box-shadow: inset 0 0 0 2px var(--brand);
+}
+.btn-outline:hover {
+  background: var(--tint-sky);
+  color: var(--brand-hover);
+  box-shadow: inset 0 0 0 2px var(--brand-hover);
+}
+.btn:focus-visible { outline: 2px solid var(--secondary); outline-offset: 2px; }
+
+/* Field */
+.field { display: flex; flex-direction: column; gap: 6px; font-family: var(--font-sans); }
+.field label { font-family: var(--font-body); font-size: 13px; font-weight: 700; color: var(--text); }
+.field input, .field select {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  outline: none;
+}
+.field input:focus, .field select:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(29, 116, 184, 0.18);
+}
+.field .hint { font-family: var(--font-body); font-size: 13px; color: var(--text-muted); }
+.field.has-error input { border-color: var(--danger); }
+.field .error-msg { font-family: var(--font-body); font-size: 13px; color: var(--danger); font-weight: 700; }
+
+/* Card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  font-family: var(--font-sans);
+}
+.card p.step { font-family: var(--font-body); font-size: 13px; color: var(--text-muted); margin: 0 0 4px; }
+.card h3 { margin: 0 0 8px; font-size: 18px; font-weight: 700; color: var(--text); }
+.card p { font-family: var(--font-body); margin: 0 0 var(--space-4); font-size: 15px; color: var(--text); line-height: 1.5; }
+.card .card-footer { display: flex; justify-content: flex-end; margin-top: var(--space-2); }
+
+/* Navbar */
+.navbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  padding: var(--space-2) var(--space-6);
+  background: var(--brand);
+  font-family: var(--font-sans);
+}
+.navbar .navbar-title { margin-right: auto; color: #fff; font-size: 17px; font-weight: 700; }
+.navbar a, .navbar button {
+  color: #fff;
+  font-size: 15px;
+  text-decoration: none;
+  padding: 6px 4px;
+  border-bottom: 2px solid transparent;
+}
+.navbar a:hover, .navbar button:hover { border-bottom-color: rgba(255, 255, 255, 0.7); }
+.navbar a[aria-current="page"], .navbar button.active { font-weight: 700; border-bottom-color: #fff; }
+.navbar a:focus-visible, .navbar button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+/* Link */
+.link { color: var(--brand); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.link:hover { color: var(--brand-hover); }
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: #fff;
+}
+.badge-success { background: var(--success); }
+.badge-warning { background: var(--warning); }
+.badge-danger { background: var(--danger); }
+
+/* Material Symbols configuration */
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
   font-weight: normal;
@@ -98,10 +277,4 @@
   white-space: nowrap;
   word-wrap: normal;
   direction: ltr;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: 'liga';
-  flex-shrink: 0;
-  user-select: none;
 }

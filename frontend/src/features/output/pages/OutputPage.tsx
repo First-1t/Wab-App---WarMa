@@ -72,21 +72,21 @@ export const OutputPage: React.FC<OutputPageProps> = ({
     switch (risk) {
       case 'ต่ำ':
         return {
-          bg: 'bg-primary-fixed/30 text-on-primary-fixed-variant border-primary-fixed',
+          bg: 'bg-tint-mint text-success border-success/30',
           icon: 'verified_user',
           text: 'ความเสี่ยง: ต่ำ (ปริมาณน้ำเพียงพอตลอดทุกระยะ)',
         };
       case 'สูง':
         return {
-          bg: 'bg-error-container/40 text-on-error-container border-error/20',
+          bg: 'bg-red-50 text-danger border-danger/30',
           icon: 'warning',
           text: 'ความเสี่ยง: สูง (พึ่งพาฝนธรรมชาติ เสี่ยงขาดน้ำช่วงสะสมแป้ง)',
         };
       case 'ปานกลาง':
       default:
         return {
-          bg: 'bg-tertiary-fixed/30 text-on-tertiary-fixed-variant border-tertiary-fixed',
-          icon: 'verified_user',
+          bg: 'bg-amber-50 text-warning border-warning/30',
+          icon: 'info',
           text: 'ความเสี่ยง: ปานกลาง (ควบคุมความชื้นช่วง 1-90 วันได้ดี)',
         };
     }
@@ -108,7 +108,7 @@ export const OutputPage: React.FC<OutputPageProps> = ({
           </p>
           <button
             onClick={onNavigateToInput}
-            className="w-full min-h-[48px] py-3 px-4 rounded-xl bg-primary text-on-primary font-bold text-xs sm:text-sm hover:bg-primary-container transition cursor-pointer flex items-center justify-center gap-2"
+            className="w-full min-h-[48px] py-3 px-4 rounded-xl bg-primary text-text font-bold text-xs sm:text-sm hover:bg-primary-hover active:scale-95 transition cursor-pointer flex items-center justify-center gap-2 font-sans"
             type="button"
           >
             <span className="material-symbols-outlined text-[18px]">tune</span>
@@ -141,12 +141,12 @@ export const OutputPage: React.FC<OutputPageProps> = ({
             </button>
 
             <div className="shrink min-w-0 inline-flex items-center gap-1.5 sm:gap-2 overflow-hidden">
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-[11px] sm:text-xs font-semibold shadow-2xs border border-tertiary-fixed-dim whitespace-nowrap truncate">
-                <span className="material-symbols-outlined text-[14px] text-tertiary shrink-0">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 text-warning text-[11px] sm:text-xs font-semibold shadow-2xs border border-warning/30 whitespace-nowrap truncate">
+                <span className="material-symbols-outlined text-[14px] text-warning shrink-0">
                   warning
                 </span>
                 <span className="truncate">พันธุ์: {crop}</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-error shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-danger shrink-0"></span>
               </span>
               <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface text-xs font-medium whitespace-nowrap">
                 <span className="material-symbols-outlined text-[14px] text-on-surface-variant">
@@ -164,18 +164,18 @@ export const OutputPage: React.FC<OutputPageProps> = ({
           </div>
 
           {/* Main Friendly Alert Card */}
-          <div className="relative overflow-hidden bg-gradient-to-b from-tertiary-fixed/30 to-tertiary-fixed/60 rounded-2xl p-5 sm:p-8 md:p-10 shadow-md border border-tertiary/30 flex flex-col items-center text-center">
+          <div className="relative overflow-hidden bg-amber-50/60 rounded-2xl p-5 sm:p-8 md:p-10 shadow-md border border-warning/20 flex flex-col items-center text-center">
             {/* Top Decorative Ambient Glow */}
-            <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-72 h-72 bg-tertiary-fixed-dim/40 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-72 h-72 bg-warning/10 rounded-full blur-3xl pointer-events-none"></div>
 
             {/* Icon Graphic */}
             <div className="relative mb-4">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-surface-container-lowest shadow-md flex items-center justify-center border border-tertiary/20">
-                <span className="material-symbols-outlined text-[36px] sm:text-[44px] text-tertiary">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-surface shadow-md flex items-center justify-center border border-warning/20">
+                <span className="material-symbols-outlined text-[36px] sm:text-[44px] text-warning">
                   shield_with_heart
                 </span>
               </div>
-              <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center shadow-xs">
+              <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-warning text-white flex items-center justify-center shadow-xs">
                 <span className="material-symbols-outlined text-[16px]">
                   priority_high
                 </span>
@@ -183,8 +183,8 @@ export const OutputPage: React.FC<OutputPageProps> = ({
             </div>
 
             {/* Alert Heading & Status */}
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-xs uppercase tracking-wide font-bold mb-3 border border-tertiary-fixed-dim">
-              <span className="w-2 h-2 rounded-full bg-tertiary animate-pulse shrink-0"></span>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-warning text-xs uppercase tracking-wide font-bold mb-3 border border-warning/30 font-sans">
+              <span className="w-2 h-2 rounded-full bg-warning animate-pulse shrink-0"></span>
               <span>แบบจำลองไม่รองรับเงื่อนไขนี้ (Boundary Exception)</span>
             </div>
 
@@ -195,7 +195,7 @@ export const OutputPage: React.FC<OutputPageProps> = ({
             <p className="text-xs sm:text-sm text-on-surface-variant max-w-2xl mb-6 leading-relaxed">
               ระบบ WarMa คำนวณผลผลิตด้วยอัลกอริทึมชีวฟิสิกส์ชั้นสูง จึง<strong>ไม่สามารถคาดเดาผลลัพธ์ได้อย่างแม่นยำ</strong> นอกเหนือจากชุดข้อมูลของแบบจำลองวิทยาศาสตร์{' '}
               <strong className="text-on-surface">DSSAT Cassava Crop Model</strong> สำหรับพันธุ์{' '}
-              <span className="text-tertiary font-bold underline decoration-tertiary/40">
+              <span className="text-warning font-bold underline decoration-warning/40">
                 {crop}
               </span>{' '}
               ในขณะนี้ (อาจารย์กำชับ: นอกเหนือ ตอบไม่ได้ ห้ามเดาผลลัพธ์)
@@ -252,11 +252,11 @@ export const OutputPage: React.FC<OutputPageProps> = ({
                 {/* Variety 3 */}
                 <div
                   onClick={() => onSelectCalibratedVariety('CMR38-125-77')}
-                  className="flex flex-col p-3.5 bg-surface-container-low hover:bg-surface-container transition-colors rounded-xl group cursor-pointer border border-surface-container hover:border-tertiary"
+                  className="flex flex-col p-3.5 bg-surface-container-low hover:bg-surface-container transition-colors rounded-xl group cursor-pointer border border-surface-container hover:border-brand"
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-tertiary">3. CMR38-125-77</span>
-                    <span className="material-symbols-outlined text-[16px] text-tertiary opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-xs font-bold text-brand">3. CMR38-125-77</span>
+                    <span className="material-symbols-outlined text-[16px] text-brand opacity-0 group-hover:opacity-100 transition-opacity">
                       arrow_forward
                     </span>
                   </div>
@@ -272,7 +272,7 @@ export const OutputPage: React.FC<OutputPageProps> = ({
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-lg">
               <button
                 onClick={() => onSelectCalibratedVariety('เกษตรศาสตร์ 50')}
-                className="w-full sm:w-auto flex-1 min-h-[48px] px-6 py-2.5 rounded-xl bg-primary text-on-primary text-xs sm:text-sm font-bold hover:bg-primary-container shadow-md inline-flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+                className="w-full sm:w-auto flex-1 min-h-[48px] px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-text text-xs sm:text-sm font-bold shadow-xs inline-flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer font-heading"
                 type="button"
               >
                 <span className="material-symbols-outlined text-[20px]">sync</span>
@@ -280,7 +280,7 @@ export const OutputPage: React.FC<OutputPageProps> = ({
               </button>
               <button
                 onClick={onNavigateToInput}
-                className="w-full sm:w-auto flex-1 min-h-[48px] px-6 py-2.5 rounded-xl bg-secondary-fixed text-on-secondary-fixed text-xs sm:text-sm font-bold hover:bg-secondary-fixed-dim shadow-xs inline-flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer border border-secondary-fixed-dim"
+                className="w-full sm:w-auto flex-1 min-h-[48px] px-6 py-2.5 rounded-xl bg-transparent border-2 border-brand text-brand hover:bg-tint-sky text-xs sm:text-sm font-bold shadow-xs inline-flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer font-heading"
                 type="button"
               >
                 <span className="material-symbols-outlined text-[20px]">tune</span>
@@ -367,7 +367,7 @@ export const OutputPage: React.FC<OutputPageProps> = ({
         <div className="flex items-center justify-between gap-2 bg-surface-container-lowest px-3 py-2 sm:px-4 sm:py-3 rounded-xl shadow-xs border border-surface-container w-full">
           <button
             onClick={onNavigateToInput}
-            className="shrink-0 inline-flex items-center gap-1 text-primary font-bold text-xs sm:text-sm hover:text-primary-container transition-colors group cursor-pointer min-h-[36px] whitespace-nowrap"
+            className="shrink-0 inline-flex items-center gap-1 text-brand font-bold text-xs sm:text-sm hover:text-brand-hover transition-colors group cursor-pointer min-h-[36px] whitespace-nowrap font-sans"
             type="button"
           >
             <span className="material-symbols-outlined text-[18px] sm:text-[20px] transition-transform group-hover:-translate-x-1 shrink-0">
@@ -394,7 +394,7 @@ export const OutputPage: React.FC<OutputPageProps> = ({
 
           <div className="relative z-10 flex flex-col gap-5 sm:gap-6">
             <div className="flex items-center justify-between gap-2 w-full">
-              <div className="inline-flex items-center gap-1.5 bg-primary/10 text-primary px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-bold border border-primary/20 shrink min-w-0">
+              <div className="inline-flex items-center gap-1.5 bg-tint-mint text-success px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-bold border border-success/20 shrink min-w-0 font-sans">
                 <span className="material-symbols-outlined text-[15px] sm:text-[16px] shrink-0">analytics</span>
                 <span className="truncate">
                   ผลวิเคราะห์ AI ประจำแปลง <span className="hidden sm:inline">(DSSAT Engine)</span>
@@ -434,14 +434,14 @@ export const OutputPage: React.FC<OutputPageProps> = ({
 
               {/* Starch Content Badge Box */}
               <div className="bg-surface-container-low p-3.5 sm:p-4 rounded-xl flex items-center gap-3.5 border border-surface-container">
-                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-lg bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed shrink-0">
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-lg bg-tint-mint flex items-center justify-center text-success shrink-0">
                   <span className="material-symbols-outlined text-[26px]">star</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-xs text-on-surface-variant font-medium">
                     เกรดคุณภาพโรงงานแป้ง
                   </span>
-                  <span className="text-base sm:text-lg font-bold text-tertiary">
+                  <span className="text-base sm:text-lg font-bold text-success">
                     แป้งคาดการณ์ {starchPercent.toFixed(1)}%
                   </span>
                   <span className="text-xs text-on-surface-variant font-medium">
@@ -453,8 +453,8 @@ export const OutputPage: React.FC<OutputPageProps> = ({
 
             {/* Water & Risk Status Badges */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-surface-container">
-              <div className="flex items-center gap-2.5 bg-secondary-fixed/30 text-on-secondary-fixed-variant p-3 rounded-xl border border-secondary-fixed">
-                <span className="material-symbols-outlined text-secondary text-[20px] shrink-0">
+              <div className="flex items-center gap-2.5 bg-tint-sky text-text p-3 rounded-xl border border-brand/20">
+                <span className="material-symbols-outlined text-brand text-[20px] shrink-0">
                   water_drop
                 </span>
                 <span className="text-xs font-semibold">
@@ -462,7 +462,7 @@ export const OutputPage: React.FC<OutputPageProps> = ({
                 </span>
               </div>
               <div className={`flex items-center gap-2.5 p-3 rounded-xl border ${riskInfo.bg}`}>
-                <span className="material-symbols-outlined text-tertiary text-[20px] shrink-0">
+                <span className="material-symbols-outlined text-[20px] shrink-0">
                   {riskInfo.icon}
                 </span>
                 <span className="text-xs font-semibold">{riskInfo.text}</span>
@@ -561,7 +561,7 @@ export const OutputPage: React.FC<OutputPageProps> = ({
                         <span className="text-sm font-bold text-on-surface">
                           {phase.phase}
                         </span>
-                        <span className="text-xs px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-semibold">
+                        <span className="text-xs px-2.5 py-0.5 rounded-full bg-tint-mint text-success font-semibold">
                           {phase.freq}
                         </span>
                       </div>
@@ -604,13 +604,13 @@ export const OutputPage: React.FC<OutputPageProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Card A (Active / Recommended) */}
-            <div className="relative bg-surface-container-lowest rounded-xl p-4 sm:p-5 shadow-sm border-2 border-primary flex flex-col justify-between gap-4 bg-gradient-to-b from-primary/5 to-transparent">
+            <div className="relative bg-surface rounded-xl p-4 sm:p-5 shadow-sm border-2 border-brand flex flex-col justify-between gap-4 bg-gradient-to-b from-tint-sky/30 to-transparent">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-primary font-bold uppercase tracking-wider">
+                  <span className="text-xs text-brand font-bold uppercase tracking-wider">
                     ทางเลือกปัจจุบัน
                   </span>
-                  <span className="bg-primary text-on-primary text-[11px] font-bold px-2 py-0.5 rounded-full">
+                  <span className="bg-primary text-text text-[11px] font-bold px-2 py-0.5 rounded-full">
                     แนะนำคุ้มค่าสูงสุด 🏆
                   </span>
                 </div>
@@ -618,7 +618,7 @@ export const OutputPage: React.FC<OutputPageProps> = ({
                   {matched.name}
                 </h3>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-3xl font-extrabold text-primary font-sans">
+                  <span className="text-3xl font-extrabold text-success font-sans">
                     {matched.freshYield.avgTonsPerRai.toFixed(1)}
                   </span>
                   <span className="text-xs font-semibold text-on-surface">ตัน / ไร่</span>
@@ -632,11 +632,11 @@ export const OutputPage: React.FC<OutputPageProps> = ({
                   </div>
                   <div className="flex items-center justify-between">
                     <span>ความคุ้มค่า:</span>
-                    <span className="text-primary font-semibold">สูงสุด (ต้นทุนเหมาะสม)</span>
+                    <span className="text-success font-semibold">สูงสุด (ต้นทุนเหมาะสม)</span>
                   </div>
                 </div>
               </div>
-              <div className="bg-primary/10 text-primary p-2.5 rounded-lg text-center text-xs font-semibold border border-primary/20">
+              <div className="bg-tint-mint text-success p-2.5 rounded-lg text-center text-xs font-semibold border border-success/20">
                 สอดคล้องกับน้ำต้นทุน {waterAvailableM3.toLocaleString()} ลบ.ม.
               </div>
             </div>
@@ -682,7 +682,7 @@ export const OutputPage: React.FC<OutputPageProps> = ({
                           <span>เปรียบเทียบผลผลิต:</span>
                           <span
                             className={`font-semibold ${
-                              yieldDelta >= 0 ? 'text-secondary' : 'text-error'
+                              yieldDelta >= 0 ? 'text-brand' : 'text-danger'
                             }`}
                           >
                             {yieldDelta > 0 ? `+${yieldDelta}` : yieldDelta} ตัน/ไร่
@@ -705,15 +705,15 @@ export const OutputPage: React.FC<OutputPageProps> = ({
                     <span className="text-xs text-on-surface-variant font-bold">ทางเลือกที่ 2</span>
                     <h3 className="text-sm font-bold text-on-surface">พึ่งพาน้ำฝนล้วน</h3>
                     <div className="text-2xl font-bold text-on-surface font-sans">3.2 ตัน/ไร่</div>
-                    <span className="text-xs text-error font-medium">สูญเสียโอกาส: -1.6 ตัน/ไร่</span>
+                    <span className="text-xs text-danger font-medium">สูญเสียโอกาส: -1.6 ตัน/ไร่</span>
                   </div>
                 </div>
                 <div className="bg-surface-container-lowest rounded-xl p-4 sm:p-5 shadow-xs border border-surface-container flex flex-col justify-between gap-4">
                   <div className="flex flex-col gap-2">
                     <span className="text-xs text-on-surface-variant font-bold">ทางเลือกที่ 3</span>
                     <h3 className="text-sm font-bold text-on-surface">จัดการน้ำเต็มที่</h3>
-                    <div className="text-2xl font-bold text-secondary font-sans">5.4 ตัน/ไร่</div>
-                    <span className="text-xs text-secondary font-medium">ผลผลิตเพิ่ม +0.6 ตัน/ไร่</span>
+                    <div className="text-2xl font-bold text-brand font-sans">5.4 ตัน/ไร่</div>
+                    <span className="text-xs text-brand font-medium">ผลผลิตเพิ่ม +0.6 ตัน/ไร่</span>
                   </div>
                 </div>
               </>
@@ -739,8 +739,8 @@ export const OutputPage: React.FC<OutputPageProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
             <div className="flex items-start gap-3 bg-surface-container-low p-4 rounded-xl border border-surface-container">
-              <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-on-primary shrink-0 mt-0.5">
-                <span className="material-symbols-outlined text-[15px]">check</span>
+              <div className="w-6 h-6 rounded-full bg-tint-mint flex items-center justify-center text-success shrink-0 mt-0.5">
+                <span className="material-symbols-outlined text-[15px] font-bold">check</span>
               </div>
               <div className="flex flex-col">
                 <span className="text-xs sm:text-sm font-bold text-on-surface">
@@ -753,8 +753,8 @@ export const OutputPage: React.FC<OutputPageProps> = ({
             </div>
 
             <div className="flex items-start gap-3 bg-surface-container-low p-4 rounded-xl border border-surface-container">
-              <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-on-primary shrink-0 mt-0.5">
-                <span className="material-symbols-outlined text-[15px]">check</span>
+              <div className="w-6 h-6 rounded-full bg-tint-mint flex items-center justify-center text-success shrink-0 mt-0.5">
+                <span className="material-symbols-outlined text-[15px] font-bold">check</span>
               </div>
               <div className="flex flex-col">
                 <span className="text-xs sm:text-sm font-bold text-on-surface">
@@ -767,8 +767,8 @@ export const OutputPage: React.FC<OutputPageProps> = ({
             </div>
 
             <div className="flex items-start gap-3 bg-surface-container-low p-4 rounded-xl border border-surface-container">
-              <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-on-primary shrink-0 mt-0.5">
-                <span className="material-symbols-outlined text-[15px]">check</span>
+              <div className="w-6 h-6 rounded-full bg-tint-mint flex items-center justify-center text-success shrink-0 mt-0.5">
+                <span className="material-symbols-outlined text-[15px] font-bold">check</span>
               </div>
               <div className="flex flex-col">
                 <span className="text-xs sm:text-sm font-bold text-on-surface">
@@ -781,8 +781,8 @@ export const OutputPage: React.FC<OutputPageProps> = ({
             </div>
 
             <div className="flex items-start gap-3 bg-surface-container-low p-4 rounded-xl border border-surface-container">
-              <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-on-primary shrink-0 mt-0.5">
-                <span className="material-symbols-outlined text-[15px]">check</span>
+              <div className="w-6 h-6 rounded-full bg-tint-mint flex items-center justify-center text-success shrink-0 mt-0.5">
+                <span className="material-symbols-outlined text-[15px] font-bold">check</span>
               </div>
               <div className="flex flex-col">
                 <span className="text-xs sm:text-sm font-bold text-on-surface">
@@ -800,7 +800,7 @@ export const OutputPage: React.FC<OutputPageProps> = ({
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pb-6">
           <button
             onClick={() => window.print()}
-            className="min-h-[48px] px-6 rounded-xl bg-surface-container-high text-on-surface text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 hover:bg-surface-variant active:scale-95 transition-all shadow-xs cursor-pointer border border-surface-container-highest"
+            className="min-h-[48px] px-6 rounded-xl border-2 border-brand text-brand hover:bg-tint-sky active:scale-95 text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 transition-all cursor-pointer font-sans"
             type="button"
           >
             <span className="material-symbols-outlined text-[20px]">print</span>
@@ -808,7 +808,7 @@ export const OutputPage: React.FC<OutputPageProps> = ({
           </button>
           <button
             onClick={handleShare}
-            className="min-h-[48px] px-7 rounded-xl bg-primary text-on-primary text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 hover:bg-primary-container active:scale-95 transition-all shadow-md cursor-pointer"
+            className="min-h-[48px] px-7 rounded-xl bg-primary hover:bg-primary-hover active:scale-95 text-text text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer font-sans"
             type="button"
           >
             <span className="material-symbols-outlined text-[20px]">

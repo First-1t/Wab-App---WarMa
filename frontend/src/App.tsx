@@ -197,7 +197,7 @@ export function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-surface text-on-surface flex flex-col font-sans selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden w-full relative">
+    <div className="min-h-screen bg-surface-sunken text-text flex flex-col font-body selection:bg-tint-mint selection:text-text overflow-x-hidden w-full relative">
       {/* Top Header Navigation */}
       <Header
         currentPath={currentPath}
